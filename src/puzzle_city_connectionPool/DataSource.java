@@ -1,4 +1,4 @@
-package connectionPool;
+package puzzle_city_connectionPool;
 
 import java.sql.Connection;
 

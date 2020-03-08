@@ -1,4 +1,4 @@
-package connectionPool;
+package puzzle_city_connectionPool;
 
 public final class ConnectionFileReader {
 
