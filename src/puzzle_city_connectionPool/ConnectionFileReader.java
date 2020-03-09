@@ -1,23 +1,84 @@
 package puzzle_city_connectionPool;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.InvalidPropertiesFormatException;
+import java.util.Properties;
+
 public final class ConnectionFileReader {
 
 	private String driver;
-	private String connectionUrl;
+	private  String url;
 	private String user;
 	private String password;
+	private static ConnectionFileReader instance = null;
 
-	public ConnectionFileReader() {
-		super();
-	}
-
-	public ConnectionFileReader(String driver, String connectionUrl, String user, String password) {
+	public ConnectionFileReader(String driver, String url, String user, String password) {
 		super();
 		this.driver = driver;
-		this.connectionUrl = connectionUrl;
+		this.url = url;
 		this.user = user;
 		this.password = password;
 
 	}
 
+	public ConnectionFileReader() {Properties p = new Properties();
+	try {
+		FileInputStream fis = new FileInputStream("C:\\Users\\etudiant\\Documents\\workspace-spring-tool-suite-4-4.4.0.RELEASE\\puzzlecity_project\\src\\puzzle_city_connectionPool\\ConnectionFile.xml");
+		p.loadFromXML(fis);
+		/// Enumeration<?> enumeration = p.propertyNames();
+
+		this.url = (String) p.get("jdbc.url")+"?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC";
+		this.driver = (String) p.get("jdbc.driver");
+		this.user = (String) p.get("jdbc.user");
+		this.password = (String) p.get("jdbc.password");
+
+		System.out.println(this.url);
+		System.out.println(this.driver);
+		System.out.println(this.user);
+		System.out.println(this.password);
+
+		///// Util mais cest pour parcourir et afficher nous avons nous besoin de
+		///// recuperer des valeurs afin de les attribuer aux attributs de la vlasse,
+		///// pour cela nous utilisons get
+
+	}
+
+	catch (Exception e) {
+		;
+	}
+}
+
+	public String getDriver() {
+		return driver;
+	}
+
+	public void setDriver(String driver) {
+		this.driver = driver;
+	}
+
+	public  String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 }
