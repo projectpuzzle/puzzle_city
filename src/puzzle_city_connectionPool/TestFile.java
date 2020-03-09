@@ -9,7 +9,7 @@ public class TestFile {
 			//ds.showTest();
 			//ds.addTest("Hamza", "jalit" , 10);
 			//ds.deleteTestByserver("Hamza");
-			ds.updateTest("afak", "omar", 60);
+			//ds.updateTest("", "", 60);
 			
 		}
 	}
