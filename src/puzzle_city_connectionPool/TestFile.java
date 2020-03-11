@@ -5,11 +5,11 @@ public class TestFile {
 
 
 		public static void main(String[] args) throws ClassNotFoundException {
-			DataSource ds = new DataSource();
-			//ds.showTest();
-			//ds.addTest("Hamza", "jalit" , 10);
-			//ds.deleteTestByserver("Hamza");
-			//ds.updateTest("", "", 60);
+			DataSource d = new DataSource();
+			//d.showTest();
+			d.addTest("oumaima", "kumanan" ,200);
+			//d.deleteTestByDB(212);
+			//d.updateTest("test", "test", 10);
 			
 		}
 	}

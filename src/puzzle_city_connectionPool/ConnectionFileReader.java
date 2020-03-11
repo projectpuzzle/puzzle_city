@@ -9,7 +9,7 @@ import java.util.Properties;
 public final class ConnectionFileReader {
 
 	private String driver;
-	private  String url;
+	private String url;
 	private String user;
 	private String password;
 	private static ConnectionFileReader instance = null;
@@ -23,32 +23,31 @@ public final class ConnectionFileReader {
 
 	}
 
-	public ConnectionFileReader() {Properties p = new Properties();
-	try {
-		FileInputStream fis = new FileInputStream("C:\\Users\\etudiant\\Documents\\workspace-spring-tool-suite-4-4.4.0.RELEASE\\puzzlecity_project\\src\\puzzle_city_connectionPool\\ConnectionFile.xml");
-		p.loadFromXML(fis);
-		/// Enumeration<?> enumeration = p.propertyNames();
+	public ConnectionFileReader() {
+		Properties p = new Properties();
+		try {
+			FileInputStream f = new FileInputStream(
+					"C:\\Users\\etudiant\\Documents\\workspace-spring-tool-suite-4-4.4.0.RELEASE\\puzzlecity_project\\src\\puzzle_city_connectionPool\\ConnectionFile.xml");
+			p.loadFromXML(f);
 
-		this.url = (String) p.get("jdbc.url")+"?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC";
-		this.driver = (String) p.get("jdbc.driver");
-		this.user = (String) p.get("jdbc.user");
-		this.password = (String) p.get("jdbc.password");
+			this.url = (String) p.get("jdbc.url")
+					+ "?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC";
+			this.driver = (String) p.get("jdbc.driver");
+			this.user = (String) p.get("jdbc.user");
+			this.password = (String) p.get("jdbc.password");
 
-		System.out.println(this.url);
-		System.out.println(this.driver);
-		System.out.println(this.user);
-		System.out.println(this.password);
+			System.out.println("url : " + this.url);
+			System.out.println("driver : " + this.driver);
+			System.out.println("user : " + this.user);
+			System.out.println(this.password);
 
-		///// Util mais cest pour parcourir et afficher nous avons nous besoin de
-		///// recuperer des valeurs afin de les attribuer aux attributs de la vlasse,
-		///// pour cela nous utilisons get
+			System.out.println("waiting for the connection to be established");
+		}
 
+		catch (Exception e) {
+			;
+		}
 	}
-
-	catch (Exception e) {
-		;
-	}
-}
 
 	public String getDriver() {
 		return driver;
@@ -58,7 +57,7 @@ public final class ConnectionFileReader {
 		this.driver = driver;
 	}
 
-	public  String getUrl() {
+	public String getUrl() {
 		return url;
 	}
 

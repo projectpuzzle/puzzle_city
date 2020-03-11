@@ -35,8 +35,8 @@ public class DataSource {
 		showTest();
 	}
 
-	public void deleteTestByserver(String Client) {
-		jDBCConnectionPool.deleteTestByserver(Client);
+	public void deleteTestByDB (int DB) {
+		jDBCConnectionPool.deleteTestByDB(DB);
 		showTest();
 	}
 

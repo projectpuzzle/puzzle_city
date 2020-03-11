@@ -12,21 +12,22 @@ import java.util.logging.Logger;
 
 public class JDBCConnectionPool {
 	Collection<Connection> connections = new ArrayList<Connection>();
-    ConnectionFileReader connectionFileReader=new ConnectionFileReader();
+	ConnectionFileReader connectionFileReader = new ConnectionFileReader();
+
 	public void fill(String driver, String url, String user, String password) throws ClassNotFoundException {
-		
-			try {
 
-				Class.forName(connectionFileReader.getDriver());
-				Connection con = DriverManager.getConnection(connectionFileReader.getUrl(), connectionFileReader.getUser(),
-						connectionFileReader.getPassword());
-				connections.add(con);
-				System.out.println("connexion établie");
+		try {
 
-			} catch (SQLException ex) {
-				Logger.getLogger(JDBCConnectionPool.class.getName()).log(Level.SEVERE, null, ex);
-				}
+			Class.forName(connectionFileReader.getDriver());
+			Connection con = DriverManager.getConnection(connectionFileReader.getUrl(), connectionFileReader.getUser(),
+					connectionFileReader.getPassword());
+			connections.add(con);
 			
+
+		} catch (SQLException ex) {
+			Logger.getLogger(JDBCConnectionPool.class.getName()).log(Level.SEVERE, null, ex);
+		}
+
 	}
 
 	public Connection getConnectionByUrl(String url) {
@@ -64,13 +65,14 @@ public class JDBCConnectionPool {
 	}
 
 	public ArrayList<Test> showTest() {
-		
+
 		ArrayList<Test> retour = new ArrayList<Test>();
-		
+
 		try {
-			//Class.forName(connectionFileReader.getDriver());
+	
 			Connection con = DriverManager.getConnection(connectionFileReader.getUrl(), connectionFileReader.getUser(),
 					connectionFileReader.getPassword());
+			System.out.println("Connection established");
 			PreparedStatement pt = con.prepareStatement("select * from test");
 			ResultSet rs = pt.executeQuery();
 			while (rs.next()) {
@@ -81,20 +83,19 @@ public class JDBCConnectionPool {
 			}
 		} catch (SQLException ex) {
 			System.out.println("erreur " + ex.getMessage());
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+
 		}
 		return retour;
 	}
 
-	public void deleteTestByserver(String Client) {
+	public void deleteTestByDB(int DB) {
 		try {
 			Connection con = DriverManager.getConnection(connectionFileReader.getUrl(), connectionFileReader.getUser(),
 					connectionFileReader.getPassword());
-			PreparedStatement pt = con.prepareStatement("delete from test where Client like ?");
-			pt.setString(1, Client);
+			System.out.println("Connection established");
+
+			PreparedStatement pt = con.prepareStatement("delete from test where DB like ?");
+			pt.setInt(1, DB);
 			pt.execute();
 		} catch (SQLException ex) {
 			System.out.println("erreur " + ex.getMessage());
@@ -106,6 +107,8 @@ public class JDBCConnectionPool {
 		try {
 			Connection con = DriverManager.getConnection(connectionFileReader.getUrl(), connectionFileReader.getUser(),
 					connectionFileReader.getPassword());
+			System.out.println("Connection established");
+
 			String req = "insert into Test(client,server,DB) values (?,?,?)";
 			PreparedStatement pstm = con.prepareStatement(req);
 			pstm.setString(1, t.getClient());
@@ -118,10 +121,12 @@ public class JDBCConnectionPool {
 	}
 
 	public void updateTest(String Client, String server, int DB) {
-		try { 
+		try {
 			Connection con = DriverManager.getConnection(connectionFileReader.getUrl(), connectionFileReader.getUser(),
 					connectionFileReader.getPassword());
-			PreparedStatement pstm = con.prepareStatement(" UPDATE Test SET Client= ? , server= ? WHERE DB=? ");
+			System.out.println("Connection established");
+
+			PreparedStatement pstm = con.prepareStatement(" UPDATE Test SET Client = ? , server = ? WHERE DB = ? ");
 			pstm.setString(1, Client);
 			pstm.setString(2, server);
 			pstm.setInt(3, DB);
