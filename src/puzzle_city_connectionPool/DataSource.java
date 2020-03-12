@@ -1,6 +1,7 @@
 package puzzle_city_connectionPool;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 
 public class DataSource {
 	public static JDBCConnectionPool jDBCConnectionPool = new JDBCConnectionPool();
@@ -26,7 +27,13 @@ public class DataSource {
 	}
 
 	public void showTest() {
-		System.out.println(jDBCConnectionPool.showTest());
+		//ArrayList<Test> list =jDBCConnectionPool.showTest();
+		
+		for (Test test : jDBCConnectionPool.showTest()) {
+		System.out.println(test.toString());	
+		}
+
+		//System.out.println(jDBCConnectionPool.showTest());
 	}
 
 	public void addTest(String Client, String server,int DB) {

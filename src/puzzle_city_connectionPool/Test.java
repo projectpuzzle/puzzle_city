@@ -38,7 +38,8 @@ public class Test {
 
 	@Override
 	public String toString() {
-		return "Test [ Client = " + Client + " " + ", Server = " + server + ", Database = " + DB + " ]  \n ";
+		return  " Test [ Client = " + Client + " " + ", Server = " + server + ", Database = " + DB + " ]";
+		
 	}
 
 }

@@ -22,7 +22,6 @@ public class JDBCConnectionPool {
 			Connection con = DriverManager.getConnection(connectionFileReader.getUrl(), connectionFileReader.getUser(),
 					connectionFileReader.getPassword());
 			connections.add(con);
-			
 
 		} catch (SQLException ex) {
 			Logger.getLogger(JDBCConnectionPool.class.getName()).log(Level.SEVERE, null, ex);
@@ -69,7 +68,7 @@ public class JDBCConnectionPool {
 		ArrayList<Test> retour = new ArrayList<Test>();
 
 		try {
-	
+
 			Connection con = DriverManager.getConnection(connectionFileReader.getUrl(), connectionFileReader.getUser(),
 					connectionFileReader.getPassword());
 			System.out.println("Connection established");
@@ -82,7 +81,7 @@ public class JDBCConnectionPool {
 				retour.add(new Test(Client, server, DB));
 			}
 		} catch (SQLException ex) {
-			System.out.println("erreur " + ex.getMessage());
+			System.out.println("error " + ex.getMessage());
 
 		}
 		return retour;
@@ -98,7 +97,7 @@ public class JDBCConnectionPool {
 			pt.setInt(1, DB);
 			pt.execute();
 		} catch (SQLException ex) {
-			System.out.println("erreur " + ex.getMessage());
+			System.out.println("error " + ex.getMessage());
 		}
 
 	}
@@ -132,7 +131,7 @@ public class JDBCConnectionPool {
 			pstm.setInt(3, DB);
 			pstm.executeUpdate();
 		} catch (SQLException ex) {
-			System.out.println("erreur " + ex.getMessage());
+			System.out.println("error " + ex.getMessage());
 		}
 	}
 }

@@ -3,6 +3,8 @@ package puzzle_city_connectionPool;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 
@@ -20,15 +22,15 @@ public final class ConnectionFileReader {
 		this.url = url;
 		this.user = user;
 		this.password = password;
-
 	}
 
 	public ConnectionFileReader() {
 		Properties p = new Properties();
+
 		try {
-			FileInputStream f = new FileInputStream(
-					"C:\\Users\\etudiant\\Documents\\workspace-spring-tool-suite-4-4.4.0.RELEASE\\puzzlecity_project\\src\\puzzle_city_connectionPool\\ConnectionFile.xml");
-			p.loadFromXML(f);
+			FileInputStream in = new FileInputStream(
+					"puzzlecity_project\\src\\puzzle_city_connectionPool\\ConnectionFile.xml");
+			p.loadFromXML(in);
 
 			this.url = (String) p.get("jdbc.url")
 					+ "?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC";
