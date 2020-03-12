@@ -28,9 +28,8 @@ public final class ConnectionFileReader {
 		Properties p = new Properties();
 
 		try {
-			FileInputStream in = new FileInputStream(
-					"puzzlecity_project\\src\\puzzle_city_connectionPool\\ConnectionFile.xml");
-			p.loadFromXML(in);
+			ConnectionFileReader.class.getResourceAsStream("ConnectionFile.xml");
+			p.loadFromXML(ConnectionFileReader.class.getResourceAsStream("ConnectionFile.xml"));
 
 			this.url = (String) p.get("jdbc.url")
 					+ "?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC";
