@@ -31,8 +31,8 @@ public final class ConnectionFileReader {
 			ConnectionFileReader.class.getResourceAsStream("ConnectionFile.xml");
 			p.loadFromXML(ConnectionFileReader.class.getResourceAsStream("ConnectionFile.xml"));
 
-			this.url = (String) p.get("jdbc.url")
-					+ "?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC";
+			this.url = (String) p.get("jdbc.url");
+					//+ "?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC";
 			this.driver = (String) p.get("jdbc.driver");
 			this.user = (String) p.get("jdbc.user");
 			this.password = (String) p.get("jdbc.password");
@@ -40,7 +40,7 @@ public final class ConnectionFileReader {
 			System.out.println("url : " + this.url);
 			System.out.println("driver : " + this.driver);
 			System.out.println("user : " + this.user);
-			System.out.println(this.password);
+			System.out.println("password : " + this.password);
 
 			System.out.println("waiting for the connection to be established");
 		}

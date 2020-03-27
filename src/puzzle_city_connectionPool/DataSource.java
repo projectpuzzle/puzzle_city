@@ -27,28 +27,28 @@ public class DataSource {
 	}
 
 	public void showTest() {
-		//ArrayList<Test> list =jDBCConnectionPool.showTest();
-		
+		// ArrayList<Test> list =jDBCConnectionPool.showTest();
+
 		for (Test test : jDBCConnectionPool.showTest()) {
-		System.out.println(test.toString());	
+			System.out.println(test.toString());
 		}
 
-		//System.out.println(jDBCConnectionPool.showTest());
+		// System.out.println(jDBCConnectionPool.showTest());
 	}
 
-	public void addTest(String Client, String server,int DB) {
+	public void addTest(String Client, String server, int DB) throws ClassNotFoundException {
 		Test t = new Test(Client, server, DB);
 		jDBCConnectionPool.addTest(t);
 		showTest();
 	}
 
-	public void deleteTestByDB (int DB) {
+	public void deleteTestByDB(int DB) {
 		jDBCConnectionPool.deleteTestByDB(DB);
 		showTest();
 	}
 
-	public void updateTest(String Client, String server,int DB) {
-		jDBCConnectionPool.updateTest(Client,server,DB);
+	public void updateTest(String Client, String server, int DB) {
+		jDBCConnectionPool.updateTest(Client, server, DB);
 		showTest();
 	}
 }

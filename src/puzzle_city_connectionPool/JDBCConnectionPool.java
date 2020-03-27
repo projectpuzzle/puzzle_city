@@ -72,7 +72,7 @@ public class JDBCConnectionPool {
 			Connection con = DriverManager.getConnection(connectionFileReader.getUrl(), connectionFileReader.getUser(),
 					connectionFileReader.getPassword());
 			System.out.println("Connection established");
-			PreparedStatement pt = con.prepareStatement("select * from test");
+			PreparedStatement pt = con.prepareStatement("select * from Test");
 			ResultSet rs = pt.executeQuery();
 			while (rs.next()) {
 				int DB = rs.getInt(3);
@@ -93,7 +93,7 @@ public class JDBCConnectionPool {
 					connectionFileReader.getPassword());
 			System.out.println("Connection established");
 
-			PreparedStatement pt = con.prepareStatement("delete from test where DB like ?");
+			PreparedStatement pt = con.prepareStatement("delete from Test where DB like ?");
 			pt.setInt(1, DB);
 			pt.execute();
 		} catch (SQLException ex) {
@@ -102,14 +102,16 @@ public class JDBCConnectionPool {
 
 	}
 
-	public void addTest(Test t) {
+	public void addTest(Test t) throws ClassNotFoundException {
 		try {
+
+
 			Connection con = DriverManager.getConnection(connectionFileReader.getUrl(), connectionFileReader.getUser(),
 					connectionFileReader.getPassword());
 			System.out.println("Connection established");
 
-			String req = "insert into Test(client,server,DB) values (?,?,?)";
-			PreparedStatement pstm = con.prepareStatement(req);
+		
+			PreparedStatement pstm = con.prepareStatement( "insert into Test(client,server,DB) values (?,?,?)");
 			pstm.setString(1, t.getClient());
 			pstm.setString(2, t.getServer());
 			pstm.setInt(3, t.getDB());
