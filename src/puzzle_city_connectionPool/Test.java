@@ -5,6 +5,11 @@ public class Test {
 	private String Client;
 	private String server;
 
+	public Test() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public Test(String server, String client, int dB) {
 		super();
 		this.DB = dB;
@@ -23,6 +28,8 @@ public class Test {
 	public String getClient() {
 		return Client;
 	}
+	
+	
 
 	public void setClient(String client) {
 		Client = client;

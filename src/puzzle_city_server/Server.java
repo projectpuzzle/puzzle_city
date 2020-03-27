@@ -1,7 +1,14 @@
 package puzzle_city_server;
 
-import java.net.*;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+import org.codehaus.jackson.map.ObjectMapper;
+
+import puzzle_city_connectionPool.Test;
 
 public class Server {
 	// initialize socket and input stream
@@ -28,9 +35,13 @@ public class Server {
 
 			// reads message from client until "Over" is sent
 			while (!line.equals("Over")) {
+		        ObjectMapper mapper = new ObjectMapper();
+
 				try {
 					line = in.readUTF();
-					System.out.println(line);
+		             Test test = mapper.readValue(line, Test.class);
+           
+					System.out.println(test.toString());
 
 				} catch (IOException i) {
 					System.out.println(i);
