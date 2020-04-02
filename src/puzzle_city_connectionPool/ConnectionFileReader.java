@@ -1,11 +1,5 @@
 package puzzle_city_connectionPool;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 
 public final class ConnectionFileReader {
