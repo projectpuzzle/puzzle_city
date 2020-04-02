@@ -164,10 +164,10 @@ public class Client {
 //		int selection;
 //		Scanner input = new Scanner(System.in);
 //
-//		/***************************************************/
-//
-//		System.out.println("Choose from these choices");
-//		System.out.println("***************************************************");
+//	    System.out.println("---------------------------------------------------");
+
+ //     System.out.println("            Choose from these choices");
+ //     System.out.println("***************************************************");
 //		System.out.println("1 - Add  Test ");
 //		System.out.println("2 - Update Test");
 //		System.out.println("3 - Delete Test");

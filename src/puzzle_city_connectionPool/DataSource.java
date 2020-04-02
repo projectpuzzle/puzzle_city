@@ -26,7 +26,7 @@ public class DataSource {
 		jDBCConnectionPool.closeAllConnections();
 	}
 
-	public void showTest() {
+	public  void showTest() {
 		// ArrayList<Test> list =jDBCConnectionPool.showTest();
 
 		for (Test test : jDBCConnectionPool.showTest()) {
@@ -36,7 +36,7 @@ public class DataSource {
 		// System.out.println(jDBCConnectionPool.showTest());
 	}
 
-	public ArrayList<Test> findAll() {
+	public static ArrayList<Test> findAll() {
 		// ArrayList<Test> list =jDBCConnectionPool.showTest();
 		ArrayList<Test> list = new ArrayList<>();
 		for (Test test : jDBCConnectionPool.showTest()) {
@@ -46,18 +46,18 @@ public class DataSource {
 		// System.out.println(jDBCConnectionPool.showTest());
 	}
 
-	public void addTest(String Client, String server, int DB) throws ClassNotFoundException {
+	public static void addTest(String Client, String server, int DB) throws ClassNotFoundException {
 		Test t = new Test(Client, server, DB);
 		jDBCConnectionPool.addTest(t);
 		//showTest();
 	}
 
-	public void deleteTestByDB(int DB) {
+	public static void deleteTestByDB(int DB) {
 		jDBCConnectionPool.deleteTestByDB(DB);
 		//showTest();
 	}
 
-	public void updateTest(String Client, String server, int DB) {
+	public static void updateTest(String Client, String server, int DB) {
 		jDBCConnectionPool.updateTest(Client, server, DB);
 		//showTest();
 	}
