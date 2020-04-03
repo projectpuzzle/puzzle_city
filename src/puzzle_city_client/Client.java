@@ -1,8 +1,10 @@
 package puzzle_city_client;
-import puzzle_city_connectionPool.*;
+
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 // A Java program for a Client 
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -10,12 +12,16 @@ import java.util.Scanner;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import puzzle_city_connectionPool.CrudEnum;
+import puzzle_city_connectionPool.Test;
+
 public class Client {
 	// initialize socket and input output streams
 	private Socket socket = null;
 	private DataInputStream input = null;
 	private DataOutputStream out = null;
-	private Test testToPersist =new Test();
+	private Test testToPersist = new Test();
+
 
 	// constructor to put ip address and port
 	public Client(String address, int port) {
@@ -34,18 +40,14 @@ public class Client {
 		} catch (IOException i) {
 			System.out.println(i);
 		}
-
-		// string to read message from input
-
-		// keep reading until "Over" is input
-		
+		showClientId();
 		while (this.testToPersist != null) {
 
 			try {
 				testToPersist = showMenu();
-	
+
 				String jsonObject = getJsonFromObject(testToPersist);
-				
+
 				out.writeUTF(jsonObject);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -72,23 +74,25 @@ public class Client {
 		}
 	}
 
-//
-//
-//	
+	private void showClientId() {
+		try {
+			System.out.println("Please enter id of the client ");
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			Scanner scanner = new Scanner(System.in);
+			String line = scanner.nextLine();
+			out.writeUTF(line);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
 	String getJsonFromObject(Test test) {
-		// Creating object of Organisation
-
-		// Insert the data into the object
-
 		// Creating Object of ObjectMapper define in Jakson Api
 		ObjectMapper Obj = new ObjectMapper();
-
 		try {
-
-			// get Oraganisation object as a json string
 			String jsonStr = Obj.writeValueAsString(test);
-
-			// Displaying JSON String
 			return jsonStr;
 		}
 
@@ -112,7 +116,7 @@ public class Client {
 		/*********************************************************/
 		do {
 			String selection;
-		//	userChoice = menu();
+			userChoice = menu();
 			String jsonObject;
 			int db;
 			String client;
@@ -140,41 +144,43 @@ public class Client {
 
 			case 3:
 				System.out.println("Press in the console : DB");
+
 				selection = input.nextLine();
 				db = Integer.valueOf(selection.split(",")[0]);
 				return new Test(db, CrudEnum.DELETE);
 
 			case 4:
-				
+
 				return new Test(CrudEnum.FIND_ALL);
 
 			}
 		} while (userChoice != 5);
 		return null;
 	}
+
+	public int menu() {
+
+		int selection;
+		Scanner input = new Scanner(System.in);
+
+		/***************************************************/
+		System.out.println("---------------------------------------------------");
+
+		System.out.println("            Choose from these choices");
+		System.out.println("***************************************************");
+		System.out.println(" Press 1 to Add a TEST ");
+		System.out.println(" Press 2 to Update a TEST ");
+		System.out.println(" Press 3 to Delete a TEST ");
+		System.out.println(" Press 4 to Show all TEST ");
+		System.out.println(" Press 5 to quit ");
+		System.out.println("***************************************************");
+		selection = input.nextInt();
+		return selection;
+	}
+
+	public static void main(String args[]) {
+
+		Client client = new Client("172.31.249.155", 3999);
+
+	}
 }
-	//public static void main(String args[]) {
-
-//		Client client = new Client("127.0.0.1", 4000);
-//
-//	}
-//
-//	public int menu() {
-//
-//		int selection;
-//		Scanner input = new Scanner(System.in);
-//
-//	    System.out.println("---------------------------------------------------");
-
- //     System.out.println("            Choose from these choices");
- //     System.out.println("***************************************************");
-//		System.out.println("1 - Add  Test ");
-//		System.out.println("2 - Update Test");
-//		System.out.println("3 - Delete Test");
-//		System.out.println("4 - Show all Test ");
-//		System.out.println("5 - Quit");
-//		System.out.println("***************************************************");
-//		selection = input.nextInt();
-//		return selection;
-//	}
-//}

@@ -24,20 +24,21 @@ public class ClientHandler implements Runnable {
 		// takes input from the client socket
 		String line = "";
 
-	
-
 		try {
+
 			in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+			System.out.println("  New client connected  in host   :    " + socket.getInetAddress().getHostAddress()
+					+ "     Id Client   :   " + in.readUTF());
 			while (!line.equals("0")) {
 				ObjectMapper mapper = new ObjectMapper();
-// reponse du serveur pour le client format json
+             // reponse du serveur pour le client format json
 				line = in.readUTF();
 				Test test = mapper.readValue(line, Test.class);
 				String response = CrudMethods.crud(test);
 				System.out.println(test.toString());
 				DataOutputStream oos = new DataOutputStream(socket.getOutputStream());
 				// write object to Socket
-		
+
 				oos.writeUTF(response);
 
 			}
@@ -51,4 +52,3 @@ public class ClientHandler implements Runnable {
 
 	}
 }
-

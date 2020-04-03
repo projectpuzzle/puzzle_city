@@ -30,7 +30,7 @@ public class Server extends Thread {
 			while (true) {
 				socket = server.accept();
 
-				System.out.println("New client connected " + socket.getInetAddress().getHostAddress());
+				
 				ClientHandler clientSock = new ClientHandler(socket);
 				new Thread(clientSock).start();
 			}

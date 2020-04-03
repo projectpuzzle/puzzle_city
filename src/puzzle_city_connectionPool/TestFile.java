@@ -14,7 +14,7 @@ public class TestFile {
 		
 		
 		
-		Server server = new Server(4000);
+		Server server = new Server(3999);
 	
 	
 	
