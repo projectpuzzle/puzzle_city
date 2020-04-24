@@ -1,6 +1,6 @@
 package puzzle_city_connectionPool;
 
 public enum CrudEnum {
-	CREATE,UPDATE,DELETE,READ;
+	SAVE,UPDATE,DELETE,FIND_ALL;
 
 }

@@ -131,7 +131,7 @@ public class Client {
 				db = Integer.valueOf(selection.split(",")[0]);
 				client = selection.split(",")[1];
 				server = selection.split(",")[2];
-				return new Test(db, client, server, CrudEnum.CREATE);
+				return new Test(db, client, server, CrudEnum.SAVE);
 
 			case 2:
 				System.out.println("Press in the console : DB,client,server");
@@ -151,7 +151,7 @@ public class Client {
 
 			case 4:
 
-				return new Test(CrudEnum.READ);
+				return new Test(CrudEnum.FIND_ALL);
 
 			}
 		} while (userChoice != 5);
