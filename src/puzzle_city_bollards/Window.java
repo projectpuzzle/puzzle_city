@@ -4,7 +4,6 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-
 public class Window extends JFrame {
 
 	public Window(){
