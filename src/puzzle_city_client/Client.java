@@ -10,62 +10,56 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import puzzle_city_connectionPool.CrudEnum;
-import puzzle_city_connectionPool.Test;
+import puzzle_city_client_model.ApiEnum;
+import puzzle_city_client_model.SendPackage;
+import puzzle_city_ui.CityList;
 
-public class Client {
+public class Client extends Thread {
+	// Thread for socket
+    private Thread t;
+    private String threadName ="Connect Socket";
 	// initialize socket and input output streams
 	private Socket socket = null;
 	private DataInputStream input = null;
 	private DataOutputStream out = null;
-	private Test testToPersist = new Test();
-
-
+	public SendPackage sendP =null;
+	public JSONObject responseData = new JSONObject();
+	private String UserName = "Admin";
 	// constructor to put ip address and port
 	public Client(String address, int port) {
-		// establish a connection
 		try {
 			socket = new Socket(address, port);
-			System.out.println("Connected");
-
-			// takes input from terminal
-			input = new DataInputStream(System.in);
-
-			// sends output to the socket
-			out = new DataOutputStream(socket.getOutputStream());
 		} catch (UnknownHostException u) {
 			System.out.println(u);
 		} catch (IOException i) {
 			System.out.println(i);
 		}
-		showClientId();
-		while (this.testToPersist != null) {
+		
+				
+	}
 
-			try {
-				testToPersist = showMenu();
-
-				String jsonObject = getJsonFromObject(testToPersist);
-
-				out.writeUTF(jsonObject);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			// safina chof lmok
-			try {
-				DataInputStream oos = new DataInputStream(socket.getInputStream());
-				String msg = oos.readUTF();
-				System.out.println(msg);
-			} catch (IOException i) {
-				System.out.println(i);
-			}
+	private void showClientId() {
+		try {
+			System.out.println("Please enter id of the client ");
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//			Scanner scanner = new Scanner(System.in);
+//			String line = scanner.nextLine();
+			out.writeUTF("UserName");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
+	}
+	
+	private void closeConnection() {
 		// close the connection
 		try {
+			out.writeUTF("0");
+			System.out.println("Close socket");
 			input.close();
 			out.close();
 			socket.close();
@@ -73,114 +67,93 @@ public class Client {
 			System.out.println(i);
 		}
 	}
-
-	private void showClientId() {
+	
+	public SendPackage getSendP() {
+		return sendP;
+	}
+	public void setSendP(SendPackage sendPackage) {
+		sendP = sendPackage;
+	}
+	public JSONObject getResponseData() {
+		return responseData;
+	}
+	public void setResponseData(JSONObject resData) {
+		responseData = resData;
+	}
+	
+	
+	@Override
+	public void run() {
+		// establish a connection
 		try {
-			System.out.println("Please enter id of the client ");
-			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			Scanner scanner = new Scanner(System.in);
-			String line = scanner.nextLine();
-			out.writeUTF(line);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Connected");
+			// takes input from terminal
+			input = new DataInputStream(System.in);
+			// sends output to the socket
+			out = new DataOutputStream(socket.getOutputStream());
+
+//				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//				out.writeUTF("UserName");
+		} catch (UnknownHostException u) {
+			System.out.println(u);
+		} catch (IOException i) {
+			System.out.println(i);
 		}
-
-	}
-
-	String getJsonFromObject(Test test) {
-		// Creating Object of ObjectMapper define in Jakson Api
-		ObjectMapper Obj = new ObjectMapper();
-		try {
-			String jsonStr = Obj.writeValueAsString(test);
-			return jsonStr;
-		}
-
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public Test getTestToPersist() {
-		return testToPersist;
-	}
-
-	public void setTestToPersist(Test testToPersist) {
-		this.testToPersist = testToPersist;
-	}
-
-	public Test showMenu() {
-		int userChoice = 0;
-
-		/*********************************************************/
-		do {
-			String selection;
-			userChoice = menu();
-			String jsonObject;
-			int db;
-			String client;
-			String server;
-
-			Scanner input = new Scanner(System.in);
-			switch (userChoice) {
-			case 1:
-				System.out.println("Press in the console : DB,client,server");
-
-				selection = input.nextLine();
-				db = Integer.valueOf(selection.split(",")[0]);
-				client = selection.split(",")[1];
-				server = selection.split(",")[2];
-				return new Test(db, client, server, CrudEnum.SAVE);
-
-			case 2:
-				System.out.println("Press in the console : DB,client,server");
-
-				selection = input.nextLine();
-				db = Integer.valueOf(selection.split(",")[0]);
-				client = selection.split(",")[1];
-				server = selection.split(",")[2];
-				return new Test(db, client, server, CrudEnum.UPDATE);
-
-			case 3:
-				System.out.println("Press in the console : DB");
-
-				selection = input.nextLine();
-				db = Integer.valueOf(selection.split(",")[0]);
-				return new Test(db, CrudEnum.DELETE);
-
-			case 4:
-
-				return new Test(CrudEnum.FIND_ALL);
-
+		
+		showClientId();
+		//sendP.setApi(ApiEnum.CITY_FIND_ALL);
+		Boolean isSend = false;
+		int iz = 0;
+		while (!isSend ) {
+		// if have new request from ui
+			//System.out.println("SendPackage:"+ sendP);
+			if(sendP != null ) {
+				System.out.println("SendPackage:"+ sendP.toString());
+				try {
+					//get all city			
+					out.writeUTF(sendP.toString());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	
+				// safina chof lmok
+				try {
+					//System.out.println("Cho tra ve");
+					DataInputStream oos = new DataInputStream(socket.getInputStream());
+					String msg = oos.readUTF();
+					try {
+						JSONObject resd = new JSONObject(msg) ;
+						responseData = resd;
+						//System.out.println(resd);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	
+					sendP = null;
+				//	isSend = true;
+				
+				} catch (IOException i) {
+					System.out.println(i);
+				}	
 			}
-		} while (userChoice != 5);
-		return null;
-	}
-
-	public int menu() {
-
-		int selection;
-		Scanner input = new Scanner(System.in);
-
-		/***************************************************/
-		System.out.println("---------------------------------------------------");
-
-		System.out.println("            Choose from these choices");
-		System.out.println("***************************************************");
-		System.out.println(" Press 1 to Add a TEST ");
-		System.out.println(" Press 2 to Update a TEST ");
-		System.out.println(" Press 3 to Delete a TEST ");
-		System.out.println(" Press 4 to Show all TEST ");
-		System.out.println(" Press 5 to quit ");
-		System.out.println("***************************************************");
-		selection = input.nextInt();
-		return selection;
-	}
-
-	public static void main(String args[]) {
-
-		Client client = new Client("172.31.249.155", 3999);
-
-	}
+			else {
+				 try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			}
+		}	    
+	 }
+	 
+    public void start() {
+        System.out.println("Starting " + threadName);
+        if (t == null) {
+            t = new Thread(this, threadName);
+            t.start();
+        }
+    }
 }

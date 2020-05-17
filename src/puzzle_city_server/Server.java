@@ -6,31 +6,29 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import puzzle_city_commons.ClientHandler;
-import puzzle_city_connectionPool.DataSource;
+import puzzle_city_commons.Router;
 
+@SuppressWarnings("unused")
 public class Server extends Thread {
 
 	// initialize socket and input stream
 	private Socket socket = null;
 	private ServerSocket server = null;
 
-	DataSource dataSource;
 
 	// constructor with port
 	public Server(int port) {
 
 		// starts server and waits for a connection
 		try {
-			dataSource = new DataSource();
 			server = new ServerSocket(port);
 			server.setReuseAddress(true);
 			System.out.println("Server started on port " + port);
 
 			System.out.println("Waiting for a client ...");
+			
 			while (true) {
-				socket = server.accept();
-
-				
+				socket = server.accept();				
 				ClientHandler clientSock = new ClientHandler(socket);
 				new Thread(clientSock).start();
 			}
@@ -46,5 +44,9 @@ public class Server extends Thread {
 			}
 		}
 	}
-
+	/*public static void main(String[] args) {
+		System.out.println("Hello from server"); 
+				new Server(4000);
 	}
+*/
+}
