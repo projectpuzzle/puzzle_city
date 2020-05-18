@@ -37,7 +37,6 @@ public class CityDetail {
 	/**
 	 * Launch the application.
 	 */
-
 	/**
 	 * Create the application.
 	 */
@@ -77,6 +76,10 @@ public class CityDetail {
 		JButton btnMenuTramwayStation = new JButton("Tramway Station");
 		btnMenuTramwayStation.setBounds(10, 132, 166, 23);
 		panel.add(btnMenuTramwayStation);
+		
+		JButton btnMenuBollards = new JButton("Bollards");
+		btnMenuBollards.setBounds(10, 166, 166, 23);
+		panel.add(btnMenuBollards);
 		
 		JPanel panel_cityinfo = new JPanel();
 		panel_cityinfo.setBounds(186, 64, 468, 364);

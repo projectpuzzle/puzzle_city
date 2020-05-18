@@ -66,7 +66,7 @@ public class Dashboard {
 		panel.setBounds(10, 11, 664, 439);
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
-		
+
 		JButton btnMenuDashboard = new JButton("Dashboard");
 		btnMenuDashboard.setForeground(Color.WHITE);
 		btnMenuDashboard.setBackground(Color.DARK_GRAY);
@@ -89,6 +89,10 @@ public class Dashboard {
 		JButton btnMenuTramwayStation = new JButton("Tramway Station");
 		btnMenuTramwayStation.setBounds(10, 132, 173, 23);
 		panel.add(btnMenuTramwayStation);
+		
+		JButton btnMenuBollards = new JButton("Bollards");
+		btnMenuBollards.setBounds(10, 166, 173, 23);
+		panel.add(btnMenuBollards);
 		
 		JPanel panel_dashboard = new JPanel();
 		panel_dashboard.setBounds(207, 64, 447, 364);
