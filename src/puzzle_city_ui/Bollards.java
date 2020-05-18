@@ -88,7 +88,6 @@ public class Bollards {
 			}
 		});
 
-		// tao scrollpane roi cho table chui vao thi table thi tieu de moi hien thi
         JScrollPane jsp = new JScrollPane(tblCity);
         jsp.setBounds(20, 49, 593, 278);
 		panel_cityinfo.add(jsp);
@@ -99,6 +98,7 @@ public class Bollards {
 				CityAddNew ctAdd =	new CityAddNew(client);
 				ctAdd.frame.setVisible(true);
 				frame.dispose();
+
 			}
 		});
 		btnCreateButton.setBackground(Color.WHITE);
