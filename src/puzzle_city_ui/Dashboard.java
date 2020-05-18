@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 import puzzle_city_client.Client;
+import puzzle_city_ui.SensorAirList;
 
 import java.awt.Font;
 import java.awt.event.ActionListener;
@@ -39,11 +40,16 @@ public class Dashboard {
 
 	/**
 	 * Create the application.
+	 *@wbp.parser.constructor
 	 */
 	public Dashboard(Client socket,int cityID) {
 		cID = cityID;
 		client = socket;
 		initialize();
+	}
+
+	public Dashboard() {
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -107,13 +113,27 @@ public class Dashboard {
 		lblNewLabel.setBounds(214, 11, 197, 27);
 		panel.add(lblNewLabel);
 		
-		JButton btnNewButton = new JButton("Air Sensor ");
-		btnNewButton.addActionListener(new ActionListener() {
+		JButton btnAirQualitySensor_1 = new JButton("Air quality sensor");
+		btnAirQualitySensor_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				SensorAirList sensorAirList  = new SensorAirList(client);
+				sensorAirList.frame.setVisible(true);
+				frame.dispose();
+			
 			}
 		});
-		btnNewButton.setBounds(10, 168, 173, 25);
-		panel.add(btnNewButton);
-	}
+		btnAirQualitySensor_1.setBounds(10, 172, 173, 23);
+		panel.add(btnAirQualitySensor_1);
+		
+//		JButton btnAirQualitySensor = new JButton("Air quality sensor");
+//		btnAirQualitySensor.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//
+//				SensorAirList sensorAirList  = new SensorAirList(client);
+//				sensorAirList.frame.setVisible(true);
+//				frame.dispose();
+//			
+//		}}
+//				);
+}
 }
