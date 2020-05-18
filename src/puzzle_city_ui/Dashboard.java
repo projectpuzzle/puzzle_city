@@ -84,6 +84,10 @@ public class Dashboard {
 		btnMenuTramwayStation.setBounds(10, 132, 173, 23);
 		panel.add(btnMenuTramwayStation);
 		
+		JButton btnMenuBollards = new JButton("Bollards");
+		btnMenuBollards.setBounds(10, 166, 173, 23);
+		panel.add(btnMenuBollards);
+		
 		JPanel panel_dashboard = new JPanel();
 		panel_dashboard.setBounds(207, 64, 447, 364);
 		panel.add(panel_dashboard);
