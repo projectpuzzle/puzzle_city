@@ -37,7 +37,6 @@ public class CityDetail {
 	/**
 	 * Launch the application.
 	 */
-
 	/**
 	 * Create the application.
 	 */

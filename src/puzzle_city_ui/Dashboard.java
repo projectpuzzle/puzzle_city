@@ -60,7 +60,7 @@ public class Dashboard {
 		panel.setBounds(10, 11, 664, 439);
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
-		
+
 		JButton btnMenuDashboard = new JButton("Dashboard");
 		btnMenuDashboard.setForeground(Color.WHITE);
 		btnMenuDashboard.setBackground(Color.DARK_GRAY);
