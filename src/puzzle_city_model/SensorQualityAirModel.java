@@ -5,7 +5,6 @@ public class SensorQualityAirModel {
 	private int id;
 	private String address;
 
-
 	public SensorQualityAirModel() {
 		super();
 	}
@@ -14,7 +13,7 @@ public class SensorQualityAirModel {
 		super();
 		this.id = id;
 		this.address = address;
-	
+
 	}
 
 	public int getId() {
@@ -32,6 +31,5 @@ public class SensorQualityAirModel {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-
 
 }

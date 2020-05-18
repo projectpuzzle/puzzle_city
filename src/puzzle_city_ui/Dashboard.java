@@ -20,8 +20,8 @@ public class Dashboard {
 
 	public static JFrame frame;
 
-	public 	Client client ;
-	private int cID ;
+	public Client client;
+	private int cID;
 	/**
 	 * Launch the application.
 	 */
@@ -40,9 +40,10 @@ public class Dashboard {
 
 	/**
 	 * Create the application.
-	 *@wbp.parser.constructor
+	 * 
+	 * @wbp.parser.constructor
 	 */
-	public Dashboard(Client socket,int cityID) {
+	public Dashboard(Client socket, int cityID) {
 		cID = cityID;
 		client = socket;
 		initialize();
@@ -60,7 +61,7 @@ public class Dashboard {
 		frame.setBounds(100, 100, 700, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
+
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.WHITE);
 		panel.setBounds(10, 11, 664, 439);
@@ -73,62 +74,62 @@ public class Dashboard {
 		btnMenuDashboard.setFont(new Font("Tahoma", Font.BOLD, 11));
 		btnMenuDashboard.setBounds(10, 64, 173, 23);
 		panel.add(btnMenuDashboard);
-		
+
 		JButton btnMenuCityInfomation = new JButton("City Infomation");
 		btnMenuCityInfomation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				CityDetail ctDetail =	new CityDetail(client, cID);
+				CityDetail ctDetail = new CityDetail(client, cID);
 				ctDetail.frame.setVisible(true);
 				frame.dispose();
 			}
 		});
 		btnMenuCityInfomation.setBounds(10, 98, 173, 23);
 		panel.add(btnMenuCityInfomation);
-		
+
 		JButton btnMenuTramwayStation = new JButton("Tramway Station");
 		btnMenuTramwayStation.setBounds(10, 132, 173, 23);
 		panel.add(btnMenuTramwayStation);
-		
+
 		JButton btnMenuBollards = new JButton("Bollards");
-		btnMenuBollards.setBounds(10, 166, 173, 23);
+		btnMenuBollards.setBounds(10, 204, 173, 23);
 		panel.add(btnMenuBollards);
-		
+
 		JPanel panel_dashboard = new JPanel();
 		panel_dashboard.setBounds(207, 64, 447, 364);
 		panel.add(panel_dashboard);
 		panel_dashboard.setLayout(null);
-		
+
 		JButton btnBackToList = new JButton("Back To List City");
 		btnBackToList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				CityList windowCityList  = new CityList(client);
+				CityList windowCityList = new CityList(client);
 				windowCityList.frame.setVisible(true);
 				frame.dispose();
 			}
 		});
 		btnBackToList.setBounds(241, 11, 196, 23);
 		panel_dashboard.add(btnBackToList);
-		
+
 		JLabel lblNewLabel = new JLabel("City Manager System");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setBounds(214, 11, 197, 27);
 		panel.add(lblNewLabel);
-		
+
 		JButton btnAirQualitySensor_1 = new JButton("Air quality sensor");
 		btnAirQualitySensor_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SensorAirList sensorAirList  = new SensorAirList(client);
+				SensorAirList sensorAirList = new SensorAirList(client);
 				sensorAirList.frame.setVisible(true);
 				frame.dispose();
-			
+
 			}
 		});
 		btnAirQualitySensor_1.setBounds(10, 172, 173, 23);
 		panel.add(btnAirQualitySensor_1);
-		
+
 //		JButton btnAirQualitySensor = new JButton("Air quality sensor");
 //		btnAirQualitySensor.addActionListener(new ActionListener() {
 //			public void actionPerformed(ActionEvent e) {
@@ -139,5 +140,5 @@ public class Dashboard {
 //			
 //		}}
 //				);
-}
+	}
 }

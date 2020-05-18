@@ -22,7 +22,6 @@ import puzzle_city_client_model.SendPackage;
 
 public class ConfigSensorAir {
 
-
 	public JFrame frame;
 	private JTextField txtAddress;
 	private int ID;
@@ -33,7 +32,8 @@ public class ConfigSensorAir {
 //	private JTextField txtMapZoom;
 	private JLabel lbtMess;
 
-	public 	Client client ;//= new Client("127.0.0.1", 4000);
+	public Client client;// = new Client("127.0.0.1", 4000);
+
 	/**
 	 * Launch the application.
 	 */
@@ -54,28 +54,28 @@ public class ConfigSensorAir {
 		frame.setBounds(100, 100, 700, 499);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
+
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
 		panel.setBackground(Color.WHITE);
 		panel.setBounds(10, 11, 664, 439);
 		frame.getContentPane().add(panel);
-		
+
 		JPanel panel_cityinfo = new JPanel();
 		panel_cityinfo.setBounds(10, 64, 644, 364);
 		panel.add(panel_cityinfo);
 		panel_cityinfo.setLayout(null);
-		
+
 		JLabel lblNewLabel_1 = new JLabel("Sensor Address :");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNewLabel_1.setBounds(10, 11, 179, 14);
 		panel_cityinfo.add(lblNewLabel_1);
-		
+
 		txtAddress = new JTextField();
 		txtAddress.setBounds(212, 11, 315, 20);
 		panel_cityinfo.add(txtAddress);
 		txtAddress.setColumns(10);
-		
+
 //		JLabel lblNewLabel_1_1 = new JLabel("Latitude");
 //		lblNewLabel_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
 //		lblNewLabel_1_1.setBounds(10, 39, 179, 14);
@@ -125,7 +125,7 @@ public class ConfigSensorAir {
 //		lbtMapZoom.setHorizontalAlignment(SwingConstants.RIGHT);
 //		lbtMapZoom.setBounds(10, 154, 179, 14);
 //		panel_cityinfo.add(lbtMapZoom);
-		
+
 		JButton btnCreate = new JButton("Update");
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -134,7 +134,7 @@ public class ConfigSensorAir {
 		});
 		btnCreate.setBounds(212, 185, 89, 23);
 		panel_cityinfo.add(btnCreate);
-		
+
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -145,11 +145,11 @@ public class ConfigSensorAir {
 		});
 		btnCancel.setBounds(314, 185, 89, 23);
 		panel_cityinfo.add(btnCancel);
-		
+
 		lbtMess = new JLabel("");
 		lbtMess.setBounds(212, 219, 315, 47);
 		panel_cityinfo.add(lbtMess);
-		
+
 		JLabel lblNewLabel = new JLabel("Configure Air Quality Sensor");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
@@ -157,34 +157,34 @@ public class ConfigSensorAir {
 		panel.add(lblNewLabel);
 	}
 
-	
 	private void getSensorInfo() {
 		try {
-			client.setResponseData(null);		
+			client.setResponseData(null);
 			JSONObject bodyItem = new JSONObject();
-			bodyItem.put("ID", "" +ID);
-			
+			bodyItem.put("ID", "" + ID);
+
 			SendPackage sendPa = new SendPackage();
-			sendPa.setApi(ApiEnum.SENSORAIR_FIND_ONE);		
+			sendPa.setApi(ApiEnum.SENSORAIR_FIND_ONE);
 			sendPa.setBody(bodyItem);
 			client.setSendP(sendPa);
 
 			JSONObject res = null;
-			while(res == null) {
+			while (res == null) {
 				res = client.getResponseData();
-				System.out.println("wait res:"+res);
-				if(res!= null) {
-					// if success true - get data bind to table 
+				System.out.println("wait res:" + res);
+				if (res != null) {
+					// if success true - get data bind to table
 					setDataToField((res.getJSONArray("data")).getJSONObject(0));
 				}
-			} 			
-			//CLOSE
+			}
+			// CLOSE
 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
 	private void setDataToField(JSONObject res) {
 		// TODO Auto-generated method stub
 		try {
@@ -198,42 +198,41 @@ public class ConfigSensorAir {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}	
+	}
 
 	private void updateSensorInfo() {
-		try {			
-			client.setResponseData(null);		
+		try {
+			client.setResponseData(null);
 			JSONObject bodyItem = new JSONObject();
-			bodyItem.put("ID", "" +ID);
-			bodyItem.put("address", "" +txtAddress.getText());
+			bodyItem.put("ID", "" + ID);
+			bodyItem.put("address", "" + txtAddress.getText());
 //			bodyItem.put("height", Double.parseDouble( txtHeight.getText()));
 //			bodyItem.put("width", txtWidth.getText());
 //			bodyItem.put("centerLat", txtLat.getText());
 //			bodyItem.put("centerLong", "" +txtLong.getText());
 //			bodyItem.put("mapZoom", "" + txtMapZoom.getText());
-			
+
 			SendPackage sendPa = new SendPackage();
-			sendPa.setApi(ApiEnum.SENSORAIR_UPDATE);		
+			sendPa.setApi(ApiEnum.SENSORAIR_UPDATE);
 			sendPa.setBody(bodyItem);
 			client.setSendP(sendPa);
 
 			JSONObject res = null;
-			while(res == null) {
+			while (res == null) {
 				res = client.getResponseData();
-				System.out.println("wait res:"+res);
-				if(res!= null) {
-					// if success 
-					
-					
+				System.out.println("wait res:" + res);
+				if (res != null) {
+					// if success
+
 					boolean sMess = res.getBoolean("success");
-					if(sMess) {
-						lbtMess.setText( res.getString("msg"));
-					}else {
-						lbtMess.setText("Error :"+res.getString("msg") );						
+					if (sMess) {
+						lbtMess.setText(res.getString("msg"));
+					} else {
+						lbtMess.setText("Error :" + res.getString("msg"));
 					}
-					System.out.println("tra ve:"+res.toString());
+					System.out.println("tra ve:" + res.toString());
 				}
-			} 
+			}
 			getSensorInfo();
 
 		} catch (JSONException e) {
@@ -242,4 +241,3 @@ public class ConfigSensorAir {
 		}
 	}
 }
-

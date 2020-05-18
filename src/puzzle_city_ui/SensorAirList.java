@@ -99,16 +99,9 @@ public class SensorAirList {
 		lblListCity.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblListCity.setBounds(241, 28, 164, 27);
 		panel_cityinfo.add(lblListCity);
-		tblsensorair = new JTable(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"id", "address", "Action"
-			}
-		) {
-			boolean[] columnEditables = new boolean[] {
-				false, false, true
-			};
+		tblsensorair = new JTable(new DefaultTableModel(new Object[][] {}, new String[] { "id", "address", "Action" }) {
+			boolean[] columnEditables = new boolean[] { false, false, true };
+
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
 			}

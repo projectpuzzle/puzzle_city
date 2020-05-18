@@ -16,7 +16,7 @@ public class SensorQualityAirTable extends AbstractTableModel {
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		return values[rowIndex][columnIndex];
-	}
+	} 
 
 	@Override
 	public String getColumnName(int column) {
