@@ -21,7 +21,6 @@ import javax.swing.event.AncestorListener;
 import javax.swing.event.AncestorEvent;
 
 public class VehiculeSensor {
-
 	private JFrame frame;
 	private JTable table;
 
