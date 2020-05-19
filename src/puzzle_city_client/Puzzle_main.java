@@ -4,7 +4,7 @@ import puzzle_city_ui.CityList;
 
 public class Puzzle_main {
 
-	public static void main(String args[]) {
+/*	public static void main(String args[]) {
 
 		Client client = new Client("127.0.0.1", 4000);
 		client.start();
@@ -14,3 +14,4 @@ public class Puzzle_main {
 
 	}
 }
+*/

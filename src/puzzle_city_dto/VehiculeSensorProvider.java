@@ -11,48 +11,43 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import puzzle_city_model.ApiResponse;
-import puzzle_city_model.CityModel;
+import puzzle_city_model.VehiculeSensorModel;
 
 public class VehiculeSensorProvider {
 
 	JDBCConnection dbconn;
 	static Connection conn;
 	static Statement st;
-	
+
 	public VehiculeSensorProvider() {
 		// TODO Auto-generated constructor stub
 		dbconn = new JDBCConnection();
 		conn = dbconn.setConnection();
 	}
-	
-	//get all 
-	public static ApiResponse getAll() {
-		try {
-			
-        	st =  conn.createStatement();
-        	String sql = "select * from tblvehiculesensor";
-        	ResultSet rs = st.executeQuery(sql);
-        	
-        	 ArrayList<CityModel> cityAll = new ArrayList<CityModel>();
 
-            while(rs.next()){
-            	JSONObject resItem = new JSONObject();           	
-                
-                int ID = rs.getInt("cId");
-                String Name = rs.getString("cName");
-                Float Height = rs.getFloat("cHeight");
-                Float Width = rs.getFloat("cWidth");
-                Float CenterLat = rs.getFloat("cCenterLat");
-                Float CenterLong = rs.getFloat("cCenterLong");
-                int MapZoom = rs.getInt("cMapZoom");
-                
-                
-                cityAll.add(new CityModel(ID,Name,Height,Width,CenterLat,CenterLong,MapZoom));
-                
-            }
-            ApiResponse resturn = new ApiResponse(true, cityAll, "Success");
-            System.out.println("Result:"+resturn.toString());
-    		return resturn;
+	// get all
+	public static puzzle_city_model.ApiResponse getAll() {
+		try {
+
+			st = conn.createStatement();
+			String sql = "select * from tblvehiculesensor";
+			ResultSet rs = st.executeQuery(sql);
+
+			ArrayList<VehiculeSensorModel> vehiculeAll = new ArrayList<VehiculeSensorModel>();
+
+			while (rs.next()) {
+				JSONObject resItem = new JSONObject();
+
+				int ID = rs.getInt("ID");
+				String Address = rs.getString("Address");
+				// boolean isOpen = rs.getBoolean("isOpen");
+
+				vehiculeAll.add(new VehiculeSensorModel(ID, Address));
+
+			}
+			ApiResponse ret = new ApiResponse(true, vehiculeAll, "Success");
+			System.out.println("Tra du lieu:" + ret.toString());
+			return ret;
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -65,35 +60,32 @@ public class VehiculeSensorProvider {
 			}
 
 		}
-		
+
 	}
 
-	//get byID 
-	public static ApiResponse getByID(int id) {
+	// get byID !
+	public static ApiResponse getByID(int ID) {
 		try {
-			
-        	st =  conn.createStatement();
-        	String sql = "select * from tblcity where cId = " + id;
-        	ResultSet rs = st.executeQuery(sql);        	
 
-    		JSONArray cityAll = new JSONArray();
-    		if(rs.next() == false) {
-        		return new ApiResponse(false, cityAll, "Not Found");
-    		}else {
-    			 do {
-                	JSONObject resItem = new JSONObject();                	
+			st = conn.createStatement();
+			String sql = "select * from tblvehiculesensor where ID = ? ";
+			ResultSet rs = st.executeQuery(sql);
 
-                    resItem.put("ID", rs.getInt("cId"));
-                    resItem.put("Name",  rs.getString("cName") );
-                    resItem.put("Height", rs.getFloat("cHeight") );
-                    resItem.put("Width", rs.getFloat("cWidth") );
-                    resItem.put("CenterLat", rs.getFloat("cCenterLat") );
-                    resItem.put("CenterLong", rs.getFloat("cCenterLong") );
-                    resItem.put("MapZoom",  rs.getInt("cMapZoom") );                    
-                    cityAll.put(resItem);                    
-                }	while(rs.next());
-        		return new ApiResponse(true, cityAll, "Success");
-			}     	
+			JSONArray VehiculeSensor = new JSONArray();
+			if (rs.next() == false) {
+				return new ApiResponse(false, VehiculeSensor, "Not Found");
+			} else {
+				do {
+					JSONObject resItem = new JSONObject();
+
+					resItem.put("ID", rs.getLong("ID"));
+					resItem.put("Address", rs.getString("Address"));
+//	                     resItem.put("isOpen",  rs.getBoolean("isOpen") );
+
+					VehiculeSensor.put(resItem);
+				} while (rs.next());
+				return new ApiResponse(true, VehiculeSensor, "Success");
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -108,29 +100,20 @@ public class VehiculeSensorProvider {
 		}
 	}
 
-	//create
+	// create
 	public static ApiResponse create(JSONObject record) {
 		try {
-			PreparedStatement pstmt = conn.prepareStatement("INSERT INTO tblcity values (null, ?, ?, ?, ?, ?, ?  )");
-	         					
-            String Name =  record.getString("name");
-            Double Height = record.getDouble("height");
-            Double Width = record.getDouble("width");
-            Double CenterLat = record.getDouble("centerLat");
-            Double CenterLong = record.getDouble("centerLong");
-            int MapZoom = record.getInt("mapZoom");
-            //long date_of_birth = Date.valueOf(date).getTime();
-            pstmt.setString(1, Name);
-            pstmt.setDouble(2, Height);
-            pstmt.setDouble(3, Width);
-            pstmt.setDouble(4, CenterLat);
-            pstmt.setDouble(5, CenterLong);
-            pstmt.setInt(6, MapZoom);
-            
-            pstmt.executeUpdate();
-            
-        	// add success
-        	return new ApiResponse(true, null, "Create success");
+			PreparedStatement pstmt = conn.prepareStatement("INSERT INTO tblvehiculesensor values (null,?)");
+
+			String Address = record.getString("Address");
+			// Boolean isOpen = record.getBoolean("isOpen");
+			pstmt.setString(1, Address);
+			// pstmt.setBoolean(2, true);
+
+			pstmt.executeUpdate();
+
+			// add success
+			return new ApiResponse(true, null, "Create success");
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -143,36 +126,30 @@ public class VehiculeSensorProvider {
 			}
 
 		}
-		
+
 	}
 
-	//update
+	// update
 	public static ApiResponse update(JSONObject record) {
-		try {        	
-            
-			PreparedStatement pstmt = conn.prepareStatement("UPDATE tblcity SET cName = ?, cHeight = ?,cWidth = ?, cCenterLat = ? ,cCenterLong = ? ,cMapZoom =?  WHERE cId = ?");
-			System.out.println(record);
-            int ID =  record.getInt("ID");
+		try {
 
-            String Name =  record.getString("name");
-            Double Height = record.getDouble("height");
-            Double Width = record.getDouble("width");
-            Double CenterLat = record.getDouble("centerLat");
-            Double CenterLong = record.getDouble("centerLong");
-            int MapZoom = record.getInt("mapZoom");
-            //long date_of_birth = Date.valueOf(date).getTime();
-            pstmt.setString(1, Name);
-            pstmt.setDouble(2, Height);
-            pstmt.setDouble(3, Width);
-            pstmt.setDouble(4, CenterLat);
-            pstmt.setDouble(5, CenterLong);
-            pstmt.setInt(6, MapZoom);
-            pstmt.setInt(7, ID);
-            
-            pstmt.executeUpdate();
-            
-        	// add success
-        	return new ApiResponse(true, null, "Update success");
+			PreparedStatement pstmt = conn
+					.prepareStatement("UPDATE tblvehiculesensor SET Address = ? ,isOpen = ?  WHERE ID = ?");
+			System.out.println(record);
+			int ID = record.getInt("ID");
+
+			String Address = record.getString("Address");
+//                 Boolean isOpen = record.getBoolean("isOpen");	          
+			// long date_of_birth = Date.valueOf(date).getTime();
+			pstmt.setString(1, Address);
+//	             pstmt.setBoolean(2, isOpen);
+
+			pstmt.setInt(3, ID);
+
+			pstmt.executeUpdate();
+
+			// add success
+			return new ApiResponse(true, null, "Update success");
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -185,33 +162,18 @@ public class VehiculeSensorProvider {
 			}
 
 		}
-		
+
 	}
-	
-	//main for test
-//	public static void main(String[] args) throws JSONException {
-//		CityProvider qCity = new CityProvider();
-//		// get all
-////		ApiResponse res = qCity.getAll();
-////        System.out.print(res.toString());
-//		
-//        //Add new
-////		String newStringItem ="{\"CenterLong\":48.523101806640625,\"MapZoom\":8,\"CenterLat\":101.02100372314453,\"Height\":3000.1,\"ID\":1,\"Width\":4000.1,\"Name\":\"paris\"}" ;
-////		JSONObject newITem = new JSONObject(newStringItem);
-////		ApiResponse res = qCity.create(newITem);
-////		System.out.print(res.toString());
-//     
-//        //Update
-//		String newStringItem ="{\"CenterLong\":48.523101806640625,\"MapZoom\":8,\"CenterLat\":101.02100372314453,\"Height\":3000.1,\"ID\":1,\"Width\":4000.1,\"Name\":\"moi update\"}" ;
-//		JSONObject newITem = new JSONObject(newStringItem);
-//		ApiResponse res = qCity.update(newITem);
-//		System.out.print(res.toString());
-//		res = qCity.getAll();
-//		System.out.print(res.toString());
-//        //get by id 
-////       ApiResponse res = qCity.getByID(1);
-////        System.out.print(res.toString());
-//        
-//	
-//	}
+
+	public static void deleteVehiculeSensorByID(int ID) {
+		try {
+
+			PreparedStatement pt = conn.prepareStatement("delete from tblvehiculesensor where ID like ?");
+			pt.setInt(1, ID);
+			pt.execute();
+		} catch (SQLException ex) {
+			System.out.println("error " + ex.getMessage());
+		}
+
+	}
 }

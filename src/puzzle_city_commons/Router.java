@@ -76,6 +76,37 @@ public class Router {
 		}
 		return null;
 	}
+	
+	//Vehicule sensor
+	public static String createVehiculeSensor(JSONObject VehiculeSensor) {
+		return VehiculeSensorProvider.create(VehiculeSensor).toString();
+	}
+
+	public static String updateVehiculeSensor(JSONObject VehiculeSensor) {
+		return VehiculeSensorProvider.update(VehiculeSensor).toString();
+	}
+
+	public static String findAllVehiculeSensor() {
+
+		JSONObject mapper = new JSONObject();
+		try {
+			VehiculeSensorProvider VehiculeSensor = new VehiculeSensorProvider();
+			return VehiculeSensor.getAll().toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static String findOneVehiculeSensorById(int VehiculeSensorID) {
+
+		try {
+			return VehiculeSensorProvider.getByID(VehiculeSensorID).toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	// input {api:"CITYSave",body:{}}
 	public static String router(JSONObject input) {
@@ -112,6 +143,20 @@ public class Router {
 
 			case "SENSORAIR_FIND_ALL":
 				return findAllSensorAir();
+				
+			//Vehicule
+			case "VEHICULESENSOR_CREATE":
+				return createVehiculeSensor((JSONObject) input.get("body"));
+
+			case "VEHICULESENSOR_UPDATE":
+				return updateVehiculeSensor((JSONObject) input.get("body"));
+			case "VEHICULESENSOR_FIND_ONE":
+				body = input.getJSONObject("body");
+
+				return findOneVehiculeSensorById((int) body.getInt("ID"));
+
+			case "VEHICULESENSOR_FIND_ALL":
+				return findAllVehiculeSensor();
 
 			default:
 				return new ApiResponse(false, null, "Not found API").toString();

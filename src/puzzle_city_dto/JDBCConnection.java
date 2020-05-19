@@ -16,7 +16,7 @@ public class JDBCConnection {
 
 		    //Class.forName("com.mysql.cj.jdbc.Drive");  
 		    
-	}	
+	}
     
     public Connection setConnection() {
     	try{
