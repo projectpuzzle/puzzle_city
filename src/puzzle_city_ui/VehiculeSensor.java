@@ -20,7 +20,7 @@ import puzzle_city_client_model.BollardsTable;
 import javax.swing.event.AncestorListener;
 import javax.swing.event.AncestorEvent;
 
-public class Bollards {
+public class VehiculeSensor {
 
 	private JFrame frame;
 	private JTable table;
@@ -32,7 +32,7 @@ public class Bollards {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Bollards window = new Bollards();
+					VehiculeSensor window = new VehiculeSensor();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -44,7 +44,7 @@ public class Bollards {
 	/**
 	 * Create the application.
 	 */
-	public Bollards() {
+	public VehiculeSensor() {
 		initialize();
 	}
 

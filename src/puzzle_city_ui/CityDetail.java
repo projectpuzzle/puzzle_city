@@ -77,9 +77,9 @@ public class CityDetail {
 		btnMenuTramwayStation.setBounds(10, 132, 166, 23);
 		panel.add(btnMenuTramwayStation);
 		
-		JButton btnMenuBollards = new JButton("Bollards");
-		btnMenuBollards.setBounds(10, 166, 166, 23);
-		panel.add(btnMenuBollards);
+		JButton btnVehiculeSensor = new JButton("Bollards");
+		btnVehiculeSensor.setBounds(10, 166, 166, 23);
+		panel.add(btnVehiculeSensor);
 		
 		JPanel panel_cityinfo = new JPanel();
 		panel_cityinfo.setBounds(186, 64, 468, 364);
