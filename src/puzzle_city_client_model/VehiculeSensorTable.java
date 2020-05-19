@@ -4,7 +4,7 @@ import javax.swing.table.AbstractTableModel;
 
 public class VehiculeSensorTable extends AbstractTableModel {
 	  public final static String[] columnNames = {
-			  "ID",  "Street Name", "Width", "Height", "LatLong"
+			  "ID",  "Address"
 		    };
 	  public Object[][] values = {{"","","","",""}};
 	  public int getRowCount() {
