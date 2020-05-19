@@ -17,10 +17,13 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 
 import puzzle_city_client_model.BollardsTable;
+import javax.swing.event.AncestorListener;
+import javax.swing.event.AncestorEvent;
 
 public class Bollards {
 
 	private JFrame frame;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -87,10 +90,16 @@ public class Bollards {
 
 			}
 		});
+        
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBounds(20, 61, 593, 278);
+        panel_cityinfo.add(scrollPane);
 
         JScrollPane jsp = new JScrollPane(tblCity);
-        jsp.setBounds(20, 49, 593, 278);
-		panel_cityinfo.add(jsp);
+        scrollPane.setViewportView(jsp);
+		
+		table = new JTable();
+		jsp.setColumnHeaderView(table);
 
 		JButton btnCreateButton = new JButton("Configure a bollard");
 		btnCreateButton.addActionListener(new ActionListener() {
