@@ -29,7 +29,7 @@ import puzzle_city_client_model.VehiculeSensorTable;
 public class VehiculeSensorList {
 
 	public JFrame frame;
-	private JTable ;
+	private JTable VehiculeSensorTable;
 	public Client client;// = new Client("127.0.0.1", 4000);
 
 	/**
@@ -127,7 +127,7 @@ public class VehiculeSensorList {
 		JButton btnCreateButton = new JButton("Add new vehicule sensor ");
 		btnCreateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				CreateVeiculeSensor saAdd = new CreateVehiculeSensor(client);
+				CreateVehiculeSensor saAdd = new CreateVehiculeSensor(client);
 				saAdd.frame.setVisible(true);
 				frame.dispose();
 			}

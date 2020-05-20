@@ -91,9 +91,17 @@ public class Dashboard {
 		btnMenuTramwayStation.setBounds(10, 132, 173, 23);
 		panel.add(btnMenuTramwayStation);
 
-		JButton btnVehiculeSensor = new JButton("Bollards");
+		JButton btnVehiculeSensor = new JButton("Vehicule Sensor");
 		btnVehiculeSensor.setBounds(10, 204, 173, 23);
 		panel.add(btnVehiculeSensor);
+		btnVehiculeSensor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				VehiculeSensorList windowCityList = new VehiculeSensorList(client);
+				windowCityList.frame.setVisible(true);
+				frame.dispose();
+			}
+		});
 
 		JPanel panel_dashboard = new JPanel();
 		panel_dashboard.setBounds(207, 64, 447, 364);
