@@ -6,7 +6,7 @@ public class VehiculeSensorTable extends AbstractTableModel {
 	  public final static String[] columnNames = {
 			  "ID",  "Address"
 		    };
-	  public Object[][] values = {{"","","","",""}};
+	  public Object[][] values = {{"",""}};
 	  public int getRowCount() {
 	        return values.length;
 	    }
