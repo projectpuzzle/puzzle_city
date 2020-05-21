@@ -66,7 +66,7 @@ public class Bollards {
 		panel.add(panel_cityinfo);
 		panel_cityinfo.setLayout(null);
 		
-		JLabel lblListCity = new JLabel("Bollards List");
+		JLabel lblListCity = new JLabel("Treshold");
 		lblListCity.setHorizontalAlignment(SwingConstants.LEFT);
 		lblListCity.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblListCity.setBounds(10, 11, 99, 27);
@@ -88,11 +88,7 @@ public class Bollards {
 			}
 		});
 
-        JScrollPane jsp = new JScrollPane(tblCity);
-        jsp.setBounds(20, 49, 593, 278);
-		panel_cityinfo.add(jsp);
-
-		JButton btnCreateButton = new JButton("Configure a bollard");
+		JButton btnCreateButton = new JButton("Change vehicule treshold");
 		btnCreateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				CityAddNew ctAdd =	new CityAddNew(client);
@@ -102,8 +98,20 @@ public class Bollards {
 			}
 		});
 		btnCreateButton.setBackground(Color.WHITE);
-		btnCreateButton.setBounds(471, 11, 142, 23);
+		btnCreateButton.setBounds(406, 103, 209, 23);
 		panel_cityinfo.add(btnCreateButton);
+		
+		JLabel lblVehiculeMax = new JLabel("Vehicule Max");
+		lblVehiculeMax.setHorizontalAlignment(SwingConstants.LEFT);
+		lblVehiculeMax.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblVehiculeMax.setBounds(10, 106, 99, 27);
+		panel_cityinfo.add(lblVehiculeMax);
+		
+		JLabel lblCurrentValue = new JLabel("Current Value");
+		lblCurrentValue.setHorizontalAlignment(SwingConstants.LEFT);
+		lblCurrentValue.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblCurrentValue.setBounds(208, 11, 99, 27);
+		panel_cityinfo.add(lblCurrentValue);
 		
 
 //		//set data  for table	
@@ -119,7 +127,7 @@ public class Bollards {
 		lblListCity_1.setBounds(10, 11, 99, 27);
 		panel_cityinfo_1.add(lblListCity_1);
 		
-		JLabel lblNewLabel = new JLabel("Bollards Manager System");
+		JLabel lblNewLabel = new JLabel("Treshold Manager System");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblNewLabel.setBounds(409, 13, 211, 27);

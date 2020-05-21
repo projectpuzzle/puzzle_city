@@ -101,7 +101,7 @@ public class VehiculeSensorList {
 			}
 		});
 		btnCreateButton.setBackground(Color.WHITE);
-		btnCreateButton.setBounds(88, 294, 139, 23);
+		btnCreateButton.setBounds(48, 294, 179, 23);
 		panel_cityinfo.add(btnCreateButton);
 
 		JButton btnCancel = new JButton("Cancel");
