@@ -9,15 +9,15 @@ public class VehiculeSensorModel {
 
 
 
-/*	public VehiculeSensorModel(int ID, String Address) {
+	public VehiculeSensorModel(int ID, String Address) {
 		super();
 		this.ID = ID;
 		this.Address = Address;
 	
 	}
-	*/
+	
 
-	public VehiculeSensorModel(int ID, String Address, AlertModel alerteModel) {
+/*	public VehiculeSensorModel(int ID, String Address, AlertModel alerteModel) {
 		super();
 		this.ID = ID;
 		this.Address = Address;
@@ -31,7 +31,7 @@ public class VehiculeSensorModel {
 	public void setId(int id) {
 		this.ID = ID;
 	}
-
+*/
 	public String getAddress() {
 		return Address;
 	}

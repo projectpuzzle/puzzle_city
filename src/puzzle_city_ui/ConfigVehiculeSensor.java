@@ -25,6 +25,7 @@ public class ConfigVehiculeSensor {
 	public JFrame frame;
 	private JTextField txtAddress;
 	private int ID;
+	private JLabel lbtMess;
 
 	public Client client;// = new Client("127.0.0.1", 4000);
 

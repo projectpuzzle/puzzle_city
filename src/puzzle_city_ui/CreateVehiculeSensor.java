@@ -27,7 +27,6 @@ public class CreateVehiculeSensor {
 
 	public JFrame frame;
 	private JTextField txtAddressSensor;
-	private JTextField txtIDSensor;
 //	private JTextField txtLat;
 //	private JTextField txtLong;
 //	private JTextField txtHeight;
@@ -39,6 +38,7 @@ public class CreateVehiculeSensor {
 	/**
 	 * Launch the application.
 	 */
+	private JTextField txtIDSensor;
 
 	/**
 	 * Create the application.
@@ -77,11 +77,6 @@ public class CreateVehiculeSensor {
 		txtAddressSensor.setBounds(212, 165, 315, 20);
 		panel_cityinfo.add(txtAddressSensor);
 		txtAddressSensor.setColumns(10);
-		
-		txtIDSensor = new JTextField();
-		txtIDSensor.setBounds(212, 120, 315, 20);
-		panel_cityinfo.add(txtIDSensor);
-		txtIDSensor.setColumns(10);
 		
 //		JLabel lblNewLabel_1_1 = new JLabel("\u00A7\u00A7");
 //		lblNewLabel_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -157,11 +152,6 @@ public class CreateVehiculeSensor {
 		lblNewLabel_2.setBounds(259, 11, 193, 14);
 		panel_cityinfo.add(lblNewLabel_2);
 		
-		JLabel lblSensorId = new JLabel("Sensor ID");
-		lblSensorId.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblSensorId.setBounds(10, 123, 179, 14);
-		panel_cityinfo.add(lblSensorId);
-		
 		JLabel lblNewLabel = new JLabel("Vehicule sensor Manager System");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
@@ -189,7 +179,7 @@ public class CreateVehiculeSensor {
 		try {			
 			client.setResponseData(null);		
 			JSONObject bodyItem = new JSONObject();
-			bodyItem.put("ID", +txtIDSensor.getText());
+			bodyItem.put("ID", "0");
 			bodyItem.put("Address", "" +txtAddressSensor.getText());
 //			bodyItem.put("height", Double.parseDouble( txtHeight.getText()));
 //			bodyItem.put("width", txtWidth.getText());

@@ -26,7 +26,7 @@ public class VehiculeSensorProvider {
 	public VehiculeSensorProvider() {
 		// TODO Auto-generated constructor stub
 		dbconn = new JDBCConnection();
-		conn = dbconn.setConnection();
+		conn = dbconn.setConnection(); 
 	}
 
 	// get all
@@ -97,16 +97,16 @@ public class VehiculeSensorProvider {
 	}
 
 	// get byID
-	public static ApiResponse getByID(int id) {
+	public static ApiResponse getByID(int ID) {
 		try {
 
 			st = conn.createStatement();
-			String sql = "select * from tblvehiculesensor where id = ? ";
+			String sql = "select * from tblvehiculesensor where ID = ? ";
 			ResultSet rs = st.executeQuery(sql);
 
-			JSONArray VehiculeSensor = new JSONArray();
+			JSONArray vehiculesensorAll = new JSONArray();
 			if (rs.next() == false) {
-				return new ApiResponse(false, VehiculeSensor, "Not Found");
+				return new ApiResponse(false, vehiculesensorAll, "Not Found");
 			} else {
 				do {
 					JSONObject resItem = new JSONObject();
@@ -115,9 +115,9 @@ public class VehiculeSensorProvider {
 					resItem.put("Address", rs.getString("Address"));
 //	                     resItem.put("isOpen",  rs.getBoolean("isOpen") );
 
-					VehiculeSensor.put(resItem);
+					vehiculesensorAll.put(resItem);
 				} while (rs.next());
-				return new ApiResponse(true, VehiculeSensor, "Success");
+				return new ApiResponse(true, vehiculesensorAll, "Success");
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -169,16 +169,12 @@ public class VehiculeSensorProvider {
 	public static ApiResponse create(JSONObject record) {
 		try {
 			PreparedStatement pstmt = conn
-					.prepareStatement("INSERT INTO tblvehiculesensor(Address) values (?)");
-
-			String address = record.getString("Address");
-			int idAlert = createAlert();
-			pstmt.setString(1, address);
-			pstmt.setInt(2, 0);
-			pstmt.setInt(3, 0);
-			pstmt.setInt(4, 0);
-			pstmt.setInt(5, idAlert);
-			// pstmt.setBoolean(2, true);
+					.prepareStatement("INSERT INTO tblvehiculesensor(ID, Address) values (null ,?)");
+			String Address = record.getString("Address");
+			//int idAlert = createAlert();
+			pstmt.setString(1, Address);
+			//pstmt.setInt(5, idAlert);
+			//pstmt.setBoolean(2, true);
 
 			pstmt.executeUpdate();
 
@@ -221,18 +217,17 @@ public class VehiculeSensorProvider {
 		try {
 
 			PreparedStatement pstmt = conn
-					.prepareStatement("UPDATE tblvehiculesensor SET Address = ?,no2=?,pm10=?,o3=?  WHERE ID = ?");
+					.prepareStatement("UPDATE tblvehiculesensor SET Address = ?  WHERE ID = ?");
 			System.out.println(record);
-			int id = record.getInt("ID");
 
-			String address = record.getString("Address");
-			boolean alert = record.getBoolean("alert");
-			int alert_id = record.getInt("alert_id");
-			updateAlertById(alert_id, alert);
+			String Address = record.getString("Address");
+			//boolean alert = record.getBoolean("alert");
+			//int alert_id = record.getInt("alert_id");
+			//updateAlertById(alert_id, alert);
 //                 Boolean isOpen = record.getBoolean("isOpen");	          
 			// long date_of_birth = Date.valueOf(date).getTime();
-			pstmt.setString(1, address);
-			pstmt.setInt(5, id);
+			pstmt.setString(1, Address);
+			//pstmt.setInt(5, id);
 //	             pstmt.setBoolean(2, isOpen);
 
 			pstmt.executeUpdate();
@@ -265,11 +260,11 @@ public class VehiculeSensorProvider {
 
 	}
 
-	public static void deleteVehiculeSensorById(int id,int alert_id) {
+	public static void deleteVehiculeSensorById(int ID,int alert_id) {
 		try {
 
 			PreparedStatement pt = conn.prepareStatement("delete from tblvehiculesensor where ID like ?");
-			pt.setInt(1, id);
+			pt.setInt(1, ID);
 			pt.execute();
 			deleteAlertById(alert_id);
 		} catch (SQLException ex) {
