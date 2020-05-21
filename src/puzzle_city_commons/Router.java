@@ -80,6 +80,40 @@ public class Router {
 		SensorQualityAirProvider.deleteSensorQualityAirById(id,alert_id);
 	}
 
+	// Vehicule sensor
+		public static String createVehiculeSensor(JSONObject VehiculeSensor) {
+			return VehiculeSensorProvider.create(VehiculeSensor).toString();
+		}
+
+		public static String updateVehiculeSensor(JSONObject VehiculeSensor) {
+			return VehiculeSensorProvider.update(VehiculeSensor).toString();
+		}
+
+		public static String findAllVehiculeSensor() {
+
+			JSONObject mapper = new JSONObject();
+			try {
+				VehiculeSensorProvider VehiculeSensor = new VehiculeSensorProvider();
+				return VehiculeSensor.getAll().toString();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		public static String findOneVehiculeSensorById(int VehiculeSensorID) {
+
+			try {
+				return VehiculeSensorProvider.getByID(VehiculeSensorID).toString();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+		public static void deleteVehiculeSensorById(int ID,int alert_ID) {
+			VehiculeSensorProvider.deleteVehiculeSensorById(ID,alert_ID);
+		}
+	
 	// input {api:"CITYSave",body:{}}
 	public static String router(JSONObject input) {
 		String api;
