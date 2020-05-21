@@ -1,21 +1,28 @@
 package puzzle_city_ui;
-
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.AbstractButton;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +38,8 @@ public class SensorAirList {
 	public JFrame frame;
 	private JTable tblsensorair;
 	public Client client;// = new Client("127.0.0.1", 4000);
+	
+	List<Object[]> list=new ArrayList<>();
 
 	/**
 	 * Launch the application.
@@ -55,12 +64,19 @@ public class SensorAirList {
 
 	/**
 	 * Create the application.
+	 * 
+	 * @wbp.parser.constructor
 	 */
 	public SensorAirList(Client socket) {
 		client = socket;
 		initialize();
 
 		getSensorAirData();
+	}
+
+	public SensorAirList(JTable tblsensorair) {
+
+		this.tblsensorair = tblsensorair;
 	}
 
 	/**
@@ -80,7 +96,7 @@ public class SensorAirList {
 		frame.getContentPane().add(panel);
 
 		// table
-		SensorQualityAirTable t = new SensorQualityAirTable();
+		SensorQualityAirTable tcb = new SensorQualityAirTable();
 
 //		//set data  for table	
 		// add city
@@ -96,24 +112,35 @@ public class SensorAirList {
 
 		JLabel lblListCity = new JLabel("Air quality sensors list");
 		lblListCity.setHorizontalAlignment(SwingConstants.LEFT);
-		lblListCity.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblListCity.setBounds(241, 28, 164, 27);
+		lblListCity.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblListCity.setBounds(229, 28, 189, 27);
 		panel_cityinfo.add(lblListCity);
-		tblsensorair = new JTable(new DefaultTableModel(new Object[][] {}, new String[] { "id", "address", "Action" }) {
-			boolean[] columnEditables = new boolean[] { false, false, true };
+
+		tblsensorair = new JTable(new DefaultTableModel(
+				new Object[][] { { null, null, null }, { null, null, null }, { null, null, null }, { null, null, null },
+						{ null, null, null }, { null, null, null }, { null, null, null }, },
+				new String[] { "id", "address", "Action" }) {
+			boolean[] columnEditables = new boolean[] { false, false, false };
 
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
 			}
 		});
+
 		tblsensorair.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				int row = tblsensorair.getSelectedRow();
-				int cID = Integer.parseInt(tblsensorair.getModel().getValueAt(row, 0).toString());
-
-				Dashboard ctDetail = new Dashboard(client, cID);
-				Dashboard.frame.setVisible(true);
+				int id = Integer.parseInt(list.get(row)[0].toString());
+				String address = list.get(row)[1].toString();
+				int no2 = (int)list.get(row)[2];
+				int pm10 =(int) list.get(row)[3];
+				int o3 = (int)list.get(row)[4];
+				boolean alert = (boolean)list.get(row)[5];
+				int alertId=(int)list.get(row)[7];
+			//	System.out.println("ppp" + globalModel.getColumnCount());
+				ConfigSensorAir cS = new ConfigSensorAir(client, id, address, no2, pm10, o3, alert,alertId);
+				cS.frame.setVisible(true);
 				frame.dispose();
 
 			}
@@ -133,7 +160,7 @@ public class SensorAirList {
 			}
 		});
 		btnCreateButton.setBackground(Color.WHITE);
-		btnCreateButton.setBounds(88, 294, 139, 23);
+		btnCreateButton.setBounds(153, 294, 139, 23);
 		panel_cityinfo.add(btnCreateButton);
 
 		JButton btnCancel = new JButton("Cancel");
@@ -145,20 +172,15 @@ public class SensorAirList {
 			}
 		});
 		btnCancel.setBackground(Color.WHITE);
-		btnCancel.setBounds(390, 294, 121, 23);
+		btnCancel.setBounds(373, 294, 121, 23);
 		panel_cityinfo.add(btnCancel);
-
-		JButton btnCancel_1 = new JButton("Configure");
-		btnCancel_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ConfigSensorAir cf = new ConfigSensorAir(client);
-				cf.frame.setVisible(true);
-				frame.dispose();
-			}
-		});
-		btnCancel_1.setBackground(Color.WHITE);
-		btnCancel_1.setBounds(241, 294, 121, 23);
-		panel_cityinfo.add(btnCancel_1);
+		
+		JLabel lblClickOnThe = new JLabel("*Click on the desired sensor for more details");
+		lblClickOnThe.setForeground(Color.BLACK);
+		lblClickOnThe.setHorizontalAlignment(SwingConstants.LEFT);
+		lblClickOnThe.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblClickOnThe.setBounds(175, 328, 265, 26);
+		panel_cityinfo.add(lblClickOnThe);
 
 		JLabel lblNewLabel = new JLabel("Air Quality Sensors Manager System");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -176,9 +198,13 @@ public class SensorAirList {
 		client.setSendP(sendP);
 		JSONObject res = null;
 		while (res == null) {
+
 			res = client.getResponseData();
 			System.out.println("waiting:" + res);
 			if (res != null) {
+
+				// System.out.println("waiting:" + res);
+
 				// if success true - get data bind to table
 				System.out.println(res.toString());
 				boolean sMess;
@@ -200,9 +226,9 @@ public class SensorAirList {
 	}
 
 	private void bindDataToTable(JSONArray jArray) {
-		// TODO Auto-generated method stub
+		//globalModel = new DefaultTableModel();
 		DefaultTableModel model = new DefaultTableModel();
-		String[] columnNames = { "id", "address" };
+		String[] columnNames = { "Address",  "Alert status" ,"Alert time"};
 		model.setColumnIdentifiers(columnNames);
 
 		ArrayList arrRows = new ArrayList();
@@ -211,10 +237,16 @@ public class SensorAirList {
 			try {
 				jb = jArray.getJSONObject(i);
 
-				Object[] rowData = { jb.getInt("id"), jb.getString("address"),
-
+				JSONObject alerteModel = jb.getJSONObject("alerteModel");
+				boolean isAlerted=alerteModel.getBoolean("alert");
+				Object[] rowData = { jb.getString("address"), isAlerted?"Alerted":"Not alerted", isAlerted?alerteModel.getString("date"):"---"};
+							
+				Object[] globalrowData = { jb.getInt("id"), jb.getString("address"), jb.getInt("no2"), jb.getInt("pm10"),
+									jb.getInt("o3"), alerteModel.getBoolean("alert"), alerteModel.has("date")?alerteModel.getString("date"):"---",	alerteModel.get("id")		
+               
 				};
-
+              //globalModel.addRow(globalrowData);
+				list.add(globalrowData);
 				model.addRow(rowData);
 				arrRows.clear();
 			} catch (JSONException e) {
@@ -224,6 +256,10 @@ public class SensorAirList {
 		}
 
 		tblsensorair.setModel(model);
+//		tblsensorair.getColumn("Delete").setCellRenderer(new ButtonRenderer());
+//		tblsensorair.getColumn("Delete").setCellEditor(
+//		        new ButtonEditor(new JCheckBox()));
+//		tblsensorair.setVisible(true);   
 
 	}
 }

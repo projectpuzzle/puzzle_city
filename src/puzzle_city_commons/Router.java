@@ -76,6 +76,9 @@ public class Router {
 		}
 		return null;
 	}
+	public static void deleteSensorQualityAirById(int id,int alert_id) {
+		SensorQualityAirProvider.deleteSensorQualityAirById(id,alert_id);
+	}
 
 	// input {api:"CITYSave",body:{}}
 	public static String router(JSONObject input) {
@@ -112,6 +115,11 @@ public class Router {
 
 			case "SENSORAIR_FIND_ALL":
 				return findAllSensorAir();
+				
+			case "SENSORAIR_DELETE":
+				body = input.getJSONObject("body");
+				 deleteSensorQualityAirById((int) body.getInt("id"),(int) body.getInt("alert_id"));
+                  return "DELETED";  
 
 			default:
 				return new ApiResponse(false, null, "Not found API").toString();

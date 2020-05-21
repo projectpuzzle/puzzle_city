@@ -192,8 +192,9 @@ public class CityDetail {
 			JSONObject res = null;
 			while(res == null) {
 				res = client.getResponseData();
-				System.out.println("wait res:"+res);
+				
 				if(res!= null) {
+					System.out.println("wait res:"+res);
 					// if success true - get data bind to table 
 					setDataToField((res.getJSONArray("data")).getJSONObject(0));
 				}
@@ -240,8 +241,9 @@ public class CityDetail {
 			JSONObject res = null;
 			while(res == null) {
 				res = client.getResponseData();
-				System.out.println("wait res:"+res);
-				if(res!= null) {
+								if(res!= null) {
+									System.out.println("wait res:"+res);
+
 					// if success 
 					
 					

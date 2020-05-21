@@ -1,8 +1,8 @@
 package puzzle_city_ui;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Window.Type;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -10,6 +10,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -23,8 +25,14 @@ import puzzle_city_client_model.SendPackage;
 public class ConfigSensorAir {
 
 	public JFrame frame;
-	private JTextField txtAddress;
-	private int ID;
+	private JTextField said;
+	private int id;
+	private String address;
+	private int no2;
+	private int pm10;
+	private int o3;
+	private boolean alert;
+	private int alert_id;
 //	private JTextField txtLat;
 //	private JTextField txtLong;
 //	private JTextField txtHeight;
@@ -33,6 +41,12 @@ public class ConfigSensorAir {
 	private JLabel lbtMess;
 
 	public Client client;// = new Client("127.0.0.1", 4000);
+	private JTable table;
+	JPanel panel_cityinfo;
+	JProgressBar progressBar = new JProgressBar();
+	JProgressBar progressBar_1 = new JProgressBar();
+	JProgressBar progressBar_2 = new JProgressBar();
+	JLabel lblNewLabel_1_1_1 = new JLabel("Alert declenched !");
 
 	/**
 	 * Launch the application.
@@ -40,16 +54,34 @@ public class ConfigSensorAir {
 
 	/**
 	 * Create the application.
+	 * 
+	 * @wbp.parser.constructor
 	 */
-	public ConfigSensorAir(Client socket) {
+
+	public ConfigSensorAir(Client socket, int id, String address, int no2, int pm10, int o3, boolean alert,
+			int alert_id) {
+		this.id = id;
+		this.address = address;
+		this.no2 = no2;
+		this.pm10 = pm10;
+		this.o3 = o3;
+		this.alert = alert;
+		this.alert_id = alert_id;
 		client = socket;
-		initialize();
+		initialize(id, address, no2, pm10, o3, alert);
+	}
+
+	public ConfigSensorAir() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize(int id, String address, int no2, int pm10, int o3, boolean alert) {
+		setType(Type.UTILITY);
+		panel_cityinfo = new JPanel();
 		frame = new JFrame();
 		frame.setBounds(100, 100, 700, 499);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -61,8 +93,7 @@ public class ConfigSensorAir {
 		panel.setBounds(10, 11, 664, 439);
 		frame.getContentPane().add(panel);
 
-		JPanel panel_cityinfo = new JPanel();
-		panel_cityinfo.setBounds(10, 64, 644, 364);
+		panel_cityinfo.setBounds(10, 55, 644, 364);
 		panel.add(panel_cityinfo);
 		panel_cityinfo.setLayout(null);
 
@@ -71,60 +102,15 @@ public class ConfigSensorAir {
 		lblNewLabel_1.setBounds(10, 11, 179, 14);
 		panel_cityinfo.add(lblNewLabel_1);
 
-		txtAddress = new JTextField();
-		txtAddress.setBounds(212, 11, 315, 20);
-		panel_cityinfo.add(txtAddress);
-		txtAddress.setColumns(10);
+		said = new JTextField();
+		said.setBounds(212, 11, 315, 20);
+		if (id != 0) {
+			said.setText(address);
 
-//		JLabel lblNewLabel_1_1 = new JLabel("Latitude");
-//		lblNewLabel_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
-//		lblNewLabel_1_1.setBounds(10, 39, 179, 14);
-//		panel_cityinfo.add(lblNewLabel_1_1);
-//		
-//		txtLat = new JTextField();
-//		txtLat.setColumns(10);
-//		txtLat.setBounds(212, 39, 315, 20);
-//		panel_cityinfo.add(txtLat);
-////		
-//		JLabel lblNewLabel_1_1_1 = new JLabel("Longitude");
-//		lblNewLabel_1_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
-//		lblNewLabel_1_1_1.setBounds(10, 67, 179, 14);
-//		panel_cityinfo.add(lblNewLabel_1_1_1);
-//		
-//		txtLong = new JTextField();
-//		txtLong.setColumns(10);
-//		txtLong.setBounds(212, 67, 315, 20);
-//		panel_cityinfo.add(txtLong);
-//		
-//		txtHeight = new JTextField();
-//		txtHeight.setColumns(10);
-//		txtHeight.setBounds(212, 95, 315, 20);
-//		panel_cityinfo.add(txtHeight);
-//		
-//		JLabel lblNewLabel_1_1_1_1 = new JLabel("Height");
-//		lblNewLabel_1_1_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
-//		lblNewLabel_1_1_1_1.setBounds(10, 95, 179, 14);
-//		panel_cityinfo.add(lblNewLabel_1_1_1_1);
-//		
-//		JLabel lblNewLabel_1_1_1_1_1 = new JLabel("Width");
-//		lblNewLabel_1_1_1_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
-//		lblNewLabel_1_1_1_1_1.setBounds(10, 126, 179, 14);
-//		panel_cityinfo.add(lblNewLabel_1_1_1_1_1);
-//		
-//		txtWidth = new JTextField();
-//		txtWidth.setColumns(10);
-//		txtWidth.setBounds(212, 126, 315, 20);
-//		panel_cityinfo.add(txtWidth);
-//		
-//		txtMapZoom = new JTextField();
-//		txtMapZoom.setColumns(10);
-//		txtMapZoom.setBounds(212, 154, 315, 20);
-//		panel_cityinfo.add(txtMapZoom);
-//		
-//		JLabel lbtMapZoom = new JLabel("Map Zoom");
-//		lbtMapZoom.setHorizontalAlignment(SwingConstants.RIGHT);
-//		lbtMapZoom.setBounds(10, 154, 179, 14);
-//		panel_cityinfo.add(lbtMapZoom);
+		}
+
+		panel_cityinfo.add(said);
+		said.setColumns(10);
 
 		JButton btnCreate = new JButton("Update");
 		btnCreate.addActionListener(new ActionListener() {
@@ -132,63 +118,127 @@ public class ConfigSensorAir {
 				updateSensorInfo();
 			}
 		});
-		btnCreate.setBounds(212, 185, 89, 23);
+		btnCreate.setBounds(152, 318, 89, 23);
 		panel_cityinfo.add(btnCreate);
 
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SensorAirList sa = new SensorAirList(client);
-				sa.frame.setVisible(true);
-				frame.dispose();
+				cancel();
 			}
 		});
-		btnCancel.setBounds(314, 185, 89, 23);
+		btnCancel.setBounds(415, 318, 89, 23);
 		panel_cityinfo.add(btnCancel);
 
 		lbtMess = new JLabel("");
 		lbtMess.setBounds(212, 219, 315, 47);
 		panel_cityinfo.add(lbtMess);
 
-		JLabel lblNewLabel = new JLabel("Configure Air Quality Sensor");
+		table = new JTable();
+		table.setBounds(51, 111, 1, 1);
+		panel_cityinfo.add(table);
+
+		JButton btnCreate_1 = new JButton("Delete");
+		btnCreate_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				delete();
+			}
+		});
+		btnCreate_1.setBounds(280, 318, 89, 23);
+		panel_cityinfo.add(btnCreate_1);
+
+		JLabel lblNewLabel_1_1 = new JLabel("Pollution indicators :");
+		lblNewLabel_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNewLabel_1_1.setBounds(26, 55, 179, 14);
+
+		panel_cityinfo.add(lblNewLabel_1_1);
+
+		progressBar.setValue(no2);
+		progressBar.setBounds(271, 79, 146, 14);
+		panel_cityinfo.add(progressBar);
+		// JProgressBar progressBar_1 = new JProgressBar();
+		progressBar_1.setValue(pm10);
+		progressBar_1.setBounds(271, 120, 146, 14);
+		panel_cityinfo.add(progressBar_1);
+
+		// JProgressBar progressBar_2 = new JProgressBar();
+		progressBar_2.setValue(o3);
+		progressBar_2.setBounds(271, 155, 146, 14);
+		panel_cityinfo.add(progressBar_2);
+
+		JLabel lblNewLabel_1_2 = new JLabel("NO\u2082");
+		lblNewLabel_1_2.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNewLabel_1_2.setBounds(67, 79, 194, 14);
+		panel_cityinfo.add(lblNewLabel_1_2);
+
+		JLabel lblNewLabel_1_3 = new JLabel("PM10\r\n");
+		lblNewLabel_1_3.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNewLabel_1_3.setBounds(82, 120, 179, 14);
+		panel_cityinfo.add(lblNewLabel_1_3);
+
+		JLabel lblNewLabel_1_4 = new JLabel(" O\u2083");
+		lblNewLabel_1_4.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNewLabel_1_4.setBounds(82, 155, 179, 14);
+		panel_cityinfo.add(lblNewLabel_1_4);
+
+		JLabel lblNewLabel_1_5 = new JLabel(
+				"\r\n NO\u2082 : alert threshold 80 \u00B5g/m\u00B3 \r\n            PM10  : alert threshold 80 \u00B5g/m\u00B3 \r\n            O\u2083 : alert threshold 80 \u00B5g/m\u00B3");
+		lblNewLabel_1_5.setForeground(Color.RED);
+		lblNewLabel_1_5.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNewLabel_1_5.setBounds(-19, 270, 623, 37);
+		panel_cityinfo.add(lblNewLabel_1_5);
+
+		JButton btnMore = new JButton("simulate");
+		btnMore.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				simulate();
+			}
+		});
+		btnMore.setBounds(294, 236, 74, 23);
+		panel_cityinfo.add(btnMore);
+
+		lblNewLabel_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblNewLabel_1_1_1.setForeground(Color.RED);
+		lblNewLabel_1_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNewLabel_1_1_1.setBounds(221, 198, 179, 14);
+		lblNewLabel_1_1_1.setVisible(alert);
+		panel_cityinfo.add(lblNewLabel_1_1_1);
+		
+		JLabel said = new JLabel("");
+		said.setHorizontalAlignment(SwingConstants.RIGHT);
+		said.setBounds(280, 36, 179, 14);
+		panel_cityinfo.add(said);
+
+		JLabel lblNewLabel = new JLabel("Air Quality Sensor Details");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblNewLabel.setBounds(214, 11, 240, 27);
 		panel.add(lblNewLabel);
+
 	}
 
-	private void getSensorInfo() {
-		try {
-			client.setResponseData(null);
-			JSONObject bodyItem = new JSONObject();
-			bodyItem.put("ID", "" + ID);
+	void simulate() {
+		this.no2 = (int) (Math.random() * 100);
+		this.pm10 = (int) (Math.random() * 100);
+		this.o3 = (int) (Math.random() * 100);
+		this.alert = this.no2 >= 80 || this.pm10 >= 80 || this.o3 >= 80;
+		progressBar.setValue(no2);
+		progressBar_1.setValue(pm10);
+		progressBar_2.setValue(o3);
+		lblNewLabel_1_1_1.setVisible(alert);
+		// initialize(id, address, no2, pm10, o3, alert);
 
-			SendPackage sendPa = new SendPackage();
-			sendPa.setApi(ApiEnum.SENSORAIR_FIND_ONE);
-			sendPa.setBody(bodyItem);
-			client.setSendP(sendPa);
+	}
 
-			JSONObject res = null;
-			while (res == null) {
-				res = client.getResponseData();
-				System.out.println("wait res:" + res);
-				if (res != null) {
-					// if success true - get data bind to table
-					setDataToField((res.getJSONArray("data")).getJSONObject(0));
-				}
-			}
-			// CLOSE
+	private void setType(Type utility) {
+		// TODO Auto-generated method stub
 
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	private void setDataToField(JSONObject res) {
 		// TODO Auto-generated method stub
 		try {
-			txtAddress.setText(res.getString("Name"));
+			said.setText(res.getString("address"));
 //			txtHeight.setText(String.valueOf( res.getDouble("Height")));
 //			txtWidth.setText(String.valueOf( res.getDouble("Width")));
 //			txtLat.setText(String.valueOf( res.getDouble("CenterLat")));
@@ -204,21 +254,23 @@ public class ConfigSensorAir {
 		try {
 			client.setResponseData(null);
 			JSONObject bodyItem = new JSONObject();
-			bodyItem.put("ID", "" + ID);
-			bodyItem.put("address", "" + txtAddress.getText());
-//			bodyItem.put("height", Double.parseDouble( txtHeight.getText()));
-//			bodyItem.put("width", txtWidth.getText());
-//			bodyItem.put("centerLat", txtLat.getText());
-//			bodyItem.put("centerLong", "" +txtLong.getText());
-//			bodyItem.put("mapZoom", "" + txtMapZoom.getText());
-
+			bodyItem.put("id", "" + this.id);
+			bodyItem.put("address", "" + said.getText());
+			bodyItem.put("no2", "" + progressBar.getValue());
+			bodyItem.put("pm10", "" + progressBar_1.getValue());
+			bodyItem.put("o3", "" + progressBar_2.getValue());
+			bodyItem.put("alert", alert);
+			bodyItem.put("alert_id", alert_id);
+           
 			SendPackage sendPa = new SendPackage();
 			sendPa.setApi(ApiEnum.SENSORAIR_UPDATE);
 			sendPa.setBody(bodyItem);
 			client.setSendP(sendPa);
 
 			JSONObject res = null;
+
 			while (res == null) {
+				// res = client.getResponseData();
 				res = client.getResponseData();
 				System.out.println("wait res:" + res);
 				if (res != null) {
@@ -233,11 +285,60 @@ public class ConfigSensorAir {
 					System.out.println("tra ve:" + res.toString());
 				}
 			}
-			getSensorInfo();
+			cancel();
+
+//			getSensorInfo();
 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	void cancel() {
+		SensorAirList sa = new SensorAirList(client);
+		sa.frame.setVisible(true);
+		frame.dispose();
+	}
+
+	void delete() {
+
+		try {
+			client.setResponseData(null);
+			JSONObject bodyItem = new JSONObject();
+			bodyItem.put("id", "" + this.id);
+            bodyItem.put("alert_id", alert_id);
+			SendPackage sendPa = new SendPackage();
+			sendPa.setApi(ApiEnum.SENSORAIR_DELETE);
+			sendPa.setBody(bodyItem);
+			client.setSendP(sendPa);
+
+			JSONObject res = null;
+			while (res == null) {
+				res = client.getResponseData();
+				// chof
+				System.out.println("wait res:" + res);
+
+				if (res == null) {
+					// if success
+
+					boolean sMess = res.getBoolean("success");
+					if (sMess) {
+						lbtMess.setText(res.getString("msg"));
+					} else {
+						lbtMess.setText("Error :" + res.getString("msg"));
+					}
+					System.out.println("tra ve:" + res.toString());
+				}
+			}
+			cancel();
+
+//			getSensorInfo();
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }
