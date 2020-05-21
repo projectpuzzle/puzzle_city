@@ -37,19 +37,19 @@ public class VehiculeSensorProvider {
 			String sql = "select * from tblvehiculesensor";
 			ResultSet rs = st.executeQuery(sql);
 
-			ArrayList<VehiculeSensorModel> airAll = new ArrayList<VehiculeSensorModel>();
+			ArrayList<VehiculeSensorModel> vehiculesensorAll = new ArrayList<VehiculeSensorModel>();
 
 			while (rs.next()) {
 				JSONObject resItem = new JSONObject();
 
 				int ID = rs.getInt("ID");
 				String Address = rs.getString("Address");
-				AlertModel alertModel = alert_id > 0 ? getAlertById(alert_id) : new AlertModel();
+	//			AlertModel alertModel = alert_id > 0 ? getAlertById(alert_id) : new AlertModel();
 
-				airAll.add(new VehiculeSensorModel(ID, Address, alertModel));
+	//			airAll.add(new VehiculeSensorModel(ID, Address, alertModel));
 
 			}
-			ApiResponse ret = new ApiResponse(true, airAll, "Success");
+			ApiResponse ret = new ApiResponse(true, vehiculesensorAll, "Success");
 			System.out.println("Tra du lieu:" + ret.toString());
 			return ret;
 		} catch (Exception e) {

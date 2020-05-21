@@ -97,7 +97,7 @@ public class Dashboard {
 		btnMenuVehiculeSensor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				VehiculeSensorList ctDetail = new VehiculeSensorList(client, cID);
+				VehiculeSensorList ctDetail = new VehiculeSensorList(client);
 				ctDetail.frame.setVisible(true);
 				frame.dispose();
 			}

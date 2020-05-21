@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import puzzle_city_dto.CityProvider;
 import puzzle_city_model.CityModel;
 import puzzle_city_dto.SensorQualityAirProvider;
+import puzzle_city_dto.VehiculeSensorProvider;
 import puzzle_city_model.ApiResponse;
 
 public class Router {
@@ -154,7 +155,25 @@ public class Router {
 				body = input.getJSONObject("body");
 				 deleteSensorQualityAirById((int) body.getInt("id"),(int) body.getInt("alert_id"));
                   return "DELETED";  
+            //vehicule sensor
+			case "VEHICULESENSOR_CREATE":
+				return createVehiculeSensor((JSONObject) input.get("body"));
 
+			case "VEHICULESENSOR_UPDATE":
+				return updateVehiculeSensor((JSONObject) input.get("body"));
+			case "VEHICULESENSOR_FIND_ONE":
+				body = input.getJSONObject("body");
+
+				return findOneVehiculeSensorById((int) body.getInt("ID"));
+
+			case "VEHICULESENSOR_FIND_ALL":
+				return findAllVehiculeSensor();
+				
+			case "VEHICULESENSOR_DELETE":
+				body = input.getJSONObject("body");
+				 deleteVehiculeSensorById((int) body.getInt("id"),(int) body.getInt("alert_id"));
+                  return "DELETED";     
+                  
 			default:
 				return new ApiResponse(false, null, "Not found API").toString();
 			}

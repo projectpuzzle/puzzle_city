@@ -8,17 +8,14 @@ public class VehiculeSensorModel {
 	private AlertModel alerteModel;
 
 
-	public VehiculeSensorModel() {
-		super();
-	}
 
-	public VehiculeSensorModel(int ID, String Address) {
+/*	public VehiculeSensorModel(int ID, String Address) {
 		super();
 		this.ID = ID;
 		this.Address = Address;
 	
 	}
-	
+	*/
 
 	public VehiculeSensorModel(int ID, String Address, AlertModel alerteModel) {
 		super();

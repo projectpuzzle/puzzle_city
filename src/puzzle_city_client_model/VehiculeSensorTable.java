@@ -2,7 +2,7 @@ package puzzle_city_client_model;
 
 import javax.swing.table.AbstractTableModel;
 
-public class VehiculeSensorTable 2extends AbstractTableModel {
+public class VehiculeSensorTable extends AbstractTableModel {
 	public final static String[] columnNames = { "ID", "Address" };
 	public Object[][] values = { { "", "" } };
 
