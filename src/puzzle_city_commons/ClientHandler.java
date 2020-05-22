@@ -100,7 +100,6 @@ public class ClientHandler implements Runnable {
 				jsonresponsetoclient = mapper.writeValueAsString(responsetoclient);
 
 			}
-
 			System.out.println("Closing connection");
 		}
 //CLOSE
