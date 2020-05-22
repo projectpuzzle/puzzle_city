@@ -11,6 +11,41 @@ import puzzle_city_dto.TramwayProvider;
 import puzzle_city_model.ApiResponse;
 
 public class Router {
+	
+	//Empreinte carbone
+	
+	        //ActualData
+	
+	public static String findAllActualData() {
+
+		JSONObject mapper = new JSONObject();
+		try {
+			ActualDataProvider AD = new ActualDataProvider();
+			return AD.getAll().toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	        //CarbonData
+	
+	public static String findAllCarbonData() {
+
+		JSONObject mapper = new JSONObject();
+		try {
+			CarbonDataProvider AD = new CarbonDataProvider();
+			return AD.getAll().toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	
+	//
 //
 	static CityProvider cityP = new CityProvider();
 	static TramwayProvider tramway = new TramwayProvider();
@@ -114,7 +149,11 @@ public class Router {
 			//random
 			case "TRAMWAY_MAP_RANDOM":
 				return randomStation((JSONObject) input.get("body"));
-				
+			case "ActualData_FIND_ALL":
+				return findAllActualData();	
+
+			case "CarbonData_FIND_ALL":
+				return findAllCarbonData();		
 
 			default:
 				return  new ApiResponse(false, null, "Not found API").toString();
