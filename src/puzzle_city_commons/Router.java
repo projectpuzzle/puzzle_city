@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import puzzle_city_dto.ActualDataProvider;
+import puzzle_city_dto.CarbonDataProvider;
 import puzzle_city_dto.CityProvider;
 import puzzle_city_dto.SensorQualityAirProvider;
 import puzzle_city_dto.VehiculeSensorProvider;
@@ -12,6 +14,37 @@ import puzzle_city_model.ApiResponse;
 import puzzle_city_dto.TramwayProvider;
 
 public class Router {
+	//Empreinte carbone
+	
+	        //ActualData
+	
+	public static String findAllActualData() {
+
+		JSONObject mapper = new JSONObject();
+		try {
+			ActualDataProvider AD = new ActualDataProvider();
+			return AD.getAll().toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	        //CarbonData
+	
+	public static String findAllCarbonData() {
+
+		JSONObject mapper = new JSONObject();
+		try {
+			CarbonDataProvider AD = new CarbonDataProvider();
+			return AD.getAll().toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	static CityProvider cityP = new CityProvider();
 	static TramwayProvider tramway = new TramwayProvider();
 	
@@ -185,6 +218,12 @@ public class Router {
 			//random
 			case "TRAMWAY_MAP_RANDOM":
 				return randomStation((JSONObject) input.get("body"));
+
+			case "ActualData_FIND_ALL":
+				return findAllActualData();	
+
+			case "CarbonData_FIND_ALL":
+				return findAllCarbonData();		
 
 				//air sensor
 			case "SENSORAIR_CREATE":
