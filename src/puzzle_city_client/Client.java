@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 // A Java program for a Client 
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -25,19 +26,27 @@ public class Client extends Thread {
 	private Socket socket = null;
 	private DataInputStream input = null;
 	private DataOutputStream out = null;
+	private PrintWriter outmsg;
+	private BufferedReader inmsg;
 	public SendPackage sendP =null;
 	public JSONObject responseData = new JSONObject();
 	private String UserName = "Admin";
+	
+	
+
+	
 	// constructor to put ip address and port
 	public Client(String address, int port) {
+		
 		try {
 			socket = new Socket(address, port);
+			outmsg = new PrintWriter(socket.getOutputStream(), true);
+			inmsg = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		} catch (UnknownHostException u) {
 			System.out.println(u);
 		} catch (IOException i) {
 			System.out.println(i);
-		}
-		
+		}		
 				
 	}
 
@@ -61,7 +70,9 @@ public class Client extends Thread {
 			out.writeUTF("0");
 			System.out.println("Close socket");
 			input.close();
+			inmsg.close();
 			out.close();
+			outmsg.close();
 			socket.close();
 		} catch (IOException i) {
 			System.out.println(i);
@@ -80,6 +91,9 @@ public class Client extends Thread {
 	public void setResponseData(JSONObject resData) {
 		responseData = resData;
 	}
+	
+	
+	
 	
 	
 	@Override
@@ -149,6 +163,16 @@ public class Client extends Thread {
 		}	    
 	 }
 	 
+	public void sendMessage(String msg) throws IOException {
+		outmsg.println(msg);
+	}
+	
+	public String getMessage() throws IOException {
+		String resp;
+		resp = inmsg.readLine();
+		return resp;
+	}	
+	
     public void start() {
         System.out.println("Starting " + threadName);
         if (t == null) {

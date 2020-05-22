@@ -35,7 +35,7 @@ public class Server extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			if (server != null) {
+			if (server != null) { 
 				try {
 					server.close();
 				} catch (IOException e) {
@@ -44,9 +44,9 @@ public class Server extends Thread {
 			}
 		}
 	}
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 		System.out.println("Hello from server"); 
-				new Server(4000);
+				new Server(10000);
 	}
-*/
+
 }

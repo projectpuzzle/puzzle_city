@@ -1,10 +1,14 @@
 package puzzle_city_commons;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import puzzle_city_dto.AnalyseProvider;
 import puzzle_city_dto.CityProvider;
 import puzzle_city_model.CityModel;
 import puzzle_city_dto.SensorQualityAirProvider;
@@ -46,7 +50,7 @@ public class Router {
 		return null;
 	}
 
-	// capteur de qualité d'air
+	// capteur de qualitï¿½ d'air
 	public static String createSensorAir(JSONObject sensorAir) {
 		return SensorQualityAirProvider.create(sensorAir).toString();
 	}
@@ -76,44 +80,52 @@ public class Router {
 		}
 		return null;
 	}
-	public static void deleteSensorQualityAirById(int id,int alert_id) {
-		SensorQualityAirProvider.deleteSensorQualityAirById(id,alert_id);
+
+	public static void deleteSensorQualityAirById(int id, int alert_id) {
+		SensorQualityAirProvider.deleteSensorQualityAirById(id, alert_id);
 	}
 
+	/*
 	// Vehicule sensor
-		public static String createVehiculeSensor(JSONObject VehiculeSensor) {
-			return VehiculeSensorProvider.create(VehiculeSensor).toString();
-		}
+	public static String createVehiculeSensor(JSONObject VehiculeSensor) {
+		return VehiculeSensorProvider.create(VehiculeSensor).toString();
+	}
 
-		public static String updateVehiculeSensor(JSONObject VehiculeSensor) {
-			return VehiculeSensorProvider.update(VehiculeSensor).toString();
-		}
+	public static String updateVehiculeSensor(JSONObject VehiculeSensor) {
+		return VehiculeSensorProvider.update(VehiculeSensor).toString();
+	}
 
-		public static String findAllVehiculeSensor() {
+	public static String findAllVehiculeSensor() {
 
-			JSONObject mapper = new JSONObject();
-			try {
-				VehiculeSensorProvider VehiculeSensor = new VehiculeSensorProvider();
-				return VehiculeSensor.getAll().toString();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return null;
+		JSONObject mapper = new JSONObject();
+		try {
+			VehiculeSensorProvider VehiculeSensor = new VehiculeSensorProvider();
+			return VehiculeSensor.getAll().toString();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return null;
+	}
 
-		public static String findOneVehiculeSensorById(int VehiculeSensorID) {
+	public static String findOneVehiculeSensorById(int VehiculeSensorID) {
 
-			try {
-				return VehiculeSensorProvider.getByID(VehiculeSensorID).toString();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return null;
+		try {
+			return VehiculeSensorProvider.getByID(VehiculeSensorID).toString();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		public static void deleteVehiculeSensorById(int ID,int alert_ID) {
-			VehiculeSensorProvider.deleteVehiculeSensorById(ID,alert_ID);
-		}
-	
+		return null;
+	}
+
+	public static void deleteVehiculeSensorById(int ID, int alert_ID) {
+		VehiculeSensorProvider.deleteVehiculeSensorById(ID, alert_ID);
+	}
+*/
+	// analyse
+	public static int CountAirSensor() {
+		return AnalyseProvider.getNumberOfSensor();
+	}
+
 	// input {api:"CITYSave",body:{}}
 	public static String router(JSONObject input) {
 		String api;
@@ -149,11 +161,14 @@ public class Router {
 
 			case "SENSORAIR_FIND_ALL":
 				return findAllSensorAir();
-				
+
 			case "SENSORAIR_DELETE":
 				body = input.getJSONObject("body");
-				 deleteSensorQualityAirById((int) body.getInt("id"),(int) body.getInt("alert_id"));
-                  return "DELETED";  
+				deleteSensorQualityAirById((int) body.getInt("id"), (int) body.getInt("alert_id"));
+				return "DELETED";
+
+			case "ANALYSE_AIR_SENSOR_NUMBER":
+				return String.valueOf(CountAirSensor());
 
 			default:
 				return new ApiResponse(false, null, "Not found API").toString();
@@ -170,5 +185,14 @@ public class Router {
 				return null;
 			}
 		}
+
+	}
+
+
+	public static String route() {
+		String s = String.valueOf(CountAirSensor());
+		return s;
 	}
 }
+
+		
