@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import puzzle_city_dto.ActualDataProvider;
+import puzzle_city_dto.CarbonDataProvider;
 import puzzle_city_dto.CityProvider;
 import puzzle_city_dto.TramwayProvider;
 

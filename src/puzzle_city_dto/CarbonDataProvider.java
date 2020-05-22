@@ -14,7 +14,6 @@ import org.json.JSONObject;
 import puzzle_city_model.ActualData;
 import puzzle_city_model.ApiResponse;
 import puzzle_city_model.CarbonData;
-import puzzle_city_model.CityModel;
 
 public class CarbonDataProvider {
 
