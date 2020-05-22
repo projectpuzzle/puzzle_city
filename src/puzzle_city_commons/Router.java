@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import puzzle_city_dto.ActualDataProvider;
+import puzzle_city_dto.AnalyseProvider;
 import puzzle_city_dto.CarbonDataProvider;
 import puzzle_city_dto.CityProvider;
 import puzzle_city_dto.SensorQualityAirProvider;
@@ -111,7 +112,7 @@ public class Router {
 		}
 	}
 
-	// capteur de qualité d'air
+	// capteur de qualitï¿½ d'air
 	public static String createSensorAir(JSONObject sensorAir) {
 		return SensorQualityAirProvider.create(sensorAir).toString();
 	}
@@ -179,6 +180,12 @@ public class Router {
 			VehiculeSensorProvider.deleteVehiculeSensorById(ID,alert_ID);
 		}
 	
+		// analyse
+		public static int CountAirSensor() {
+			return AnalyseProvider.getNumberOfSensor();
+		}
+		
+		
 	// input {api:"CITYSave",body:{}}
 	public static String router(JSONObject input) {
 		String api;
@@ -262,7 +269,10 @@ public class Router {
 				body = input.getJSONObject("body");
 				 deleteVehiculeSensorById((int) body.getInt("id"),(int) body.getInt("alert_id"));
                   return "DELETED";     
-                  
+            
+			case "ANALYSE_AIR_SENSOR_NUMBER":
+				return String.valueOf(CountAirSensor());
+				
 			default:
 				return new ApiResponse(false, null, "Not found API").toString();
 			}
@@ -278,5 +288,9 @@ public class Router {
 				return null;
 			}
 		}
+	}
+	public static String route() {
+		String s = String.valueOf(CountAirSensor());
+		return s;
 	}
 }
