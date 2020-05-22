@@ -1,17 +1,12 @@
 package puzzle_city_dto;
 
-import java.awt.print.Printable;
 import java.sql.*;
 import java.util.ArrayList;
-
-import javax.swing.text.html.HTMLEditorKit.Parser;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import puzzle_city_model.ApiResponse;
-import puzzle_city_model.CityModel;
 
 public class CityProvider {
 
@@ -21,8 +16,10 @@ public class CityProvider {
 	
 	public CityProvider() {
 		// TODO Auto-generated constructor stub
+		System.out.println("create a connection to db");
 		dbconn = new JDBCConnection();
 		conn = dbconn.setConnection();
+		System.out.println("create connection successfully");
 	}
 	
 	//get all 
@@ -33,25 +30,24 @@ public class CityProvider {
         	String sql = "select * from tblcity";
         	ResultSet rs = st.executeQuery(sql);
         	
-        	 ArrayList<CityModel> cityAll = new ArrayList<CityModel>();
-
+    		JSONArray cityAll = new JSONArray();
             while(rs.next()){
             	JSONObject resItem = new JSONObject();           	
+            	 resItem.put("ID", rs.getInt("cId"));  
+            	 
+            	 resItem.put("Name", rs.getString("cName"));        	
+            	 resItem.put("Height", rs.getFloat("cHeight"));        	
+            	 resItem.put("Width", rs.getFloat("cWidth"));        	
+            	 resItem.put("CenterLat", rs.getFloat("cCenterLat"));	
+            	 resItem.put("CenterLong", rs.getFloat("cCenterLong"));	
+            	 resItem.put("MapZoom", rs.getInt("cMapZoom"));
                 
-                int ID = rs.getInt("cId");
-                String Name = rs.getString("cName");
-                Float Height = rs.getFloat("cHeight");
-                Float Width = rs.getFloat("cWidth");
-                Float CenterLat = rs.getFloat("cCenterLat");
-                Float CenterLong = rs.getFloat("cCenterLong");
-                int MapZoom = rs.getInt("cMapZoom");
                 
-                
-                cityAll.add(new CityModel(ID,Name,Height,Width,CenterLat,CenterLong,MapZoom));
+                cityAll.put(resItem);
                 
             }
             ApiResponse resturn = new ApiResponse(true, cityAll, "Success");
-            System.out.println("Result:"+resturn.toString());
+            System.out.println("return data:"+resturn.toString());
     		return resturn;
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -172,7 +168,7 @@ public class CityProvider {
             pstmt.executeUpdate();
             
         	// add success
-        	return new ApiResponse(true, null, "Update success");
+        	return new ApiResponse(true, null, "Create success");
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -187,31 +183,26 @@ public class CityProvider {
 		}
 		
 	}
-	
+	public static ApiResponse delete() {
+		try {
+			st =  conn.createStatement();
+        	String sql = "DELETE FROM tblcity WHERE 1";
+        	st.executeUpdate(sql);  
+        	return new ApiResponse (true, null, "Delete success");
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			try {
+				return new ApiResponse(false, null, e.getMessage());
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				return null;
+			}
+
+		}
+		
+		
+	}
 	//main for test
-//	public static void main(String[] args) throws JSONException {
-//		CityProvider qCity = new CityProvider();
-//		// get all
-////		ApiResponse res = qCity.getAll();
-////        System.out.print(res.toString());
-//		
-//        //Add new
-////		String newStringItem ="{\"CenterLong\":48.523101806640625,\"MapZoom\":8,\"CenterLat\":101.02100372314453,\"Height\":3000.1,\"ID\":1,\"Width\":4000.1,\"Name\":\"paris\"}" ;
-////		JSONObject newITem = new JSONObject(newStringItem);
-////		ApiResponse res = qCity.create(newITem);
-////		System.out.print(res.toString());
-//     
-//        //Update
-//		String newStringItem ="{\"CenterLong\":48.523101806640625,\"MapZoom\":8,\"CenterLat\":101.02100372314453,\"Height\":3000.1,\"ID\":1,\"Width\":4000.1,\"Name\":\"moi update\"}" ;
-//		JSONObject newITem = new JSONObject(newStringItem);
-//		ApiResponse res = qCity.update(newITem);
-//		System.out.print(res.toString());
-//		res = qCity.getAll();
-//		System.out.print(res.toString());
-//        //get by id 
-////       ApiResponse res = qCity.getByID(1);
-////        System.out.print(res.toString());
-//        
-//	
-//	}
 }

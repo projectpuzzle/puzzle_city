@@ -35,7 +35,7 @@ import java.awt.event.MouseEvent;
 public class VehiculeSensorList {
 
 	public JFrame frame;
-	private JTable tblVehiculeSensor;
+	private JTable tblvehiculesensor;
 	public 	Client client ;//= new Client("127.0.0.1", 4000);
 	
 	List<Object[]> list=new ArrayList<>();
@@ -73,7 +73,7 @@ public class VehiculeSensorList {
 	
 	public VehiculeSensorList(JTable tblvehiculesensor) {
 
-		this.tblVehiculeSensor = tblvehiculesensor;
+		this.tblvehiculesensor = tblvehiculesensor;
 	}
 
 
@@ -118,12 +118,12 @@ public class VehiculeSensorList {
 		
 		//table
 		VehiculeSensorTable tv = new VehiculeSensorTable();
-		tblVehiculeSensor = new JTable(tv);
-		tblVehiculeSensor.addMouseListener(new MouseAdapter() {
+		tblvehiculesensor = new JTable(tv);
+		tblvehiculesensor.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				int row = tblVehiculeSensor.getSelectedRow();
-				int cID = Integer.parseInt(tblVehiculeSensor.getModel().getValueAt(row, 0).toString()) ;
+				int row = tblvehiculesensor.getSelectedRow();
+				int cID = Integer.parseInt(tblvehiculesensor.getModel().getValueAt(row, 0).toString()) ;
 
 				Dashboard ctDetail =	new Dashboard(client, cID);
 				Dashboard.frame.setVisible(true);
@@ -133,7 +133,7 @@ public class VehiculeSensorList {
 		});
 
 		// 
-        JScrollPane jsp = new JScrollPane(tblVehiculeSensor);
+        JScrollPane jsp = new JScrollPane(tblvehiculesensor);
         jsp.setBounds(20, 49, 593, 199);
 		panel_cityinfo.add(jsp);
 
@@ -230,7 +230,7 @@ public class VehiculeSensorList {
 			}
 		}	
 
-		tblVehiculeSensor.setModel(model);
+		tblvehiculesensor.setModel(model);
 		
 	}
 }

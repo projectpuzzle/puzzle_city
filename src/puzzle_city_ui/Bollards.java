@@ -16,8 +16,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 
-import puzzle_city_client_model.BollardsTable;
-
 public class Bollards {
 
 	private JFrame frame;
@@ -72,7 +70,7 @@ public class Bollards {
 		lblListCity.setBounds(10, 11, 99, 27);
 		panel_cityinfo.add(lblListCity);
 		
-		//table
+/*		//table
 		BollardsTable tv = new BollardsTable();
 		tblCity = new JTable(tv);
 		tblCity.addMouseListener(new MouseAdapter() {
@@ -87,19 +85,9 @@ public class Bollards {
 
 			}
 		});
+*/
 
-		JButton btnCreateButton = new JButton("Change vehicule treshold");
-		btnCreateButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				CityAddNew ctAdd =	new CityAddNew(client);
-				ctAdd.frame.setVisible(true);
-				frame.dispose();
-
-			}
-		});
-		btnCreateButton.setBackground(Color.WHITE);
-		btnCreateButton.setBounds(406, 103, 209, 23);
-		panel_cityinfo.add(btnCreateButton);
+	
 		
 		JLabel lblVehiculeMax = new JLabel("Vehicule Max");
 		lblVehiculeMax.setHorizontalAlignment(SwingConstants.LEFT);

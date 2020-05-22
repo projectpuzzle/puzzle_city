@@ -52,14 +52,14 @@ public class CityDetail {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 700, 499);
+		frame.setBounds(200, 100, 1000, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
 		panel.setBackground(Color.WHITE);
-		panel.setBounds(10, 11, 664, 439);
+		panel.setBounds(50, 50, 900, 700);
 		frame.getContentPane().add(panel);
 		
 		JButton btnMenuDashboard = new JButton("Dashboard");
@@ -74,6 +74,14 @@ public class CityDetail {
 		panel.add(btnMenuCityInfomation);
 		
 		JButton btnMenuTramwayStation = new JButton("Tramway Station");
+		btnMenuTramwayStation.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				CityTramway windowCityTramway  = new CityTramway(client, cityID);
+				windowCityTramway.frame.setVisible(true);
+				frame.dispose();
+			}
+		});
 		btnMenuTramwayStation.setBounds(10, 132, 166, 23);
 		panel.add(btnMenuTramwayStation);
 		
@@ -82,7 +90,7 @@ public class CityDetail {
 		panel.add(btnMenuBollards);
 		
 		JPanel panel_cityinfo = new JPanel();
-		panel_cityinfo.setBounds(186, 64, 468, 364);
+		panel_cityinfo.setBounds(186, 64, 684, 574);
 		panel.add(panel_cityinfo);
 		panel_cityinfo.setLayout(null);
 		
@@ -167,8 +175,17 @@ public class CityDetail {
 		panel_cityinfo.add(btnCancel);
 		
 		lbtMess = new JLabel("");
-		lbtMess.setBounds(119, 212, 315, 51);
+		lbtMess.setBounds(64, 244, 315, 51);
 		panel_cityinfo.add(lbtMess);
+		
+		JButton btnNewButton = new JButton("Delete");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				deleteCityInfo();
+			}
+		});
+		btnNewButton.setBounds(322, 181, 97, 25);
+		panel_cityinfo.add(btnNewButton);
 		
 		JLabel lblNewLabel = new JLabel("City Manager System");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -220,24 +237,16 @@ public class CityDetail {
 			e.printStackTrace();
 		}
 	}	
-
-	private void updateCityInfo() {
-		try {			
+	private void deleteCityInfo() {
+		try {
 			client.setResponseData(null);		
 			JSONObject bodyItem = new JSONObject();
 			bodyItem.put("ID", "" +cityID);
-			bodyItem.put("name", "" +txtCityName.getText());
-			bodyItem.put("height", Double.parseDouble( txtHeight.getText()));
-			bodyItem.put("width", txtWidth.getText());
-			bodyItem.put("centerLat", txtLat.getText());
-			bodyItem.put("centerLong", "" +txtLong.getText());
-			bodyItem.put("mapZoom", "" + txtMapZoom.getText());
 			
 			SendPackage sendPa = new SendPackage();
-			sendPa.setApi(ApiEnum.CITY_UPDATE);		
+			sendPa.setApi(ApiEnum.CITY_DELETE);	
 			sendPa.setBody(bodyItem);
 			client.setSendP(sendPa);
-
 			JSONObject res = null;
 			while(res == null) {
 				res = client.getResponseData();
@@ -245,22 +254,118 @@ public class CityDetail {
 									System.out.println("wait res:"+res);
 
 					// if success 
-					
-					
 					boolean sMess = res.getBoolean("success");
 					if(sMess) {
-						lbtMess.setText( res.getString("msg"));
+						lbtMess.setText("Delete Success");
+						CityAddNew newcity = new CityAddNew(client);
+						newcity.frame.setVisible(true);
+						frame.dispose();						
+						
 					}else {
 						lbtMess.setText("Error :"+res.getString("msg") );						
 					}
-					System.out.println("tra ve:"+res.toString());
+					System.out.println("Result:"+res.toString());
 				}
 			} 
-			getCityInfo();
-
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private void updateCityInfo() {
+		if(isValid()) {	
+			try {			
+				client.setResponseData(null);		
+				JSONObject bodyItem = new JSONObject();
+				bodyItem.put("ID", "" +cityID);
+				bodyItem.put("name", "" +txtCityName.getText());
+				bodyItem.put("height", Double.parseDouble( txtHeight.getText()));
+				bodyItem.put("width", txtWidth.getText());
+				bodyItem.put("centerLat", txtLat.getText());
+				bodyItem.put("centerLong", "" +txtLong.getText());
+				bodyItem.put("mapZoom", "" + txtMapZoom.getText());
+				
+				SendPackage sendPa = new SendPackage();
+				sendPa.setApi(ApiEnum.CITY_UPDATE);		
+				sendPa.setBody(bodyItem);
+				client.setSendP(sendPa);
+	
+				JSONObject res = null;
+				while(res == null) {
+					res = client.getResponseData();
+					System.out.println("wait res:"+res);
+					if(res!= null) {
+						// if success 
+						boolean sMess = res.getBoolean("success");
+						if(sMess) {
+							lbtMess.setText("Update Success");
+						}else {
+							lbtMess.setText("Error :"+res.getString("msg") );						
+						}
+						System.out.println("Return:"+res.toString());
+					}
+				} 
+				getCityInfo();
+	
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private boolean isValid() {
+		boolean valid = true;
+		String textErr = "";
+		// TODO Auto-generated method stub
+		System.out.println("txtCityName:"+txtCityName.getText());
+		if(txtCityName.getText().isEmpty()) {
+			textErr = "Name City is required.";
+			valid = false;
+		};	
+		
+		//check valid height
+		try {	
+			Double.parseDouble( txtHeight.getText());
+		} catch (Exception e) {
+			textErr = "Height value is not valid.";
+			valid = false;
+		}
+		
+		//check valid width
+		try {	
+			Double.parseDouble( txtWidth.getText());
+		} catch (Exception e) {
+			textErr = "Width value is not valid.";
+			valid = false;
+		}
+
+		//check valid Latitude
+		try {	
+			Double.parseDouble( txtLat.getText());
+		} catch (Exception e) {
+			textErr = "Latitude value is not valid.";
+			valid = false;
+		}
+
+		//check valid Latitude
+		try {	
+			Double.parseDouble( txtLong.getText());
+		} catch (Exception e) {
+			textErr = "Longitude value is not valid.";
+			valid = false;
+		}
+
+		//check valid Latitude
+		try {	
+			Integer.parseInt( txtMapZoom.getText());
+		} catch (Exception e) {
+			textErr = "MapZoom value is not valid.";
+			valid = false;
+		}		
+		
+		lbtMess.setText(textErr);
+		return valid;
 	}
 }

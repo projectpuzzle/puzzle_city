@@ -58,13 +58,13 @@ public class Dashboard {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 700, 500);
+		frame.setBounds(200, 100, 1000, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.WHITE);
-		panel.setBounds(10, 11, 664, 439);
+		panel.setBounds(50, 50, 900, 700);
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 
@@ -87,7 +87,16 @@ public class Dashboard {
 		btnMenuCityInfomation.setBounds(10, 98, 173, 23);
 		panel.add(btnMenuCityInfomation);
 
-		JButton btnMenuTramwayStation = new JButton("Tramway Station");
+		
+		JButton btnMenuTramwayStation = new JButton("Tramway Network");
+		btnMenuTramwayStation.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				CityTramway windowCityTramway  = new CityTramway(client, cID);
+				windowCityTramway.frame.setVisible(true);
+				frame.dispose();
+			}
+		});
 		btnMenuTramwayStation.setBounds(10, 132, 173, 23);
 		panel.add(btnMenuTramwayStation);
 
@@ -104,11 +113,12 @@ public class Dashboard {
 		});
 
 		JPanel panel_dashboard = new JPanel();
-		panel_dashboard.setBounds(207, 64, 447, 364);
+		panel_dashboard.setBounds(186, 64, 684, 574);
 		panel.add(panel_dashboard);
 		panel_dashboard.setLayout(null);
 
 		JButton btnBackToList = new JButton("Back To List City");
+		btnBackToList.setVisible(false);
 		btnBackToList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -117,10 +127,9 @@ public class Dashboard {
 				frame.dispose();
 			}
 		});
-		btnBackToList.setBounds(241, 11, 196, 23);
+		btnBackToList.setBounds(527, 11, 147, 23);
 		panel_dashboard.add(btnBackToList);
-
-		JLabel lblNewLabel = new JLabel("City Manager System");
+		JLabel lblNewLabel = new JLabel("Puzzle City");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setBounds(214, 11, 197, 27);
@@ -132,7 +141,12 @@ public class Dashboard {
 				SensorAirList sensorAirList = new SensorAirList(client);
 				sensorAirList.frame.setVisible(true);
 				frame.dispose();
-
+			}
+		});
+		
+		JButton btnNewButton = new JButton("Analyse");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
 		btnAirQualitySensor_1.setBounds(10, 172, 173, 23);
@@ -148,5 +162,15 @@ public class Dashboard {
 //			
 //		}}
 //				);
+		btnNewButton.setBounds(10, 540, 173, 25);
+		panel.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("Carbon FootPrint");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnNewButton_1.setBounds(10, 502, 173, 25);
+		panel.add(btnNewButton_1);
 	}
 }
