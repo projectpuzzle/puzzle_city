@@ -115,5 +115,21 @@ public class Dashboard {
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setBounds(214, 11, 197, 27);
 		panel.add(lblNewLabel);
+		
+		JButton btnNewButton = new JButton("Analyse");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnNewButton.setBounds(10, 540, 173, 25);
+		panel.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("Carbon FootPrint");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnNewButton_1.setBounds(10, 502, 173, 25);
+		panel.add(btnNewButton_1);
 	}
 }

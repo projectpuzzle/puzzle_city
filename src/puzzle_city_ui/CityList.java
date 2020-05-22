@@ -113,7 +113,7 @@ public class CityList {
 			}
 		});
 
-		// tao scrollpane roi cho table chui vao thi table thi tieu de moi hien thi
+		// create scrollpane with param which is the table needed (make it display )
         JScrollPane jsp = new JScrollPane(tblCity);
         jsp.setBounds(20, 49, 593, 278);
 		panel_cityinfo.add(jsp);
@@ -214,7 +214,7 @@ public class CityList {
 			}
 		}	
 
-		tblCity.setModel(model);
+		tblCity.setModel(model); 
 		
 	}
 }

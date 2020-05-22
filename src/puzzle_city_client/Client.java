@@ -119,7 +119,7 @@ public class Client extends Thread {
 	
 				// safina chof lmok
 				try {
-					//System.out.println("Cho tra ve");
+					//System.out.println("Waiting for the result");
 					DataInputStream oos = new DataInputStream(socket.getInputStream());
 					String msg = oos.readUTF();
 					try {
