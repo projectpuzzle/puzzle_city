@@ -5,8 +5,6 @@ import java.sql.*;
 import org.json.JSONObject;
 //Class Connect
 
-@SuppressWarnings("unused")
-
 public class JDBCConnection {
 	
 
@@ -16,17 +14,12 @@ public class JDBCConnection {
 
 		    //Class.forName("com.mysql.cj.jdbc.Drive");  
 		    
-	}	
+	}
     
     public Connection setConnection() {
     	try{
-    		
-<<<<<<< HEAD
     		conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3308/puzzle_db?serverTimezone=UTC", "root", "");
-=======
-	    	conn = DriverManager.getConnection("jdbc:mysql://172.31.249.135:3306/puzzle_01?serverTimezone=UTC", "root", "toto");
->>>>>>> branch 'master' of https://github.com/projectpuzzle/puzzle_city.git
-	        if (conn != null) {
+	    	if (conn != null) {
 	            System.out.println("Connected to the database!");
 	            return conn;
 	        } else {

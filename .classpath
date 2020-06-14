@@ -8,5 +8,8 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/shaun/Documents/ING 1/eclipse-workspace/java-json.jar"/>
 	<classpathentry kind="lib" path="C:/Users/shaun/Documents/ING 1/eclipse-workspace/mysql-connector-java-8.0.20 (1).jar"/>
+	<classpathentry kind="lib" path="C:/Users/shaun/Documents/ING 1/eclipse-workspace/jcalendar-1.4/lib/jcalendar-1.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/shaun/Documents/ING 1/eclipse-workspace/com.fasterxml.jackson.core.jar/com.fasterxml.jackson.core.jar"/>
+	<classpathentry kind="lib" path="C:/Users/shaun/Documents/ING 1/eclipse-workspace/com.fasterxml.jackson.databind.jar/com.fasterxml.jackson.databind.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
