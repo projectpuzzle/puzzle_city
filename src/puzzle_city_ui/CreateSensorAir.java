@@ -142,8 +142,11 @@ public class CreateSensorAir {
 		btnCancel.setBounds(383, 254, 89, 23);
 		panel_cityinfo.add(btnCancel);
 		
-		lbtMess = new JLabel("");
-		lbtMess.setBounds(212, 219, 315, 47);
+		lbtMess = new JLabel("Error syntax : error unrecognized expression");
+		lbtMess.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lbtMess.setForeground(new Color(255, 0, 0));
+		lbtMess.setBounds(188, 196, 315, 47);
+		lbtMess.setVisible(false);
 		panel_cityinfo.add(lbtMess);
 		
 		JLabel lblNewLabel_2 = new JLabel("Create new sensor");
