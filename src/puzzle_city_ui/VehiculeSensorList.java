@@ -40,14 +40,12 @@ public class VehiculeSensorList {
 	
 	List<Object[]> list=new ArrayList<>();
 
-	/**
-	 * Launch the application.
-	 */
+	
 //	public static void main(String[] args) {
 //		EventQueue.invokeLater(new Runnable() {
 //			public void run() {
 //				try {
-//					System.out.println("vao main");
+//					System.out.println("main");
 //					
 //					CityList window = new CityList();
 //					window.frame.setVisible(true);
@@ -63,6 +61,7 @@ public class VehiculeSensorList {
 
 	/**
 	 * Create the application.
+	 * @wbp.parser.constructor
 	 */
 	public VehiculeSensorList(Client socket) {
 		client = socket;
@@ -98,11 +97,11 @@ public class VehiculeSensorList {
 		panel.add(panel_cityinfo);
 		panel_cityinfo.setLayout(null);
 		
-		JLabel lblListCity = new JLabel("Vehicule sensor list");
-		lblListCity.setHorizontalAlignment(SwingConstants.LEFT);
-		lblListCity.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblListCity.setBounds(10, 11, 128, 27);
-		panel_cityinfo.add(lblListCity);
+		JLabel lblListVehiculeSensor = new JLabel("Vehicule sensor list");
+		lblListVehiculeSensor.setHorizontalAlignment(SwingConstants.LEFT);
+		lblListVehiculeSensor.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblListVehiculeSensor.setBounds(10, 11, 128, 27);
+		panel_cityinfo.add(lblListVehiculeSensor);
 		
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
@@ -118,20 +117,17 @@ public class VehiculeSensorList {
 		
 		//table
 		VehiculeSensorTable tv = new VehiculeSensorTable();
-		tblvehiculesensor = new JTable(tv);
-		tblvehiculesensor.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				int row = tblvehiculesensor.getSelectedRow();
-				int cID = Integer.parseInt(tblvehiculesensor.getModel().getValueAt(row, 0).toString()) ;
+		//tblvehiculesensor = new JTable(tv);
+		tblvehiculesensor = new JTable(new DefaultTableModel(
+				new Object[][] { { null, null, null }, { null, null, null }, { null, null, null }, { null, null, null },
+						{ null, null, null }, { null, null, null }, { null, null, null }, },
+				new String[] { "ID", "Address", "State" }) {
+			boolean[] columnEditables = new boolean[] { false, false, false };
 
-				Dashboard ctDetail =	new Dashboard(client, cID);
-				Dashboard.frame.setVisible(true);
-				frame.dispose();
-
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
 			}
 		});
-
 		// 
         JScrollPane jsp = new JScrollPane(tblvehiculesensor);
         jsp.setBounds(20, 49, 593, 199);
@@ -151,7 +147,7 @@ public class VehiculeSensorList {
 		
 
 //		//set data  for table	
-		// add city
+		// add vehicule sensor
 		JPanel panel_cityinfo_1 = new JPanel();
 		panel_cityinfo_1.setLayout(null);
 		panel_cityinfo_1.setBounds(10, 64, 644, 364);
@@ -163,7 +159,7 @@ public class VehiculeSensorList {
 		lblListCity_1.setBounds(10, 11, 99, 27);
 		panel_cityinfo_1.add(lblListCity_1);
 		
-		JLabel lblNewLabel = new JLabel("Vehicule sensor Manager System");
+		JLabel lblNewLabel = new JLabel("Vehicule Sensor Manager System");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblNewLabel.setBounds(315, 13, 307, 27);
@@ -207,7 +203,7 @@ public class VehiculeSensorList {
 		// TODO Auto-generated method stub	
 		DefaultTableModel model = new DefaultTableModel();		
 		String[] columnNames = {
-				  "ID",  "Address"
+				  "ID",  "Address", "State"
 			    };
 		model.setColumnIdentifiers(columnNames);
 
@@ -220,6 +216,7 @@ public class VehiculeSensorList {
 				Object[] rowData = {
 					jb.getInt("ID"),
 					jb.getString("Address"),
+					jb.getBoolean("State")
 				};
 	    		
 				model.addRow(rowData);
