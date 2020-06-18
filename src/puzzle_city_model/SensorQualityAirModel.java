@@ -1,5 +1,7 @@
 package puzzle_city_model;
 
+import puzzle_city_model.AlertModel;
+
 public class SensorQualityAirModel {
 
 	private int id;
@@ -7,9 +9,9 @@ public class SensorQualityAirModel {
 	private int no2;
 	private int pm10;
 	private int o3;
- 
-	private AlertModel alerteModel;
+	private boolean isActivated;
 
+	private AlertModel alerteModel;
 
 	public SensorQualityAirModel() {
 		super();
@@ -19,11 +21,11 @@ public class SensorQualityAirModel {
 		super();
 		this.id = id;
 		this.address = address;
-	
-	}
-	
 
-	public SensorQualityAirModel(int id, String address, int no2, int pm10, int o3, AlertModel alerteModel) {
+	}
+
+	public SensorQualityAirModel(int id, String address, int no2, int pm10, int o3, AlertModel alerteModel,
+			boolean isActivated) {
 		super();
 		this.id = id;
 		this.address = address;
@@ -31,6 +33,7 @@ public class SensorQualityAirModel {
 		this.pm10 = pm10;
 		this.o3 = o3;
 		this.alerteModel = alerteModel;
+		this.isActivated = isActivated;
 	}
 
 	public int getId() {
@@ -81,5 +84,12 @@ public class SensorQualityAirModel {
 		this.alerteModel = alerteModel;
 	}
 
+	public boolean isActivated() {
+		return isActivated;
+	}
+
+	public void setActivated(boolean isActivated) {
+		this.isActivated = isActivated;
+	}
 
 }

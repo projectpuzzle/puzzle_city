@@ -1,7 +1,5 @@
 package puzzle_city_model;
 
-
-
 import java.util.Date;
 
 public class AlertHistoryModel {

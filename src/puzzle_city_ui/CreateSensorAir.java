@@ -1,14 +1,16 @@
 package puzzle_city_ui;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -20,10 +22,7 @@ import puzzle_city_client.Client;
 import puzzle_city_client_model.ApiEnum;
 import puzzle_city_client_model.SendPackage;
 
-import javax.swing.JCheckBox;
-
 public class CreateSensorAir {
-
 
 	public JFrame frame;
 	private JTextField txtAddressSensor;
@@ -34,7 +33,8 @@ public class CreateSensorAir {
 //	private JTextField txtMapZoom;
 	private JLabel lbtMess;
 
-	public 	Client client ;//= new Client("127.0.0.1", 4000);
+	public Client client;// = new Client("127.0.0.1", 4000);
+
 	/**
 	 * Launch the application.
 	 */
@@ -55,43 +55,43 @@ public class CreateSensorAir {
 		frame.setBounds(100, 100, 700, 499);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
+
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
 		panel.setBackground(Color.WHITE);
 		panel.setBounds(10, 11, 664, 439);
 		frame.getContentPane().add(panel);
-		
+
 		JPanel panel_cityinfo = new JPanel();
 		panel_cityinfo.setBounds(10, 64, 644, 364);
 		panel.add(panel_cityinfo);
 		panel_cityinfo.setLayout(null);
-		
+
 		JLabel lblNewLabel_1 = new JLabel("Address of sensor");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNewLabel_1.setBounds(10, 168, 179, 14);
 		panel_cityinfo.add(lblNewLabel_1);
-		
+
 		txtAddressSensor = new JTextField();
 		txtAddressSensor.setBounds(212, 165, 315, 20);
 		panel_cityinfo.add(txtAddressSensor);
 		txtAddressSensor.setColumns(10);
-		
+
 //		JLabel lblNewLabel_1_1 = new JLabel("\u00A7\u00A7");
 //		lblNewLabel_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
 //		lblNewLabel_1_1.setBounds(10, 39, 179, 14);
 //		panel_cityinfo.add(lblNewLabel_1_1);
-		
+
 //		txtLat = new JTextField();
 //		txtLat.setColumns(10);
 //		txtLat.setBounds(212, 39, 315, 20);
 //		panel_cityinfo.add(txtLat);
-		
+
 //		txtLong = new JTextField();
 //		txtLong.setColumns(10);
 //		txtLong.setBounds(212, 67, 315, 20);
 //		panel_cityinfo.add(txtLong);
-		
+
 //		txtHeight = new JTextField();
 //		txtHeight.setColumns(10);
 //		txtHeight.setBounds(212, 95, 315, 20);
@@ -106,7 +106,7 @@ public class CreateSensorAir {
 //		lblNewLabel_1_1_1_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
 //		lblNewLabel_1_1_1_1_1.setBounds(10, 126, 179, 14);
 //		panel_cityinfo.add(lblNewLabel_1_1_1_1_1);
-		
+
 //		txtWidth = new JTextField();
 //		txtWidth.setColumns(10);
 //		txtWidth.setBounds(212, 126, 315, 20);
@@ -121,7 +121,7 @@ public class CreateSensorAir {
 //		lbtMapZoom.setHorizontalAlignment(SwingConstants.RIGHT);
 //		lbtMapZoom.setBounds(10, 154, 179, 14);
 //		panel_cityinfo.add(lbtMapZoom);
-		
+
 		JButton btnCreate = new JButton("Create");
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -130,7 +130,7 @@ public class CreateSensorAir {
 		});
 		btnCreate.setBounds(154, 254, 89, 23);
 		panel_cityinfo.add(btnCreate);
-		
+
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -141,19 +141,19 @@ public class CreateSensorAir {
 		});
 		btnCancel.setBounds(383, 254, 89, 23);
 		panel_cityinfo.add(btnCancel);
-		
+
 		lbtMess = new JLabel("Error syntax : error unrecognized expression");
 		lbtMess.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lbtMess.setForeground(new Color(255, 0, 0));
 		lbtMess.setBounds(188, 196, 315, 47);
 		lbtMess.setVisible(false);
 		panel_cityinfo.add(lbtMess);
-		
+
 		JLabel lblNewLabel_2 = new JLabel("Create new sensor");
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblNewLabel_2.setBounds(259, 11, 193, 14);
 		panel_cityinfo.add(lblNewLabel_2);
-		
+
 		JLabel lblNewLabel = new JLabel("Air Quality Sensors Manager System");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
@@ -161,7 +161,6 @@ public class CreateSensorAir {
 		panel.add(lblNewLabel);
 	}
 
-	
 	private void setField(JSONObject res) {
 		// TODO Auto-generated method stub
 		try {
@@ -175,49 +174,77 @@ public class CreateSensorAir {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}	
+	}
 
 	private void createSensor() {
-		try {			
-			client.setResponseData(null);		
+		try {
+			final String address = txtAddressSensor.getText();
+			if (!isNotEmpty(address)) {
+				JOptionPane.showMessageDialog(frame, "Empty field !");
+				
+				return;
+			}
+			if (isInvalidData(address)) {
+				JOptionPane.showMessageDialog(frame, "Invalid data !");
+				
+				return;
+			}
+			if (checkLength(address)) {
+				JOptionPane.showMessageDialog(frame, "Too long !");
+				
+				return;
+			}
+			client.setResponseData(null);
 			JSONObject bodyItem = new JSONObject();
 			bodyItem.put("id", "0");
-			bodyItem.put("address", "" +txtAddressSensor.getText());
-//			bodyItem.put("height", Double.parseDouble( txtHeight.getText()));
-//			bodyItem.put("width", txtWidth.getText());
-//			bodyItem.put("centerLat", txtLat.getText());
-//			bodyItem.put("centerLong", "" +txtLong.getText());
-//			bodyItem.put("mapZoom", "" + txtMapZoom.getText());
-			
+			bodyItem.put("address", "" + address);
+
 			SendPackage sendPa = new SendPackage();
-			sendPa.setApi(ApiEnum.SENSORAIR_CREATE);		
+			sendPa.setApi(ApiEnum.SENSORAIR_CREATE);
 			sendPa.setBody(bodyItem);
 			client.setSendP(sendPa);
 
 			JSONObject res = null;
-			while(res == null) {
+			while (res == null) {
 				res = client.getResponseData();
-				System.out.println("cho tra ve:"+res);
-				if(res!= null) {
+				System.out.println("cho tra ve:" + res);
+				if (res != null) {
 					// if success
 					boolean sMess = res.getBoolean("success");
-					if(sMess) {
+					if (sMess) {
 						lbtMess.setText("Add Success");
-					}else {
-						lbtMess.setText("Error :"+res.getString("msg") );						
+					} else {
+						lbtMess.setText("Error :" + res.getString("msg"));
 					}
-					System.out.println("tra ve:"+res.toString());
+					System.out.println("tra ve:" + res.toString());
 				}
-			} Back();
+			}
+			Back();
 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
+	private boolean isNotEmpty(String text) {
+		return text != null & !text.isEmpty();
+	}
+
+	private boolean isInvalidData(String text) {
+		Pattern p = Pattern.compile("[^a-z0-9- ]", Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(text);
+		return m.find();
+
+	}
+	private boolean checkLength(String text) {
+		return text.length() >= 15;
+	}
+
 	void Back() {
 		SensorAirList sa = new SensorAirList(client);
 		sa.frame.setVisible(true);
 		frame.dispose();
 	}
+	
 }

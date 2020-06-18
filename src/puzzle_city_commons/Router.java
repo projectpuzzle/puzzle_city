@@ -145,6 +145,9 @@ public class Router {
 	public static void deleteSensorQualityAirById(int id,int alert_id) {
 		SensorQualityAirProvider.deleteSensorQualityAirById(id,alert_id);
 	}
+	public static String getAllAlertHistory(int sensorId) {
+		return SensorQualityAirProvider.getAllAlertHistory(sensorId).toString();
+	}
 
 	// Vehicule sensor
 		public static String createVehiculeSensor(JSONObject VehiculeSensor) {
@@ -249,7 +252,13 @@ public class Router {
 			case "SENSORAIR_DELETE":
 				body = input.getJSONObject("body");
 				 deleteSensorQualityAirById((int) body.getInt("id"),(int) body.getInt("alert_id"));
+				 
                   return "DELETED";  
+                  
+			case "ALERT_HISTORY_FIND_ALL":
+				body = input.getJSONObject("body");
+				return getAllAlertHistory((int) body.getInt("id") );
+                  
                   
             //vehicule sensor
 			case "VEHICULESENSOR_CREATE":

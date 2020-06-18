@@ -1,18 +1,20 @@
 package puzzle_city_dto;
-import java.io.*;
-import java.awt.print.Printable;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Calendar;
-
-import javax.swing.text.html.HTMLEditorKit.Parser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import puzzle_city_model.AlertHistoryModel;
 import puzzle_city_model.AlertModel;
 import puzzle_city_model.ApiResponse;
 import puzzle_city_model.SensorQualityAirModel;
@@ -22,6 +24,7 @@ public class SensorQualityAirProvider {
 	JDBCConnection dbconn;
 	static Connection conn;
 	static Statement st;
+
 
 	public SensorQualityAirProvider() {
 		// TODO Auto-generated constructor stub
@@ -40,17 +43,17 @@ public class SensorQualityAirProvider {
 			ArrayList<SensorQualityAirModel> airAll = new ArrayList<SensorQualityAirModel>();
 
 			while (rs.next()) {
-				JSONObject resItem = new JSONObject();
-
 				int id = rs.getInt("id");
 				String address = rs.getString("address");
 				int no2 = rs.getInt("no2");
 				int pm10 = rs.getInt("pm10");
 				int o3 = rs.getInt("o3");
 				int alert_id = rs.getInt("alert_id");
+				int isActivated = rs.getInt("isActivated");
 				AlertModel alertModel = alert_id > 0 ? getAlertById(alert_id) : new AlertModel();
 
-				airAll.add(new SensorQualityAirModel(id, address, no2, pm10, o3, alertModel));
+				airAll.add(new SensorQualityAirModel(id, address, no2, pm10, o3, alertModel,
+						isActivated == 0 ? false : true));
 
 			}
 			ApiResponse ret = new ApiResponse(true, airAll, "Success");
@@ -80,19 +83,48 @@ public class SensorQualityAirProvider {
 
 			ResultSet resultats = recherchePersonne.executeQuery();
 
-			boolean encore = resultats.next();
+			boolean en = resultats.next();
 
-			if (encore) {
+			if (en) {
 				int idA = resultats.getInt("id");
 				System.out.println(resultats.getTimestamp("date"));
 				Timestamp date = resultats.getTimestamp("date");
 				boolean isAlert = resultats.getBoolean("isAlert");
-				int statutInt = resultats.getInt("statut");
-				puzzle_city_model.Status status = getStatusByIndex(statutInt);
-				return new AlertModel(idA, date, isAlert, status);
+
+				return new AlertModel(idA, date, isAlert);
 			}
 
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
+	public static ApiResponse getAllAlertHistory(int alert_id) {
+		try {
+			st = conn.createStatement();
+			PreparedStatement recherchePersonne = conn.prepareStatement("SELECT * FROM tblalerthistory WHERE alert_id = ?");
+
+			recherchePersonne.setInt(1, alert_id);
+
+			ResultSet resultats = recherchePersonne.executeQuery();
+
+			ArrayList<AlertHistoryModel> histoicalAlerts = new ArrayList<AlertHistoryModel>();
+			while (resultats.next()) {
+
+				Timestamp date = resultats.getTimestamp("date");
+
+				histoicalAlerts.add(new AlertHistoryModel(date));
+			}
+			ApiResponse ret = new ApiResponse(true, histoicalAlerts, "Success");
+			System.out.println("Tra du lieu:" + ret.toString());
+			return ret;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -147,8 +179,8 @@ public class SensorQualityAirProvider {
 
 			pstmt.setBoolean(1, false);
 			pstmt.setInt(2, 0);
-			 Timestamp currentTime = new Timestamp(Date.from(Instant.now()).getTime());
-			 pstmt.setTimestamp(3, currentTime);
+			Timestamp currentTime = new Timestamp(Date.from(Instant.now()).getTime());
+			pstmt.setTimestamp(3, currentTime);
 
 			int rowAffected = pstmt.executeUpdate();
 			if (rowAffected == 1) {
@@ -172,8 +204,8 @@ public class SensorQualityAirProvider {
 	// create
 	public static ApiResponse create(JSONObject record) {
 		try {
-			PreparedStatement pstmt = conn
-					.prepareStatement("INSERT INTO tblsensorair(address,no2,pm10,o3,alert_id) values (?,?,?,?,?)");
+			PreparedStatement pstmt = conn.prepareStatement(
+					"INSERT INTO tblsensorair(address,no2,pm10,o3,alert_id,isActivated) values (?,?,?,?,?,?)");
 
 			String address = record.getString("address");
 			// Boolean isOpen = record.getBoolean("isOpen");
@@ -184,6 +216,7 @@ public class SensorQualityAirProvider {
 			pstmt.setInt(3, 0);
 			pstmt.setInt(4, 0);
 			pstmt.setInt(5, idAlert);
+			pstmt.setInt(6, 0);
 			// pstmt.setBoolean(2, true);
 
 			pstmt.executeUpdate();
@@ -208,9 +241,13 @@ public class SensorQualityAirProvider {
 	public static void updateAlertById(int id, boolean alert) {
 		PreparedStatement pstmt;
 		try {
+			if (alert) {
+				AlertModel existedAlert = getAlertById(id);
+				createHistoricalAlert(existedAlert);
+			}
 			pstmt = conn.prepareStatement("UPDATE tblalert SET isAlert = ?,date=?  WHERE id = ?");
 			pstmt.setBoolean(1, alert);
-			 Timestamp currentTime = new Timestamp(Date.from(Instant.now()).getTime());
+			Timestamp currentTime = new Timestamp(Date.from(Instant.now()).getTime());
 			pstmt.setTimestamp(2, currentTime);
 			pstmt.setInt(3, id);
 
@@ -222,12 +259,33 @@ public class SensorQualityAirProvider {
 
 	}
 
+	public static void createHistoricalAlert(AlertModel alertModel) {
+
+		try {
+
+			PreparedStatement pstmt = conn.prepareStatement("INSERT INTO tblalerthistory(date,alert_id) values (?,?)");
+			Timestamp currentTime = new Timestamp(alertModel.getDate().getTime());
+			pstmt.setTimestamp(1, currentTime);
+
+			pstmt.setInt(2, alertModel.getId());
+
+			pstmt.executeUpdate();
+			// add success
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+
+		}
+
+	}
+
 	// update
 	public static ApiResponse update(JSONObject record) {
 		try {
 
-			PreparedStatement pstmt = conn
-					.prepareStatement("UPDATE tblsensorair SET address = ?,no2=?,pm10=?,o3=?  WHERE id = ?");
+			PreparedStatement pstmt = conn.prepareStatement(
+					"UPDATE tblsensorair SET address = ?,no2=?,pm10=?,o3=?,isActivated=?  WHERE id = ?");
 			System.out.println(record);
 			int id = record.getInt("id");
 
@@ -237,14 +295,15 @@ public class SensorQualityAirProvider {
 			int o3 = record.getInt("o3");
 			boolean alert = record.getBoolean("alert");
 			int alert_id = record.getInt("alert_id");
+			boolean isActivated = record.getBoolean("isActivated");
 			updateAlertById(alert_id, alert);
-//                 Boolean isOpen = record.getBoolean("isOpen");	          
-			// long date_of_birth = Date.valueOf(date).getTime();
+
 			pstmt.setString(1, address);
 			pstmt.setInt(2, no2);
 			pstmt.setInt(3, pm10);
 			pstmt.setInt(4, o3);
-			pstmt.setInt(5, id);
+			pstmt.setBoolean(5, isActivated);
+			pstmt.setInt(6, id);
 //	             pstmt.setBoolean(2, isOpen);
 
 			pstmt.executeUpdate();
@@ -265,6 +324,7 @@ public class SensorQualityAirProvider {
 		}
 
 	}
+
 	public static void deleteAlertById(int id) {
 		try {
 
@@ -277,35 +337,28 @@ public class SensorQualityAirProvider {
 
 	}
 
-	public static void deleteSensorQualityAirById(int id,int alert_id) {
+	public static ApiResponse  deleteSensorQualityAirById(int id, int alert_id) {
 		try {
 
 			PreparedStatement pt = conn.prepareStatement("delete from tblsensorair where id like ?");
 			pt.setInt(1, id);
 			pt.execute();
 			deleteAlertById(alert_id);
-		} catch (SQLException ex) {
-			System.out.println("error " + ex.getMessage());
+			return new ApiResponse(true, null, "Delete success");
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			try {
+				return new ApiResponse(false, null, e.getMessage());
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				return null;
+			}
+
 		}
+
 
 	}
 
-	public static puzzle_city_model.Status getStatusByIndex(int status) {
-
-		switch (status) {
-		case 0:
-
-			return puzzle_city_model.Status.ALERT_TRAITED;
-		case 1:
-
-			return puzzle_city_model.Status.ALERT_NOTTRAITED;
-
-		case 2:
-
-			return puzzle_city_model.Status.ALERT_INPROGRESS;
-
-		default:
-			return null;
-		}
-	}
 }

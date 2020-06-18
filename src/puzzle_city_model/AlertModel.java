@@ -8,29 +8,28 @@ public class AlertModel {
 	private boolean isAlert;
 	private int nbVehicules;
 	private int co2;
-	private Status statut;
+private Status status;
 
 	public AlertModel() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public AlertModel(int id, Date date, boolean isAlert , Status statut) {
+	public AlertModel(int id, Date date, boolean isAlert,Status status) {
 		super();
 		this.id = id;
 		this.date = date;
 		this.isAlert=isAlert;
-		this.statut =statut;
+this.status=status;
 	}
 
-	public Status getStatut() {
-		return statut;
-	}
+	public AlertModel(int id, Date date, boolean isAlert) {
+		super();
+		this.id = id;
+		this.date = date;
+		this.isAlert=isAlert;
 
-	public void setStatut(Status statut) {
-		this.statut = statut;
 	}
-
 
 	public int getId() {
 		return id;

@@ -1,6 +1,5 @@
 package puzzle_city_ui;
 
-
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -40,29 +39,13 @@ public class SensorAirList {
 	public JFrame frame;
 	private JTable tblsensorair;
 	public Client client;// = new Client("127.0.0.1", 4000);
-	
-	List<Object[]> list=new ArrayList<>();
+
+	List<Object[]> list = new ArrayList<>();
 
 	/**
 	 * Launch the application.
 	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					System.out.println("vao main");
-//					
-//					CityList window = new CityList();
-//					window.frame.setVisible(true);
-//
-//					System.out.println("Load data");
-//					
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
+
 
 	/**
 	 * Create the application.
@@ -115,7 +98,7 @@ public class SensorAirList {
 		JLabel lblListCity = new JLabel("Air quality sensors list");
 		lblListCity.setHorizontalAlignment(SwingConstants.LEFT);
 		lblListCity.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblListCity.setBounds(229, 28, 189, 27);
+		lblListCity.setBounds(230, 25, 189, 27);
 		panel_cityinfo.add(lblListCity);
 
 		tblsensorair = new JTable(new DefaultTableModel(
@@ -135,13 +118,15 @@ public class SensorAirList {
 				int row = tblsensorair.getSelectedRow();
 				int id = Integer.parseInt(list.get(row)[0].toString());
 				String address = list.get(row)[1].toString();
-				int no2 = (int)list.get(row)[2];
-				int pm10 =(int) list.get(row)[3];
-				int o3 = (int)list.get(row)[4];
-				boolean alert = (boolean)list.get(row)[5];
-				int alertId=(int)list.get(row)[7];
-			//	System.out.println("ppp" + globalModel.getColumnCount());
-				ConfigSensorAir cS = new ConfigSensorAir(client, id, address, no2, pm10, o3, alert,alertId);
+				int no2 = (int) list.get(row)[2];
+				int pm10 = (int) list.get(row)[3];
+				int o3 = (int) list.get(row)[4];
+				boolean alert = (boolean) list.get(row)[5];
+				int alertId = (int) list.get(row)[7];
+				boolean isActivated = (boolean) list.get(row)[8];
+				// System.out.println("ppp" + globalModel.getColumnCount());
+				ConfigSensorAir cS = new ConfigSensorAir(client, id, address, no2, pm10, o3, alert, alertId,
+						isActivated);
 				cS.frame.setVisible(true);
 				frame.dispose();
 
@@ -150,7 +135,7 @@ public class SensorAirList {
 
 		// tao scrollpane roi cho table chui vao thi table thi tieu de moi hien thi
 		JScrollPane jsp = new JScrollPane(tblsensorair);
-		jsp.setBounds(78, 66, 482, 217);
+		jsp.setBounds(81, 95, 482, 108);
 		panel_cityinfo.add(jsp);
 
 		JButton btnCreateButton = new JButton("Add new sensor ");
@@ -162,7 +147,7 @@ public class SensorAirList {
 			}
 		});
 		btnCreateButton.setBackground(Color.WHITE);
-		btnCreateButton.setBounds(153, 294, 139, 23);
+		btnCreateButton.setBounds(99, 294, 139, 23);
 		panel_cityinfo.add(btnCreateButton);
 
 		JButton btnCancel = new JButton("Cancel");
@@ -174,20 +159,32 @@ public class SensorAirList {
 			}
 		});
 		btnCancel.setBackground(Color.WHITE);
-		btnCancel.setBounds(373, 294, 121, 23);
+		btnCancel.setBounds(423, 294, 121, 23);
 		panel_cityinfo.add(btnCancel);
-		
+
 		JLabel lblClickOnThe = new JLabel("*Click on the desired sensor for more details");
 		lblClickOnThe.setForeground(Color.BLACK);
 		lblClickOnThe.setHorizontalAlignment(SwingConstants.LEFT);
 		lblClickOnThe.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblClickOnThe.setBounds(175, 328, 265, 26);
+		lblClickOnThe.setBounds(202, 225, 265, 26);
 		panel_cityinfo.add(lblClickOnThe);
+
+		JButton btnThresholdDetails = new JButton("Threshold details\r\n");
+		btnThresholdDetails.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ReglementationFrance rf = new ReglementationFrance(client);
+				rf.frame.setVisible(true);
+				frame.dispose();
+			}
+		});
+		btnThresholdDetails.setBackground(Color.WHITE);
+		btnThresholdDetails.setBounds(259, 294, 139, 23);
+		panel_cityinfo.add(btnThresholdDetails);
 
 		JLabel lblNewLabel = new JLabel("Air Quality Sensors Manager System");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblNewLabel.setBounds(159, 11, 337, 27);
+		lblNewLabel.setBounds(161, 26, 337, 27);
 		panel.add(lblNewLabel);
 
 	}
@@ -228,9 +225,9 @@ public class SensorAirList {
 	}
 
 	private void bindDataToTable(JSONArray jArray) {
-		//globalModel = new DefaultTableModel();
+		// globalModel = new DefaultTableModel();
 		DefaultTableModel model = new DefaultTableModel();
-		String[] columnNames = { "Address",  "Alert status" ,"Alert time"};
+		String[] columnNames = { "Address", "Alert status", "Alert time" };
 		model.setColumnIdentifiers(columnNames);
 
 		ArrayList arrRows = new ArrayList();
@@ -240,14 +237,17 @@ public class SensorAirList {
 				jb = jArray.getJSONObject(i);
 
 				JSONObject alerteModel = jb.getJSONObject("alerteModel");
-				boolean isAlerted=alerteModel.getBoolean("alert");
-				Object[] rowData = { jb.getString("address"), isAlerted?"Alerted":"Not alerted", isAlerted?alerteModel.getString("date"):"---"};
-							
-				Object[] globalrowData = { jb.getInt("id"), jb.getString("address"), jb.getInt("no2"), jb.getInt("pm10"),
-									jb.getInt("o3"), alerteModel.getBoolean("alert"), alerteModel.has("date")?alerteModel.getString("date"):"---",	alerteModel.get("id")		
-               
+				boolean isAlerted = alerteModel.getBoolean("alert");
+				Object[] rowData = { jb.getString("address"), isAlerted ? "Alerted" : "Not alerted",
+						isAlerted ? alerteModel.getString("date") : "---" };
+
+				Object[] globalrowData = { jb.getInt("id"), jb.getString("address"), jb.getInt("no2"),
+						jb.getInt("pm10"), jb.getInt("o3"), alerteModel.getBoolean("alert"),
+						alerteModel.has("date") ? alerteModel.getString("date") : "---", alerteModel.get("id"),
+						jb.getBoolean("activated")
+
 				};
-              //globalModel.addRow(globalrowData);
+				// globalModel.addRow(globalrowData);
 				list.add(globalrowData);
 				model.addRow(rowData);
 				arrRows.clear();
