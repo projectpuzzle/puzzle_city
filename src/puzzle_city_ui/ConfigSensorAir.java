@@ -33,6 +33,9 @@ import javax.swing.JTextPane;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.UIManager;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.SystemColor;
 
 public class ConfigSensorAir {
 
@@ -60,9 +63,12 @@ public class ConfigSensorAir {
 	private JSlider slider3;
 	private JSlider sliderTimer;
 	private JCheckBox activatedCheckBox;
-	private JPanel panelX;
 	private JLabel timeLeft;
 	private JTextField text4;
+	private JButton btn1;
+	private JButton btn2;
+	private JButton btn3;
+	private JButton buttonTimer;
 
 	/**
 	 * Launch the application.
@@ -114,12 +120,6 @@ public class ConfigSensorAir {
 		panel_cityinfo.setBounds(10, 42, 644, 407);
 		panel.add(panel_cityinfo);
 		panel_cityinfo.setLayout(null);
-
-		panelX = new JPanel();
-		panelX.setBackground(UIManager.getColor("Button.background"));
-		panelX.setBounds(0, 64, 644, 289);
-
-		panel_cityinfo.add(panelX);
 
 		JLabel lblNewLabel_1 = new JLabel("Sensor Address :");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 11));
@@ -215,26 +215,40 @@ public class ConfigSensorAir {
 		activatedCheckBox = new JCheckBox("ON");
 		activatedCheckBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (e.getSource() == activatedCheckBox) {
-					panelX.setVisible(!activatedCheckBox.isSelected());
-					text1.setText("0");
-					text2.setText("0");
-					text3.setText("0");
+				if (!activatedCheckBox.isSelected()) {
+					btn1.setEnabled(false);
+					btn2.setEnabled(false);
+					btn3.setEnabled(false);
+					buttonTimer.setEnabled(false);
+					
 					slider.setValue(0);
 					slider2.setValue(0);
 					slider3.setValue(0);
+					sliderTimer.setValue(0);
+					text1.setText("0");
+					text2.setText("0");
+					text3.setText("0");
+					text4.setText("0");
+				
 				} else {
-					panelX.setVisible(true);
+					btn1.setEnabled(true);
+					btn2.setEnabled(true);
+					btn3.setEnabled(true);
+					buttonTimer.setEnabled(true);
+
 
 				}
+				//e.getSource() == activatedCheckBox
 			}
 		});
 		activatedCheckBox.setSelected(isActivated);
-		panelX.setVisible(!isActivated);
 		activatedCheckBox.setBounds(122, 42, 97, 23);
 		panel_cityinfo.add(activatedCheckBox);
 
 		slider = new JSlider();
+		slider.setFont(new Font("Tahoma", Font.BOLD, 12));
+		slider.setBackground(UIManager.getColor("Button.background"));
+		slider.setEnabled(false);
 		slider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 
@@ -247,8 +261,17 @@ public class ConfigSensorAir {
 		slider.setValue(70);
 		slider.setBounds(224, 185, 208, 45);
 		panel_cityinfo.add(slider);
+		
+				JLabel lblNewLabel_1_1_2_1 = new JLabel("Set up timer for results (in seconds) :");
+				lblNewLabel_1_1_2_1.setBounds(10, 71, 184, 14);
+				panel_cityinfo.add(lblNewLabel_1_1_2_1);
+				lblNewLabel_1_1_2_1.setFont(new Font("Tahoma", Font.PLAIN, 11));
 
 		slider2 = new JSlider();
+		slider2.setBackground(UIManager.getColor("Button.background"));
+		slider2.setFont(new Font("Tahoma", Font.BOLD, 12));
+		slider2.setForeground(Color.WHITE);
+		slider2.setEnabled(false);
 		slider2.setPaintTicks(true);
 		slider2.setPaintLabels(true);
 		slider2.setMajorTickSpacing(20);
@@ -257,6 +280,9 @@ public class ConfigSensorAir {
 		panel_cityinfo.add(slider2);
 
 		slider3 = new JSlider();
+		slider3.setFont(new Font("Tahoma", Font.BOLD, 12));
+		slider3.setBackground(UIManager.getColor("Button.background"));
+		slider3.setEnabled(false);
 		slider3.setMajorTickSpacing(50);
 		slider3.setMaximum(300);
 		slider3.setPaintLabels(true);
@@ -265,12 +291,11 @@ public class ConfigSensorAir {
 		slider3.setBounds(222, 297, 208, 45);
 		panel_cityinfo.add(slider3);
 
-		JLabel lblNewLabel_1_1_2_1 = new JLabel("Set up timer for results (in seconds) :");
-		lblNewLabel_1_1_2_1.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		lblNewLabel_1_1_2_1.setBounds(10, 71, 184, 14);
-		panel_cityinfo.add(lblNewLabel_1_1_2_1);
-
 		sliderTimer = new JSlider();
+		sliderTimer.setForeground(Color.WHITE);
+		sliderTimer.setFont(new Font("Tahoma", Font.BOLD, 12));
+		sliderTimer.setBackground(UIManager.getColor("Button.background"));
+		sliderTimer.setEnabled(false);
 		sliderTimer.setPaintTicks(true);
 		sliderTimer.setMaximum(30);
 		sliderTimer.setPaintLabels(true);
@@ -280,6 +305,15 @@ public class ConfigSensorAir {
 		panel_cityinfo.add(sliderTimer);
 
 		text1 = new JTextField();
+		text1.addKeyListener(new KeyAdapter() {
+			public void keyTyped(KeyEvent e) {
+				char c = e.getKeyChar();
+				if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c==KeyEvent.VK_DELETE)) {
+					e.consume();
+					
+				}
+			}
+		});
 		text1.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		text1.setHorizontalAlignment(SwingConstants.CENTER);
 		text1.setText(String.valueOf(no2));
@@ -289,6 +323,16 @@ public class ConfigSensorAir {
 		int a = Integer.parseInt(text1.getText());
 		slider.setValue(a);
 		text2 = new JTextField();
+		text2.addKeyListener(new KeyAdapter() {
+		
+			public void keyTyped(KeyEvent e) {
+				char c = e.getKeyChar();
+				if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c==KeyEvent.VK_DELETE)) {
+					e.consume();
+					
+				}
+			}
+		});
 		text2.setText(String.valueOf(pm10));
 		text2.setHorizontalAlignment(SwingConstants.CENTER);
 		text2.setColumns(10);
@@ -298,6 +342,16 @@ public class ConfigSensorAir {
 		slider2.setValue(b);
 
 		text3 = new JTextField();
+		text3.addKeyListener(new KeyAdapter() {
+			
+			public void keyTyped(KeyEvent e) {
+				char c = e.getKeyChar();
+				if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c==KeyEvent.VK_DELETE)) {
+					e.consume();
+					
+				}
+			}
+		});
 		text3.setText(String.valueOf(o3));
 		text3.setHorizontalAlignment(SwingConstants.CENTER);
 		text3.setColumns(10);
@@ -305,11 +359,11 @@ public class ConfigSensorAir {
 		panel_cityinfo.add(text3);
 		int c = Integer.parseInt(text3.getText());
 		slider3.setValue(c);
-		JButton btnSetValue = new JButton("set value\r\n");
-		btnSetValue.addActionListener(new ActionListener() {
+		btn1 = new JButton("set value\r\n");
+		btn1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int d = Integer.parseInt(text1.getText());
-
+				
 				if (sliderLengthNO2(d)) {
 					JOptionPane.showMessageDialog(frame, "excessive value !");
 					text1.setText("0");
@@ -318,19 +372,18 @@ public class ConfigSensorAir {
 					JOptionPane.showMessageDialog(frame, "Impossible value !");
 					text1.setText("0");
 					slider.setValue(0);
-				}
-
+				} 
 				else {
 					slider.setValue(d);
 				}
 			}
 		});
 
-		btnSetValue.setBounds(489, 187, 91, 23);
-		panel_cityinfo.add(btnSetValue);
+		btn1.setBounds(489, 187, 91, 23);
+		panel_cityinfo.add(btn1);
 
-		JButton btnMore_2_1 = new JButton("set value");
-		btnMore_2_1.addActionListener(new ActionListener() {
+		 btn2 = new JButton("set value");
+		btn2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int d = Integer.parseInt(text2.getText());
 				if (sliderLengthPM10(d)) {
@@ -343,15 +396,16 @@ public class ConfigSensorAir {
 					slider2.setValue(0);
 
 				} else {
+					
 					slider2.setValue(d);
 				}
 			}
 		});
-		btnMore_2_1.setBounds(489, 245, 91, 23);
-		panel_cityinfo.add(btnMore_2_1);
+		btn2.setBounds(489, 245, 91, 23);
+		panel_cityinfo.add(btn2);
 
-		JButton btnMore_2_2 = new JButton("set value");
-		btnMore_2_2.addActionListener(new ActionListener() {
+		 btn3 = new JButton("set value");
+		btn3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int d = Integer.parseInt(text3.getText());
 				if (sliderLengthO3(d)) {
@@ -368,8 +422,8 @@ public class ConfigSensorAir {
 				}
 			}
 		});
-		btnMore_2_2.setBounds(490, 301, 91, 23);
-		panel_cityinfo.add(btnMore_2_2);
+		btn3.setBounds(490, 301, 91, 23);
+		panel_cityinfo.add(btn3);
 
 		JLabel lblNewLabel_1_1_1 = new JLabel("Remaining time for next release");
 		lblNewLabel_1_1_1.setForeground(Color.DARK_GRAY);
@@ -377,7 +431,7 @@ public class ConfigSensorAir {
 		lblNewLabel_1_1_1.setBounds(214, 136, 188, 37);
 		panel_cityinfo.add(lblNewLabel_1_1_1);
 
-		JButton buttonTimer = new JButton("set value");
+		 buttonTimer = new JButton("set value");
 		buttonTimer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnStartMouseClicked(e);
@@ -395,6 +449,16 @@ public class ConfigSensorAir {
 		panel_cityinfo.add(timeLeft);
 
 		text4 = new JTextField();
+		text4.addKeyListener(new KeyAdapter() {
+			
+			public void keyTyped(KeyEvent e) {
+				char c = e.getKeyChar();
+				if(!(Character.isDigit(c) || (c==KeyEvent.VK_BACK_SPACE) || c==KeyEvent.VK_DELETE)) {
+					e.consume();
+					
+				}
+			}
+		});
 		text4.setText("0");
 		text4.setHorizontalAlignment(SwingConstants.CENTER);
 		text4.setFont(new Font("Tahoma", Font.PLAIN, 12));
@@ -571,7 +635,9 @@ public class ConfigSensorAir {
 
 	private boolean isNotEmpty(String text) {
 		return text != null & !text.isEmpty();
+		
 	}
+	
 
 	private boolean isInvalidData(String text) {
 		Pattern p = Pattern.compile("[^a-z0-9- ]", Pattern.CASE_INSENSITIVE);
@@ -604,10 +670,10 @@ public class ConfigSensorAir {
 		return text.length() >= 15;
 	}
 
-	public void setPanelX(JPanel panelX) {
-		this.panelX = panelX;
-		this.panelX.setVisible(!activatedCheckBox.isSelected());
-	}
+//	public void setPanelX(JPanel panelX) {
+//		this.panelX = panelX;
+//		this.panelX.setVisible(!activatedCheckBox.isSelected());
+//	}
 
 	private void btnStartMouseClicked(ActionEvent evt) {
 		int d = Integer.parseInt(text4.getText());
