@@ -240,10 +240,18 @@ public class TramwayProvider {
             	int r = rs.getInt("bRadius") ;
             	//random
             	RandomPoint newRandom = new RandomPoint(Width, Height, maxPoint, r, 0, 2*Math.PI);
-            	Point[] points = newRandom.getListPoint(); 
-            	if(points.length > 0) {
+             	JSONObject resRanDomPoint =	newRandom.getListPoint(); 
+                //	Point[] points = newRandom.getListPoint(); 
+                	JSONArray resListPoint  = resRanDomPoint.getJSONArray("ListPoint");
+    				Point[] lP = new Point[resListPoint.length()];
+    				for (int i = 0; i < lP.length; i++) {
+    					int x = resListPoint.getJSONObject(i).getInt("x");
+    					int y = resListPoint.getJSONObject(i).getInt("y");
+    					lP[i] = new Point(x, y);
+    				}
+                	if(lP.length > 0) {
             		// update tblstation
-            		createAndUpdateStation(points,cityID);            		
+	            		createAndUpdateStation(lP,cityID);  
             	}
                 //return list Station
             	return new ApiResponse(true, getTramWayByCityID(cityID), "Random success");
