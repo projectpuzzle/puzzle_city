@@ -11,15 +11,19 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.json.JSONObject;
+import com.mysql.cj.xdevapi.JsonArray;
+import com.mysql.cj.xdevapi.JsonValue;
+
 public class RandomPoint{
-//	public static void main(String[] args) {
-//	
-//		//double degs = Math.toDegrees(Math.atan(width/height));		
-//		getListPoint();
-//		
-//	}
+	//	public static void main(String[] args) {
+	//	
+	//		//double degs = Math.toDegrees(Math.atan(width/height));		
+	//		getListPoint();
+	//		
+	//	}
 	// r : radius is the shortest distance between two points
-	
+
 	static int k = 30;
 	//w: divide 2 dimensions into squares of length w
 	//maxPoint : Maximum number of points
@@ -43,39 +47,39 @@ public class RandomPoint{
 		this.angleStart= angleStart;
 		this.angleEnd= angleEnd;
 	}
-	public static Point[] getListPoint(){
+	public static JSONObject getListPoint(){
 
 		active = null;
 		temp = new ArrayList<Point>();
 		// TODO Auto-generated method stub
 		// canvas : 600x400			
 		int w = (int) ((int) r/(Math.sqrt(2)));
-		System.out.println("batdautim: "+width+"-"+height+"-"+maxPoint+"-"+angleStart+"-"+angleEnd+"-"+angleEnd+"-");
-	
+		System.out.println("Start finding: "+width+"-"+height+"-"+maxPoint+"-"+angleStart+"-"+angleEnd+"-"+angleEnd+"-");
+
 		try {
 			//step 0	
 			cols = (int) Math.floor(width/w);
 			rows = (int) Math.floor(height/w);
 			grid = new Point[cols*rows];
-			
+
 			for (int i = 0; i < cols*rows; i++) {
 				grid[i] = new Point();		
 			}
-			
+
 			//step 1
 			int x = (int) width/2;
 			int y = (int) height/2;
-	
+
 			// int x = new Random().nextInt(width);
 			// int y = new Random().nextInt(height);
 			// positon of x, y
-			
+
 			int i = (int) x/w;
 			int j = (int) y/w;
-			
+
 			Point v0 = new Point(x, y);			
 			grid[i+j*cols] = v0;
-			
+
 			if(active == null) {
 				active = new Object[1];
 				active[0] = v0;
@@ -84,7 +88,7 @@ public class RandomPoint{
 			}
 			temp.add(v0);
 			//Maximum number of points.number of point is is the length of active
-			
+
 			while(temp.size() > 0 && active.length< maxPoint) {
 				//System.out.println(+ temp.size()+ "="+ active.length+"="+maxPoint);
 				//random the next starting point
@@ -93,7 +97,7 @@ public class RandomPoint{
 				Point pos = (Point) temp.get(randomIndex);
 				boolean found = false;
 				for (int n = 0; n < k; n++) {
-	
+
 					//random radius from r to 2r
 					double m = getRandomNumberInRange(r,2*r);
 					//random angle for point 
@@ -108,9 +112,9 @@ public class RandomPoint{
 					int col = (int) (newPoint.getX() / w); 
 					int row = (int) (newPoint.getY() / w); 
 					boolean ok = true;
-					
+
 					//if the newest random point is in the grid so check the distance of this point to the grid around
-					
+
 					if((col+row*cols)>=0 && (col+row*cols) <= cols*rows && isZero(grid[col+row*cols])) {  									
 						for (int h = -1; h <= 1; h++) {
 							for (int g = -1; g <= 1; g++) {
@@ -118,7 +122,7 @@ public class RandomPoint{
 									Point neighbor =  grid[(col+h)+(row+g)*cols];	
 									if(!isZero(grid[(col+h)+(row+g)*cols])){
 										double d = dst(newPoint.getX(), newPoint.getY(), neighbor.getX(), neighbor.getY());	
-									//	System.out.println("kc:"+d+"-"+r);
+										//	System.out.println("kc:"+d+"-"+r);
 										if(d<r) {
 											ok = false;
 										}
@@ -142,27 +146,36 @@ public class RandomPoint{
 					System.out.println("drop point:"+randomIndex);
 					temp.remove(randomIndex);
 				}
-				
+
 			}
-			Point[] resItems= new Point[ active.length];
-			
+			JSONObject resJson =  new JSONObject();
+
+			JsonArray resItems= new JsonArray();
+
 			for (int l = 0; l < active.length; l++) {
-			//	System.out.println(active[l].toString());
-				resItems[l] = (Point) active[l];
+				//	System.out.println(active[l].toString());
+				JSONObject aItem = new JSONObject();
+				aItem.put("x", ((Point) active[l]).x);
+				aItem.put("y", ((Point) active[l]).y);
+				resItems.add((JsonValue) aItem);
 			}			
-			return resItems;
+
+
+			resJson.put("ListPoint", resItems );
+			resJson.put("ListPath", resItems );
+			return resJson;
 		} catch (Exception e) {
 			// TODO: handle exception		
 			e.printStackTrace();
 			return null;
-			
+
 		}
 	}
-	
+
 	private static boolean isZero (Point x) {
 		return x.distance(new Point(0,0)) ==0;
 	}
-	
+
 	private static double getRandomNumberInRange(double min, double max) {
 
 		if (min >= max) {
@@ -172,27 +185,27 @@ public class RandomPoint{
 		Random r = new Random();
 		return (r.nextDouble())*(max - min) + min;
 	}
-	
+
 	public static Object[] add(Object[] arr, Object... elements){
-        Object[] tempArr = new Object[arr.length+elements.length];
-        System.arraycopy(arr, 0, tempArr, 0, arr.length);
-        
-        for(int i=0; i < elements.length; i++)
-            tempArr[arr.length+i] = elements[i];
-        return tempArr;
-        
-    }
-	
+		Object[] tempArr = new Object[arr.length+elements.length];
+		System.arraycopy(arr, 0, tempArr, 0, arr.length);
+
+		for(int i=0; i < elements.length; i++)
+			tempArr[arr.length+i] = elements[i];
+		return tempArr;
+
+	}
+
 	public static Object[] remove(Object[] arr, int index){
 		if(arr.length >0) {
-	        Object[] tempArr = new Object[arr.length-1];
+			Object[] tempArr = new Object[arr.length-1];
 			for (int i = 0; i < arr.length-1; i++) {
 				if (i!= index) {
 					if(i<index) {
-			            tempArr[i] = arr[i];
+						tempArr[i] = arr[i];
 					}
 					else {
-			            tempArr[i] = arr[i+1];
+						tempArr[i] = arr[i+1];
 					}
 				}
 			}
@@ -202,7 +215,7 @@ public class RandomPoint{
 		{
 			return arr;
 		}
-    }
+	}
 
 	public static double dst (double d, double e, double f, double g) {
 		final double x_d = f - d;
