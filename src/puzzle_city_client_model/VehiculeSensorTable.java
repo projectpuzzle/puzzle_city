@@ -3,8 +3,8 @@ package puzzle_city_client_model;
 import javax.swing.table.AbstractTableModel;
 
 public class VehiculeSensorTable extends AbstractTableModel {
-	public final static String[] columnNames = { "ID", "Address" };
-	public Object[][] values = { { "", "" } };
+	public final static String[] columnNames = { "ID", "Address", "State" };
+	public Object[][] values = { { "", "", "" } };
 
 	public int getRowCount() {
 		return values.length;

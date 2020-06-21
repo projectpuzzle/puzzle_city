@@ -4,15 +4,17 @@ public class VehiculeSensorModel {
 
 	private int ID;
 	private String Address;
+	private boolean State;
  
 	private AlertModel alerteModel;
 
 
 
-	public VehiculeSensorModel(int ID, String Address) {
+	public VehiculeSensorModel(int ID, String Address, boolean State) {
 		super();
 		this.ID = ID;
 		this.Address = Address;
+		this.State = State;
 	
 	}
 	
@@ -23,7 +25,7 @@ public class VehiculeSensorModel {
 		this.Address = Address;
 		this.alerteModel = alerteModel;
 	}
-
+*/
 	public int getId() {
 		return ID;
 	}
@@ -31,7 +33,7 @@ public class VehiculeSensorModel {
 	public void setId(int id) {
 		this.ID = ID;
 	}
-*/
+
 	public String getAddress() {
 		return Address;
 	}
@@ -47,6 +49,7 @@ public class VehiculeSensorModel {
 	public void setAlerteModel(AlertModel alerteModel) {
 		this.alerteModel = alerteModel;
 	}
-
+	
+	
 
 }

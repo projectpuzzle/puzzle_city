@@ -136,7 +136,7 @@ public class VehiculeSensorList {
 		JButton btnCreateButton = new JButton("Add new vehicule sensor");
 		btnCreateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				CreateVehiculeSensor ctAdd =	new CreateVehiculeSensor(client);
+				CreateVehiculeSensor ctAdd = new CreateVehiculeSensor(client);
 				ctAdd.frame.setVisible(true);
 				frame.dispose();
 			}

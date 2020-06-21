@@ -44,13 +44,14 @@ public class VehiculeSensorProvider {
 
 				int ID = rs.getInt("ID");
 				String Address = rs.getString("Address");
+				boolean State = rs.getBoolean("State");
 	//			AlertModel alertModel = alert_id > 0 ? getAlertById(alert_id) : new AlertModel();
 
-	//			airAll.add(new VehiculeSensorModel(ID, Address, alertModel));
+				vehiculesensorAll.add(new VehiculeSensorModel(ID, Address, State));
 
 			}
 			ApiResponse ret = new ApiResponse(true, vehiculesensorAll, "Success");
-			System.out.println("Tra du lieu:" + ret.toString());
+			System.out.println("test" + ret.toString());
 			return ret;
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -113,6 +114,7 @@ public class VehiculeSensorProvider {
 
 					resItem.put("ID", rs.getLong("ID"));
 					resItem.put("Address", rs.getString("Address"));
+					resItem.put("State", rs.getBoolean("State"));
 //	                     resItem.put("isOpen",  rs.getBoolean("isOpen") );
 
 					vehiculesensorAll.put(resItem);
@@ -169,7 +171,7 @@ public class VehiculeSensorProvider {
 	public static ApiResponse create(JSONObject record) {
 		try {
 			PreparedStatement pstmt = conn
-					.prepareStatement("INSERT INTO tblvehiculesensor(ID, Address) values (null ,?)");
+					.prepareStatement("INSERT INTO tblvehiculesensor(ID, Address, State) values (null ,?, 0)");
 			String Address = record.getString("Address");
 			//int idAlert = createAlert();
 			pstmt.setString(1, Address);
