@@ -27,50 +27,122 @@ public class TramwayProvider {
 		conn = dbconn.setConnection();
 		System.out.println("create connection successfully");
 	}
-	
+	private static JSONObject checkTramWayValid (JSONObject record) {
+		JSONObject resValid = new JSONObject();
+		
+	        String txtResText = "";
+	        Boolean isValid = true;
+			int iBudget = 0;
+			int iCostOne = 0;
+	        //check 
+	        isValid = false;
+	        
+	      //check valid txtBudget
+			try {	
+				iBudget = record.getInt("Value");
+			} catch (Exception e) {
+				txtResText = "Budget value is not valid, please enter the data in numeric integer format";
+				isValid = false;
+			}
+			
+			//check valid txtCostOne
+			try {	
+				iCostOne = record.getInt("ValueStation");
+			} catch (Exception e) {
+				txtResText = "Budget value for one station is not valid, please enter the data in numeric integer format";
+				isValid = false;
+			}
+			
+			//check valid txtCostOne
+			if (!(iBudget > 0) ) {
+				txtResText = "Budget value is not valid, please enter the budget valide";
+				isValid = false;
+			}
+			
+			if (!(iCostOne > 0) ) {
+				txtResText = "Budget value for one station is not valid, please enter the cost for one station valide";
+				isValid = false;
+			}
+			if(iBudget<iCostOne) {
+				txtResText = "The cost of a station can't be higher than the city budget";
+				isValid = false;
+			}
+			if(!(iCostOne > 0 && (iBudget/iCostOne >= 2))) {
+				txtResText = "You need at least 2 station to create a network";
+				isValid = false;
+			}
+			//check valid txtRadius
+			try {	
+				int radiusT = record.getInt("Radius");
+				
+			} catch (Exception e) {
+				txtResText = "Min distance between two point is not valid, please enter the data in numeric integer format";
+				isValid = false;
+			}
+			try {
+	        
+		        resValid.put("isValid", isValid);
+		        resValid.put("txtResText", txtResText);
+				return resValid;
+			}catch (Exception e) {
+				// TODO: handle exception
+		
+				return resValid;
+			}
+	}
 
 	//create
 	public static ApiResponse createAndUpdate(JSONObject record) {
-		try {
-			String sql = "select * from tblbudgetstation where bIdCity = " + record.getInt("ID");
-        	ResultSet rs = st.executeQuery(sql);        	
+		try {		
+            JSONObject checkTramWayValid = checkTramWayValid(record);
+            String txtResText = checkTramWayValid.getString("txtResText");
+            Boolean isValid = checkTramWayValid.getBoolean("isValid");
+            if(isValid) {
+				String sql = "select * from tblbudgetstation where bIdCity = " + record.getInt("ID");
+	        	ResultSet rs = st.executeQuery(sql);        	
+	
+	    		PreparedStatement pstmt  ;
+                int ID =  record.getInt("ID");
+                int Budget = record.getInt("Value");
+                int ValStation = record.getInt("ValueStation");
+                int NumberMaxStation = record.getInt("NumberMaxStation");
+                int RadiusMin = record.getInt("Radius");
+                //long date_of_birth = Date.valueOf(date).getTime();
+	    		if(rs.next() == false) {
+	    			//create
+	    			pstmt = conn.prepareStatement("INSERT INTO tblbudgetstation values (?, ?, ?, ?,? )");
+	
+	
+	                pstmt.setDouble(1, ID);
+	                pstmt.setInt(2, Budget);
+	                pstmt.setInt(3, ValStation);
+	                pstmt.setInt(4, NumberMaxStation);
+	                pstmt.setInt(5, RadiusMin);
+	    			
+	    		}else {
+	    			//update
+	    			pstmt = conn.prepareStatement("UPDATE tblbudgetstation SET bValue = ?, bValueStation = ?,bNumberMaxStation = ?,bRadius = ?  WHERE bIdCity = ?");
+	
+	                pstmt.setInt(1, Budget);
+	                pstmt.setInt(2, ValStation);
+	                pstmt.setInt(3, NumberMaxStation);
+	                pstmt.setInt(4, RadiusMin);
+	                pstmt.setInt(5, ID);
+	    		} 
+				
+	            
+	            pstmt.executeUpdate();
+	            // random Station
+	            randomStation(ID);
+	        	// add success
+	        	return new ApiResponse(true, null, "Create success");
+	        	
+            }
+            else {
+				return new ApiResponse(false, null, txtResText);
+			}
 
-    		PreparedStatement pstmt  ;
-
-            int ID =  record.getInt("ID");
-            int Budget = record.getInt("Value");
-            int ValStation = record.getInt("ValueStation");
-            int NumberMaxStation = record.getInt("NumberMaxStation");
-            int RadiusMin = record.getInt("Radius");
-            //long date_of_birth = Date.valueOf(date).getTime();
-    		if(rs.next() == false) {
-    			//create
-    			pstmt = conn.prepareStatement("INSERT INTO tblbudgetstation values (?, ?, ?, ?,? )");
-
-
-                pstmt.setDouble(1, ID);
-                pstmt.setInt(2, Budget);
-                pstmt.setInt(3, ValStation);
-                pstmt.setInt(4, NumberMaxStation);
-                pstmt.setInt(5, RadiusMin);
-    			
-    		}else {
-    			//update
-    			pstmt = conn.prepareStatement("UPDATE tblbudgetstation SET bValue = ?, bValueStation = ?,bNumberMaxStation = ?,bRadius = ?  WHERE bIdCity = ?");
-
-                pstmt.setInt(1, Budget);
-                pstmt.setInt(2, ValStation);
-                pstmt.setInt(3, NumberMaxStation);
-                pstmt.setInt(4, RadiusMin);
-                pstmt.setInt(5, ID);
-    		} 
-			
-            
-            pstmt.executeUpdate();
-            // random Station
-            randomStation(ID);
-        	// add success
-        	return new ApiResponse(true, null, "Create success");
+   
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
