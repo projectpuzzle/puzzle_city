@@ -37,21 +37,17 @@ public class VehiculeSensorProvider {
 			String sql = "select * from tblvehiculesensor";
 			ResultSet rs = st.executeQuery(sql);
 
-			ArrayList<VehiculeSensorModel> vehiculesensorAll = new ArrayList<VehiculeSensorModel>();
+			JSONArray vehiculesensorAll = new JSONArray();
 
 			while (rs.next()) {
 				JSONObject resItem = new JSONObject();
-
-				int ID = rs.getInt("ID");
-				String Address = rs.getString("Address");
-				boolean State = rs.getBoolean("State");
-	//			AlertModel alertModel = alert_id > 0 ? getAlertById(alert_id) : new AlertModel();
-
-				vehiculesensorAll.add(new VehiculeSensorModel(ID, Address, State));
-
+				resItem.put("ID",rs.getInt("ID"));
+				resItem.put("Address",rs.getString("Address"));
+				resItem.put("State", rs.getBoolean("State"));
+				vehiculesensorAll.put(resItem);
 			}
 			ApiResponse ret = new ApiResponse(true, vehiculesensorAll, "Success");
-			System.out.println("test" + ret.toString());
+			System.out.println("Return:" + ret.toString());
 			return ret;
 		} catch (Exception e) {
 			// TODO: handle exception
