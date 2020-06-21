@@ -11,9 +11,8 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.Vector;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
-import com.mysql.cj.xdevapi.JsonArray;
-import com.mysql.cj.xdevapi.JsonValue;
 
 public class RandomPoint{
 	//	public static void main(String[] args) {
@@ -150,14 +149,14 @@ public class RandomPoint{
 			}
 			JSONObject resJson =  new JSONObject();
 
-			JsonArray resItems= new JsonArray();
+			JSONArray resItems= new JSONArray();
 
 			for (int l = 0; l < active.length; l++) {
 				//	System.out.println(active[l].toString());
 				JSONObject aItem = new JSONObject();
 				aItem.put("x", ((Point) active[l]).x);
 				aItem.put("y", ((Point) active[l]).y);
-				resItems.add((JsonValue) aItem);
+				resItems.put(aItem);
 			}			
 
 
