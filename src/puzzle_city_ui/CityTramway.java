@@ -272,7 +272,7 @@ public class CityTramway {
 	}	
 
 	private void updateTramway() {
-		if(isValid() ) {			
+		if( true) {		//isValid() 	
 			try {			
 				client.setResponseData(null);		
 				JSONObject bodyItem = new JSONObject();
@@ -293,8 +293,8 @@ public class CityTramway {
 					System.out.println("wait res:"+res);
 					if(res!= null) {
 						// if success 
-						boolean sMess = res.getBoolean("success");
-						if(sMess) {
+						boolean bSuccess = res.getBoolean("success");
+						if(bSuccess) {
 							lbtMess.setText("Update Success"); 
 							getTramway();
 						}else {
@@ -348,11 +348,13 @@ public class CityTramway {
 	private boolean isValid() {
 		boolean valid = true;
 		String textErr = "";
+		int iBudget = 0;
+		int iCostOne = 0;
 		// TODO Auto-generated method stub
 		
 		//check valid txtBudget
 		try {	
-			Integer.parseInt( txtBudget.getText());
+			iBudget = Integer.parseInt( txtBudget.getText());
 		} catch (Exception e) {
 			textErr = "Budget value is not valid, please enter the data in numeric integer format";
 			valid = false;
@@ -360,12 +362,31 @@ public class CityTramway {
 		
 		//check valid txtCostOne
 		try {	
-			Integer.parseInt( txtCostOne.getText());
+			iCostOne = Integer.parseInt( txtCostOne.getText());
 		} catch (Exception e) {
 			textErr = "Budget value for one station is not valid, please enter the data in numeric integer format";
 			valid = false;
 		}
+		
+		//check valid txtCostOne
+		if (!(iBudget > 0) ) {
+			textErr = "Budget value is not valid, please enter the budget valide";
+			valid = false;
+		}
+		
 
+		if (!(iCostOne > 0) ) {
+			textErr = "Budget value for one station is not valid, please enter the cost for one station valide";
+			valid = false;
+		}
+		if(iBudget<iCostOne) {
+			textErr = "The cost of a station can't be higher than the city budget";
+			valid = false;
+		}
+		if(!(iCostOne > 0 && (iBudget/iCostOne >= 2))) {
+			textErr = "You need at least 2 station to create a network";
+			valid = false;
+		}
 		//check valid txtRadius
 		try {	
 			Integer.parseInt( txtRadius.getText());
