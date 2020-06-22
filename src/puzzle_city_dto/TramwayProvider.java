@@ -35,7 +35,7 @@ public class TramwayProvider {
 			int iBudget = 0;
 			int iCostOne = 0;
 	        //check 
-	        isValid = false;
+	       // isValid = false;
 	        
 	      //check valid txtBudget
 			try {	
