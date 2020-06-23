@@ -5,11 +5,14 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.AbstractButton;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -33,26 +36,54 @@ import puzzle_city_client.Client;
 import puzzle_city_client_model.ApiEnum;
 import puzzle_city_client_model.SendPackage;
 import puzzle_city_client_model.SensorQualityAirTable;
+import javax.swing.JSlider;
+import java.awt.SystemColor;
+import javax.swing.JTextField;
 
 public class SensorAirList {
 
 	public JFrame frame;
 	private JTable tblsensorair;
 	public Client client;// = new Client("127.0.0.1", 4000);
-
+	private int counter;
+	private int no2;
+	private int pm10;
+	private int o3;
+	private boolean alert;
 	List<Object[]> list = new ArrayList<>();
+	private Timer timer;
+	private boolean isStart = false;
+
+	private JTextField textField;
+	private JLabel timeLeft;
+	int cron;
+	private JSlider sliderTimer;
+	private TimerTask task;
+	private JLabel labelx;
 
 	/**
 	 * Launch the application.
 	 */
-
 
 	/**
 	 * Create the application.
 	 * 
 	 * @wbp.parser.constructor
 	 */
+	public SensorAirList(Client socket, int counter, Timer timer, int cron) {
+		this.timer = timer;
+		this.counter = counter;
+
+		this.cron = cron;
+	
+		client = socket;
+		initialize();
+
+		getSensorAirData();
+	}
+
 	public SensorAirList(Client socket) {
+
 		client = socket;
 		initialize();
 
@@ -77,7 +108,7 @@ public class SensorAirList {
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
 		panel.setBackground(Color.WHITE);
-		panel.setBounds(10, 11, 664, 439);
+		panel.setBounds(10, 0, 664, 450);
 		frame.getContentPane().add(panel);
 
 		// table
@@ -87,18 +118,18 @@ public class SensorAirList {
 		// add city
 		JPanel panel_cityinfo_1 = new JPanel();
 		panel_cityinfo_1.setLayout(null);
-		panel_cityinfo_1.setBounds(10, 64, 644, 364);
+		panel_cityinfo_1.setBounds(10, 43, 644, 385);
 		panel.add(panel_cityinfo_1);
 		// list city
 		JPanel panel_cityinfo = new JPanel();
-		panel_cityinfo.setBounds(-10, 0, 644, 364);
+		panel_cityinfo.setBounds(-11, 0, 645, 385);
 		panel_cityinfo_1.add(panel_cityinfo);
 		panel_cityinfo.setLayout(null);
 
 		JLabel lblListCity = new JLabel("Air quality sensors list");
 		lblListCity.setHorizontalAlignment(SwingConstants.LEFT);
 		lblListCity.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblListCity.setBounds(230, 25, 189, 27);
+		lblListCity.setBounds(230, 11, 189, 27);
 		panel_cityinfo.add(lblListCity);
 
 		tblsensorair = new JTable(new DefaultTableModel(
@@ -126,7 +157,7 @@ public class SensorAirList {
 				boolean isActivated = (boolean) list.get(row)[8];
 				// System.out.println("ppp" + globalModel.getColumnCount());
 				ConfigSensorAir cS = new ConfigSensorAir(client, id, address, no2, pm10, o3, alert, alertId,
-						isActivated);
+						isActivated, counter, timer, Integer.parseInt(textField.getText()));
 				cS.frame.setVisible(true);
 				frame.dispose();
 
@@ -135,19 +166,19 @@ public class SensorAirList {
 
 		// tao scrollpane roi cho table chui vao thi table thi tieu de moi hien thi
 		JScrollPane jsp = new JScrollPane(tblsensorair);
-		jsp.setBounds(81, 95, 482, 108);
+		jsp.setBounds(91, 195, 482, 108);
 		panel_cityinfo.add(jsp);
 
 		JButton btnCreateButton = new JButton("Add new sensor ");
 		btnCreateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				CreateSensorAir saAdd = new CreateSensorAir(client);
+				CreateSensorAir saAdd = new CreateSensorAir(client, counter, timer, cron);
 				saAdd.frame.setVisible(true);
 				frame.dispose();
 			}
 		});
 		btnCreateButton.setBackground(Color.WHITE);
-		btnCreateButton.setBounds(99, 294, 139, 23);
+		btnCreateButton.setBounds(91, 351, 139, 23);
 		panel_cityinfo.add(btnCreateButton);
 
 		JButton btnCancel = new JButton("Cancel");
@@ -159,33 +190,149 @@ public class SensorAirList {
 			}
 		});
 		btnCancel.setBackground(Color.WHITE);
-		btnCancel.setBounds(423, 294, 121, 23);
+		btnCancel.setBounds(422, 351, 121, 23);
 		panel_cityinfo.add(btnCancel);
 
 		JLabel lblClickOnThe = new JLabel("*Click on the desired sensor for more details");
 		lblClickOnThe.setForeground(Color.BLACK);
 		lblClickOnThe.setHorizontalAlignment(SwingConstants.LEFT);
 		lblClickOnThe.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblClickOnThe.setBounds(202, 225, 265, 26);
+		lblClickOnThe.setBounds(215, 314, 265, 26);
 		panel_cityinfo.add(lblClickOnThe);
 
 		JButton btnThresholdDetails = new JButton("Threshold details\r\n");
 		btnThresholdDetails.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ReglementationFrance rf = new ReglementationFrance(client);
+				ReglementationFrance rf = new ReglementationFrance(client, counter, timer,
+						Integer.parseInt(textField.getText()));
 				rf.frame.setVisible(true);
 				frame.dispose();
 			}
 		});
 		btnThresholdDetails.setBackground(Color.WHITE);
-		btnThresholdDetails.setBounds(259, 294, 139, 23);
+		btnThresholdDetails.setBounds(253, 351, 139, 23);
 		panel_cityinfo.add(btnThresholdDetails);
 
+		JLabel lblNewLabel_1_1_2_1 = new JLabel("Set up timer for results (in seconds) :");
+		lblNewLabel_1_1_2_1.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lblNewLabel_1_1_2_1.setBounds(24, 59, 184, 14);
+		panel_cityinfo.add(lblNewLabel_1_1_2_1);
+
+		sliderTimer = new JSlider();
+		sliderTimer.setValue(70);
+		sliderTimer.setPaintTicks(true);
+		sliderTimer.setPaintLabels(true);
+		sliderTimer.setMaximum(30);
+		sliderTimer.setMajorTickSpacing(5);
+		sliderTimer.setForeground(Color.WHITE);
+		sliderTimer.setFont(new Font("Tahoma", Font.BOLD, 12));
+		sliderTimer.setEnabled(false);
+		sliderTimer.setBackground(SystemColor.menu);
+		sliderTimer.setBounds(214, 56, 231, 52);
+		panel_cityinfo.add(sliderTimer);
+
+		textField = new JTextField();
+		textField.addKeyListener(new KeyAdapter() {
+
+			public void keyTyped(KeyEvent e) {
+				char c = e.getKeyChar();
+				if (!(Character.isDigit(c) || (c == KeyEvent.VK_BACK_SPACE) || c == KeyEvent.VK_DELETE)) {
+					e.consume();
+
+				}
+			}
+		});
+
+		textField.setText(String.valueOf(cron));
+		if (cron > 0) {
+			btnStartMouseClicked(null);
+		}
+		textField.setHorizontalAlignment(SwingConstants.CENTER);
+		textField.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		textField.setColumns(10);
+		int e = Integer.parseInt(textField.getText());
+		sliderTimer.setValue(e);
+		textField.setBounds(467, 59, 37, 20);
+		panel_cityinfo.add(textField);
+
+		JButton buttonTimer = new JButton("set value");
+		buttonTimer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (!(textField.getText().isEmpty())) {
+					int d = Integer.parseInt(textField.getText());
+					if (isStart)
+						timer.cancel();
+					btnStartMouseClicked(e);
+				} else {
+					JOptionPane.showMessageDialog(frame, "Empty field !");
+					textField.setText("0");
+					sliderTimer.setValue(0);
+				}
+
+			}
+		});
+		buttonTimer.setBounds(524, 55, 98, 23);
+		panel_cityinfo.add(buttonTimer);
+
+		JLabel lblNewLabel_1_1_1 = new JLabel("Remaining time for next release");
+		lblNewLabel_1_1_1.setForeground(Color.DARK_GRAY);
+		lblNewLabel_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblNewLabel_1_1_1.setBounds(91, 132, 188, 37);
+		panel_cityinfo.add(lblNewLabel_1_1_1);
+
+		timeLeft = new JLabel("");
+		timeLeft.setHorizontalAlignment(SwingConstants.CENTER);
+		timeLeft.setForeground(Color.RED);
+		timeLeft.setFont(new Font("Tahoma", Font.BOLD, 15));
+		timeLeft.setBounds(306, 132, 53, 27);
+		panel_cityinfo.add(timeLeft);
+
+		JButton btnStopTimer = new JButton("reset\r\n");
+		btnStopTimer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int d = Integer.parseInt(textField.getText());
+
+				timer.cancel();
+				task.cancel();
+				counter = 0;
+				textField.setText("0");
+				sliderTimer.setValue(0);
+				timeLeft.setText("");
+			}
+		});
+		btnStopTimer.setBounds(539, 139, 64, 23);
+		panel_cityinfo.add(btnStopTimer);
+
+		JButton btnShowTimeLeft = new JButton("show time left");
+		btnShowTimeLeft.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (!(textField.getText().isEmpty())) {
+					int d = Integer.parseInt(textField.getText());
+					if (isStart)
+						timer.cancel();
+					btnStartMouseClicked(e);
+				} else {
+					JOptionPane.showMessageDialog(frame, "Empty field !");
+					textField.setText("0");
+					sliderTimer.setValue(0);
+				}
+			}
+		});
+		btnShowTimeLeft.setBounds(390, 139, 139, 23);
+		panel_cityinfo.add(btnShowTimeLeft);
+
+		labelx = new JLabel("resultats are out!");
+		labelx.setForeground(Color.RED);
+		labelx.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		labelx.setBounds(296, 170, 184, 14);
+		labelx.setVisible(false);
+		panel_cityinfo.add(labelx);
+
 		JLabel lblNewLabel = new JLabel("Air Quality Sensors Manager System");
+		lblNewLabel.setBounds(166, 11, 337, 27);
+		panel.add(lblNewLabel);
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblNewLabel.setBounds(161, 26, 337, 27);
-		panel.add(lblNewLabel);
 
 	}
 
@@ -222,6 +369,14 @@ public class SensorAirList {
 		//
 
 		client.setResponseData(null);
+	}
+
+	void simulate() {
+		this.no2 = (int) (Math.random() * 500);
+		this.pm10 = (int) (Math.random() * 100);
+		this.o3 = (int) (Math.random() * 300);
+		this.alert = this.no2 >= 400 || this.pm10 >= 80 || this.o3 >= 240;
+
 	}
 
 	private void bindDataToTable(JSONArray jArray) {
@@ -264,4 +419,60 @@ public class SensorAirList {
 //		tblsensorair.setVisible(true);   
 
 	}
+
+	private boolean sliderLength3(int c) {
+		return c > 30;
+	}
+
+	private boolean sliderLength2(int b) {
+		return b < 0;
+	}
+
+	private void btnStartMouseClicked(ActionEvent evt) {
+		timer = new Timer();
+		int d = Integer.parseInt(textField.getText());
+
+		isStart = true;
+		if (sliderLength3(d)) {
+			JOptionPane.showMessageDialog(frame, "excessive value !");
+			textField.setText("0");
+			sliderTimer.setValue(0);
+			timer.cancel();
+			return;
+		} else if (sliderLength2(d)) {
+			JOptionPane.showMessageDialog(frame, "Impossible value !");
+			textField.setText("0");
+			sliderTimer.setValue(0);
+			timer.cancel();
+			return;
+		}
+
+		else {
+			sliderTimer.setValue(d);
+		}
+
+		counter = counter > 0 ? counter : d;
+
+		task = new TimerTask() {
+			public void run() {
+				timeLeft.setText(Integer.toString(counter));
+				counter--;
+				if (counter == -1) {
+					simulate();
+					labelx.setVisible(true);
+
+				}else {
+					labelx.setVisible(false);
+				}
+				if (counter == -1) {
+//					timer.cancel();
+
+					counter = d;
+
+				}
+			}
+		};
+		timer.scheduleAtFixedRate(task, 0, 1000);
+	}
+
 }

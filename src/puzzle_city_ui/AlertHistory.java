@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 import javax.swing.AbstractButton;
 import javax.swing.DefaultCellEditor;
@@ -47,6 +48,10 @@ public class AlertHistory {
 	private boolean alert;
 	private int alert_id;
 	private boolean isActivated;
+	private int counter;
+	private int cron;
+	private Timer timer;
+
 	List<Object[]> list = new ArrayList<>();
 
 	/**
@@ -59,7 +64,7 @@ public class AlertHistory {
 	 * @wbp.parser.constructor
 	 */
 	public AlertHistory(Client socket, int id, String address, int no2, int pm10, int o3, boolean alert, int alert_id,
-			boolean isActivated) {
+			boolean isActivated,int counter ,Timer timer,int cron) {
 		this.id = id;
 		this.address = address;
 		this.no2 = no2;
@@ -69,6 +74,9 @@ public class AlertHistory {
 		this.alert_id = alert_id;
 
 		this.isActivated = isActivated;
+		this.counter=counter;
+		this.timer=timer;
+		this.cron=cron;
 		client = socket;
 		initialize();
 		getSensorAirData();
@@ -80,6 +88,8 @@ public class AlertHistory {
 
 		this.tblalerthistory = tblalerthistory;
 	}
+
+
 
 	/**
 	 * Initialize the contents of the frame.
@@ -137,7 +147,6 @@ public class AlertHistory {
 			}
 		});
 
-		// tao scrollpane roi cho table chui vao thi table thi tieu de moi hien thi
 		JScrollPane jsp = new JScrollPane(tblalerthistory);
 		jsp.setBounds(215, 66, 200, 217);
 		panel_cityinfo.add(jsp);
@@ -146,7 +155,7 @@ public class AlertHistory {
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ConfigSensorAir cS = new ConfigSensorAir(client, id, address, no2, pm10, o3, alert, alert_id,
-						isActivated);
+						isActivated,counter,timer,cron);
 				cS.frame.setVisible(true);
 				frame.dispose();
 			}

@@ -9,6 +9,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.AbstractButton;
 import javax.swing.DefaultCellEditor;
@@ -40,6 +42,9 @@ public class ReglementationFrance {
 	public JFrame frame;
 	private JTable tblalerthistory;
 	public Client client;// = new Client("127.0.0.1", 4000);
+	private int counter;
+	private int cron;
+	private Timer timer;
 
 	
 	List<Object[]> list=new ArrayList<>();
@@ -53,8 +58,11 @@ public class ReglementationFrance {
 	 * 
 	 * @wbp.parser.constructor
 	 */
-	public ReglementationFrance(Client client) {
+	public ReglementationFrance(Client client,int counter,Timer timer,int cron) {
 	    this.client=client;
+	    this.counter=counter;
+	    this.timer=timer;
+	    this.cron=cron;
 		initialize();
 
 //		getSensorAirData();
@@ -64,6 +72,22 @@ public class ReglementationFrance {
 
 		this.tblalerthistory = tblalerthistory;
 	}
+//	void initializeTimer() {
+//		TimerTask task = new TimerTask() {
+//			public void run() {
+//				timeLeft.setText(Integer.toString(counter));
+//				counter--;
+//				if (counter == -1) {
+////					timer.cancel();
+//					//simulate();
+//
+//					counter = cron;
+//
+//				}
+//			}
+//		};
+//		timer.scheduleAtFixedRate(task, 1000, 1000);
+//	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -124,8 +148,8 @@ public class ReglementationFrance {
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SensorAirList cS = new SensorAirList(client);
-				cS.frame.setVisible(true);
+				SensorAirList sa = new SensorAirList(client,counter,timer,cron);
+				sa.frame.setVisible(true);
 				frame.dispose();
 			}
 		});

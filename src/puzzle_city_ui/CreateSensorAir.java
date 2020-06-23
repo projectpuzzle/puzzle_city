@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Timer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +25,11 @@ import puzzle_city_client_model.SendPackage;
 
 public class CreateSensorAir {
 
+	
+	private int counter;
+	private int cron;
+	private Timer timer;
+
 	public JFrame frame;
 	private JTextField txtAddressSensor;
 //	private JTextField txtLat;
@@ -32,6 +38,7 @@ public class CreateSensorAir {
 //	private JTextField txtWidth;
 //	private JTextField txtMapZoom;
 	private JLabel lbtMess;
+	private JLabel labelx;
 
 	public Client client;// = new Client("127.0.0.1", 4000);
 
@@ -42,8 +49,11 @@ public class CreateSensorAir {
 	/**
 	 * Create the application.
 	 */
-	public CreateSensorAir(Client socket) {
+	public CreateSensorAir(Client socket,int counter,Timer timer,int cron) {
 		client = socket;
+		this.counter=counter;
+		this.timer = timer;
+		this.cron=cron;
 		initialize();
 	}
 
@@ -63,7 +73,7 @@ public class CreateSensorAir {
 		frame.getContentPane().add(panel);
 
 		JPanel panel_cityinfo = new JPanel();
-		panel_cityinfo.setBounds(10, 64, 644, 364);
+		panel_cityinfo.setBounds(10, 49, 644, 379);
 		panel.add(panel_cityinfo);
 		panel_cityinfo.setLayout(null);
 
@@ -77,51 +87,6 @@ public class CreateSensorAir {
 		panel_cityinfo.add(txtAddressSensor);
 		txtAddressSensor.setColumns(10);
 
-//		JLabel lblNewLabel_1_1 = new JLabel("\u00A7\u00A7");
-//		lblNewLabel_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
-//		lblNewLabel_1_1.setBounds(10, 39, 179, 14);
-//		panel_cityinfo.add(lblNewLabel_1_1);
-
-//		txtLat = new JTextField();
-//		txtLat.setColumns(10);
-//		txtLat.setBounds(212, 39, 315, 20);
-//		panel_cityinfo.add(txtLat);
-
-//		txtLong = new JTextField();
-//		txtLong.setColumns(10);
-//		txtLong.setBounds(212, 67, 315, 20);
-//		panel_cityinfo.add(txtLong);
-
-//		txtHeight = new JTextField();
-//		txtHeight.setColumns(10);
-//		txtHeight.setBounds(212, 95, 315, 20);
-//		panel_cityinfo.add(txtHeight);
-//		
-//		JLabel lblNewLabel_1_1_1_1 = new JLabel("!!");
-//		lblNewLabel_1_1_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
-//		lblNewLabel_1_1_1_1.setBounds(10, 95, 179, 14);
-//		panel_cityinfo.add(lblNewLabel_1_1_1_1);
-//		
-//		JLabel lblNewLabel_1_1_1_1_1 = new JLabel("!!");
-//		lblNewLabel_1_1_1_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
-//		lblNewLabel_1_1_1_1_1.setBounds(10, 126, 179, 14);
-//		panel_cityinfo.add(lblNewLabel_1_1_1_1_1);
-
-//		txtWidth = new JTextField();
-//		txtWidth.setColumns(10);
-//		txtWidth.setBounds(212, 126, 315, 20);
-//		panel_cityinfo.add(txtWidth);
-//		
-//		txtMapZoom = new JTextField();
-//		txtMapZoom.setColumns(10);
-//		txtMapZoom.setBounds(212, 154, 315, 20);
-//		panel_cityinfo.add(txtMapZoom);
-//		
-//		JLabel lbtMapZoom = new JLabel("!!");
-//		lbtMapZoom.setHorizontalAlignment(SwingConstants.RIGHT);
-//		lbtMapZoom.setBounds(10, 154, 179, 14);
-//		panel_cityinfo.add(lbtMapZoom);
-
 		JButton btnCreate = new JButton("Create");
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -134,7 +99,8 @@ public class CreateSensorAir {
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				SensorAirList sa = new SensorAirList(client);
+				
+				SensorAirList sa = new SensorAirList(client, counter, timer, cron);
 				sa.frame.setVisible(true);
 				frame.dispose();
 			}
@@ -142,7 +108,7 @@ public class CreateSensorAir {
 		btnCancel.setBounds(383, 254, 89, 23);
 		panel_cityinfo.add(btnCancel);
 
-		lbtMess = new JLabel("Error syntax : error unrecognized expression");
+		lbtMess = new JLabel("");
 		lbtMess.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lbtMess.setForeground(new Color(255, 0, 0));
 		lbtMess.setBounds(188, 196, 315, 47);
@@ -150,14 +116,14 @@ public class CreateSensorAir {
 		panel_cityinfo.add(lbtMess);
 
 		JLabel lblNewLabel_2 = new JLabel("Create new sensor");
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblNewLabel_2.setBounds(259, 11, 193, 14);
+		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 21));
+		lblNewLabel_2.setBounds(230, 25, 256, 26);
 		panel_cityinfo.add(lblNewLabel_2);
 
 		JLabel lblNewLabel = new JLabel("Air Quality Sensors Manager System");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblNewLabel.setBounds(160, 11, 342, 27);
+		lblNewLabel.setBounds(174, 11, 342, 27);
 		panel.add(lblNewLabel);
 	}
 
@@ -165,11 +131,7 @@ public class CreateSensorAir {
 		// TODO Auto-generated method stub
 		try {
 			txtAddressSensor.setText(res.getString("address"));
-//			txtHeight.setText(String.valueOf( res.getDouble("Height")));
-//			txtWidth.setText(String.valueOf( res.getDouble("Width")));
-//			txtLat.setText(String.valueOf( res.getDouble("CenterLat")));
-//			txtLong.setText(String.valueOf( res.getDouble("CenterLong")));
-//			txtMapZoom.setText(String.valueOf( res.getInt("MapZoom")));
+
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -186,13 +148,14 @@ public class CreateSensorAir {
 			}
 			if (isInvalidData(address)) {
 				JOptionPane.showMessageDialog(frame, "Invalid data !");
-				
+				 txtAddressSensor.setText("");
 				return;
 			}
 			if (checkLength(address)) {
 				JOptionPane.showMessageDialog(frame, "Too long !");
-				
+				txtAddressSensor.setText("");
 				return;
+				
 			}
 			client.setResponseData(null);
 			JSONObject bodyItem = new JSONObject();
@@ -242,7 +205,7 @@ public class CreateSensorAir {
 	}
 
 	void Back() {
-		SensorAirList sa = new SensorAirList(client);
+		SensorAirList sa = new SensorAirList(client,0,null,0);
 		sa.frame.setVisible(true);
 		frame.dispose();
 	}
