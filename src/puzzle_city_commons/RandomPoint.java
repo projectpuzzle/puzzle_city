@@ -11,8 +11,11 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.Vector;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONArray;
+
+//import com.mysql.cj.xdevapi.JsonArray;
+//import com.mysql.cj.xdevapi.JsonValue;
 
 public class RandomPoint{
 	//	public static void main(String[] args) {
@@ -53,7 +56,7 @@ public class RandomPoint{
 		// TODO Auto-generated method stub
 		// canvas : 600x400			
 		int w = (int) ((int) r/(Math.sqrt(2)));
-		System.out.println("Start finding: "+width+"-"+height+"-"+maxPoint+"-"+angleStart+"-"+angleEnd+"-"+angleEnd+"-");
+		System.out.println("Start Finding: "+width+"-"+height+"-"+maxPoint+"-"+angleStart+"-"+angleEnd+"-"+angleEnd+"-");
 
 		try {
 			//step 0	
@@ -88,11 +91,13 @@ public class RandomPoint{
 			temp.add(v0);
 			//Maximum number of points.number of point is is the length of active
 
+			JSONArray resPath= new JSONArray();
 			while(temp.size() > 0 && active.length< maxPoint) {
 				//System.out.println(+ temp.size()+ "="+ active.length+"="+maxPoint);
 				//random the next starting point
-				int randomIndex =0;
-				if(temp.size() >1) randomIndex= (int) new Random().nextInt(temp.size()-1);
+				int randomIndex = 0;
+				//temp.size() >3, random 3 point around center
+				if(temp.size() >3) randomIndex= (int) new Random().nextInt(temp.size()-2);
 				Point pos = (Point) temp.get(randomIndex);
 				boolean found = false;
 				for (int n = 0; n < k; n++) {
@@ -136,6 +141,13 @@ public class RandomPoint{
 							active = add(active, newPoint);
 							temp.add(newPoint);
 							found = true;
+							// add path
+							JSONObject pathObj = new JSONObject();
+							pathObj.put("fromX", (int) pos.getX());
+							pathObj.put("fromY", (int) pos.getY());
+							pathObj.put("toX", (int) newPoint.getX());
+							pathObj.put("toY", (int) newPoint.getY());
+							resPath.put(pathObj);
 							break;
 						}
 					}					
@@ -151,6 +163,7 @@ public class RandomPoint{
 
 			JSONArray resItems= new JSONArray();
 
+
 			for (int l = 0; l < active.length; l++) {
 				//	System.out.println(active[l].toString());
 				JSONObject aItem = new JSONObject();
@@ -161,7 +174,7 @@ public class RandomPoint{
 
 
 			resJson.put("ListPoint", resItems );
-			resJson.put("ListPath", resItems );
+			resJson.put("ListPath", resPath );
 			return resJson;
 		} catch (Exception e) {
 			// TODO: handle exception		
