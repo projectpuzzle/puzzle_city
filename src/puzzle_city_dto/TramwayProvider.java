@@ -189,6 +189,8 @@ public class TramwayProvider {
     			 data.put("tramways", tramwayAll);
     			// get point
     			 data.put("points", getStationByCityID(id));
+
+    			 data.put("paths", getPathByCityID(id));
     			 
         		return new ApiResponse(true, data, "Success");
 			}     	
@@ -202,28 +204,23 @@ public class TramwayProvider {
 				e1.printStackTrace();
 				return null;
 			}
-
 		}
 	}
 	
-
 	//get byID 
 	private static JSONArray getStationByCityID(int id) {
 		try {
 			
         	String sql = "select * from tblstation where sIdCity = " + id;
         //	System.out.println(sql);
-
     		st =  conn.createStatement();
         	ResultSet rs = st.executeQuery(sql);        	
-
     		JSONArray stationAll = new JSONArray();
     		if(rs.next() == false) {
         		return stationAll;
     		}else {
     			 do {
                 	JSONObject resItem = new JSONObject();                	
-
                     resItem.put("ID", rs.getInt("sId"));
                     resItem.put("Name",  rs.getString("sName") );
                     resItem.put("IdCity", rs.getInt("sIdCity") );
@@ -239,10 +236,39 @@ public class TramwayProvider {
 			// TODO: handle exception
 			e.printStackTrace();
 			return null;
-
 		}
 	}
-
+	//get byID 
+	private static JSONArray getPathByCityID(int id) {
+		try {
+			
+        	String sql = "select * from tblline where lIdCity = " + id;
+        //	System.out.println(sql);
+    		st =  conn.createStatement();
+        	ResultSet rs = st.executeQuery(sql);        	
+    		JSONArray stationAll = new JSONArray();
+    		if(rs.next() == false) {
+        		return stationAll;
+    		}else {
+    			 do {
+                	JSONObject resItem = new JSONObject();                	
+                    resItem.put("ID", rs.getInt("lId"));
+                    resItem.put("Name",  rs.getString("lName") );
+                    resItem.put("FromX", rs.getInt("lFromX") );
+                    resItem.put("FromY", rs.getInt("lFromY") );
+                    resItem.put("ToX", rs.getInt("lToX") );
+                    resItem.put("ToY", rs.getInt("lToY") );        
+                    stationAll.put(resItem);                    
+                }	while(rs.next());
+        		return stationAll;
+			}     	
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	//create station
 	public static ApiResponse createAndUpdateStation(Point[] record, int cityID) {
 		try {
@@ -253,7 +279,6 @@ public class TramwayProvider {
 			//System.out.println(sql);
 			
         	 st.executeUpdate(sql);       
-
         	// add new point
         	String query = "INSERT INTO tblstation values ";
         	for (int i = 0; i < record.length; i++) {
@@ -264,11 +289,9 @@ public class TramwayProvider {
                 if(i>0) {
             		query = query + " , ";
                 }
-
         		String queryItem = " (null,'point' , "+ID+" , "+pointX+" ,"+pointY+"  ,0 ,0 ) ";
         		query = query + queryItem;
 			}
-
 			System.out.println(query);
         	PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.executeUpdate();
@@ -285,25 +308,67 @@ public class TramwayProvider {
 				e1.printStackTrace();
 				return null;
 			}
-
 		}
 		
 	}
+	
+	//create path
+	public static ApiResponse createAndUpdatePath(JSONArray listPath, int cityID) {
+		try {
+			//get cityID
+			//delete all by city ID
+            int ID =  cityID;
+			String sql = "DELETE FROM tblline where lIdCity = " + ID;
+			//System.out.println(sql);
+			
+        	 st.executeUpdate(sql);       
+        	// add new point
+        	String query = "INSERT INTO tblline values ";
+        	for (int i = 0; i < listPath.length(); i++) {
+        		JSONObject pathAdd = listPath.getJSONObject(i);
+                int fromX = pathAdd.getInt("fromX");
+                int fromY = pathAdd.getInt("fromY");
+                int toX = pathAdd.getInt("toX");
+                int toY = pathAdd.getInt("toY");
+                
+                if(i>0) {
+            		query = query + " , ";
+                }
+        		String queryItem = " (null,"+ID+" ,'path' ,  "+fromX+" ,"+fromY+" ,"+toX+" ,"+toY+"   ) ";
+        		query = query + queryItem;
+			}
+			System.out.println(query);
+        	PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.executeUpdate();
+        	            
+        	// add success
+        	return new ApiResponse(true, null, "Add path success");
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			try {
+				return new ApiResponse(false, null, e.getMessage());
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				return null;
+			}
+		}
+		
+	}
+	
 	
 	public static ApiResponse randomStation(int cityID) {
 		//get width height
 		try {
 			String sql = "select * from tblcity JOIN tblbudgetstation on tblcity.cId = tblbudgetstation.bIdCity where tblcity.cId = " + cityID;
         	//System.out.println(sql);
-
     		st =  conn.createStatement();
         	ResultSet rs = st.executeQuery(sql);        	
         	if(rs.next() == false) {
-
             	return new ApiResponse(true, null, "Add success");
     		}else {
             	JSONObject resItem = new JSONObject();                	
-
             	int Height = (int)  rs.getDouble("cHeight") ;
             	int Width = (int) rs.getDouble("cWidth") ;
             	int Budget = rs.getInt("bValue") ;
@@ -312,23 +377,26 @@ public class TramwayProvider {
             	int r = rs.getInt("bRadius") ;
             	//random
             	RandomPoint newRandom = new RandomPoint(Width, Height, maxPoint, r, 0, 2*Math.PI);
-             	JSONObject resRanDomPoint =	newRandom.getListPoint(); 
-                //	Point[] points = newRandom.getListPoint(); 
-                	JSONArray resListPoint  = resRanDomPoint.getJSONArray("ListPoint");
-    				Point[] lP = new Point[resListPoint.length()];
-    				for (int i = 0; i < lP.length; i++) {
-    					int x = resListPoint.getJSONObject(i).getInt("x");
-    					int y = resListPoint.getJSONObject(i).getInt("y");
-    					lP[i] = new Point(x, y);
-    				}
-                	if(lP.length > 0) {
+            	JSONObject resRanDomPoint =	newRandom.getListPoint(); 
+            //	Point[] points = newRandom.getListPoint(); 
+            	JSONArray resListPoint  = resRanDomPoint.getJSONArray("ListPoint");
+				Point[] lP = new Point[resListPoint.length()];
+				for (int i = 0; i < lP.length; i++) {
+					int x = resListPoint.getJSONObject(i).getInt("x");
+					int y = resListPoint.getJSONObject(i).getInt("y");
+					lP[i] = new Point(x, y);
+				}
+            	if(lP.length > 0) {
             		// update tblstation
-	            		createAndUpdateStation(lP,cityID);  
+            		createAndUpdateStation(lP,cityID);            		
             	}
+            	
+            	//add path            	
+            	JSONArray resListPath  = resRanDomPoint.getJSONArray("ListPath");
+            	createAndUpdatePath(resListPath,cityID);
                 //return list Station
             	return new ApiResponse(true, getTramWayByCityID(cityID), "Random success");
 			}     	
-
 		} catch (Exception e) {
 		// TODO: handle exception
 		e.printStackTrace();
@@ -339,7 +407,6 @@ public class TramwayProvider {
 			e1.printStackTrace();
 			return null;
 		}
-
 	}
 	} 
 }
