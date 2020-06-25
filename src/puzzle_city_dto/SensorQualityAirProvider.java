@@ -14,7 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import puzzle_city_model.AlertHistoryModel;
+import puzzle_city_model.AlertHistorySensorAirModel;
 import puzzle_city_model.AlertModel;
 import puzzle_city_model.ApiResponse;
 import puzzle_city_model.SensorQualityAirModel;
@@ -24,7 +24,7 @@ public class SensorQualityAirProvider {
 	JDBCConnection dbconn;
 	static Connection conn;
 	static Statement st;
-
+	
 
 	public SensorQualityAirProvider() {
 		// TODO Auto-generated constructor stub
@@ -74,30 +74,67 @@ public class SensorQualityAirProvider {
 
 	}
 
-	public static AlertModel getAlertById(int id) {
+	// get all
+	public static ApiResponse getActiveSensors() {
 		try {
+
 			st = conn.createStatement();
-			PreparedStatement recherchePersonne = conn.prepareStatement("SELECT * FROM tblalert WHERE id = ?");
+			String sql = "select * from tblsensorair where isActivated=1";
+			ResultSet rs = st.executeQuery(sql);
 
-			recherchePersonne.setInt(1, id);
+			ArrayList<SensorQualityAirModel> airAll = new ArrayList<SensorQualityAirModel>();
 
-			ResultSet resultats = recherchePersonne.executeQuery();
+			while (rs.next()) {
+				int id = rs.getInt("id");
+				String address = rs.getString("address");
+				int no2 = rs.getInt("no2");
+				int pm10 = rs.getInt("pm10");
+				int o3 = rs.getInt("o3");
+				int alert_id = rs.getInt("alert_id");
+				int isActivated = rs.getInt("isActivated");
+				AlertModel alertModel = alert_id > 0 ? getAlertById(alert_id) : new AlertModel();
 
-			boolean en = resultats.next();
+				airAll.add(new SensorQualityAirModel(id, address, no2, pm10, o3, alertModel,
+						isActivated == 0 ? false : true));
 
-			if (en) {
-				int idA = resultats.getInt("id");
-				System.out.println(resultats.getTimestamp("date"));
-				Timestamp date = resultats.getTimestamp("date");
-				boolean isAlert = resultats.getBoolean("isAlert");
-
-				return new AlertModel(idA, date, isAlert);
+			}
+			ApiResponse ret = new ApiResponse(true, airAll, "Success");
+			System.out.println("Tra du lieu:" + ret.toString());
+			return ret;
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			try {
+				return new ApiResponse(false, null, e.getMessage());
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				return null;
 			}
 
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+	}
+
+	public static AlertModel getAlertById(int id) throws SQLException {
+		System.out.println("getAlertById");
+		st = conn.createStatement();
+		PreparedStatement recherchePersonne = conn.prepareStatement("SELECT * FROM tblalert WHERE id = ?");
+
+		recherchePersonne.setInt(1, id);
+
+		ResultSet resultats = recherchePersonne.executeQuery();
+
+		boolean en = resultats.next();
+
+		if (en) {
+			int idA = resultats.getInt("id");
+			System.out.println(resultats.getTimestamp("date"));
+			Timestamp date = resultats.getTimestamp("date");
+			boolean isAlert = resultats.getBoolean("isAlert");
+			System.out.println("getAlertById1");
+			return new AlertModel(idA, date, isAlert);
+		}
+
 		return null;
 
 	}
@@ -105,18 +142,23 @@ public class SensorQualityAirProvider {
 	public static ApiResponse getAllAlertHistory(int alert_id) {
 		try {
 			st = conn.createStatement();
-			PreparedStatement recherchePersonne = conn.prepareStatement("SELECT * FROM tblalerthistory WHERE alert_id = ?");
+			PreparedStatement recherchePersonne = conn
+					.prepareStatement("SELECT * FROM tblalerthistory WHERE alert_id = ?");
 
 			recherchePersonne.setInt(1, alert_id);
 
 			ResultSet resultats = recherchePersonne.executeQuery();
 
-			ArrayList<AlertHistoryModel> histoicalAlerts = new ArrayList<AlertHistoryModel>();
+			ArrayList<AlertHistorySensorAirModel> histoicalAlerts = new ArrayList<AlertHistorySensorAirModel>();
+
 			while (resultats.next()) {
 
 				Timestamp date = resultats.getTimestamp("date");
+				int no2Simulation = resultats.getInt("no2");
+				int pm10Simulation = resultats.getInt("pm10");
+				int o3Simulation = resultats.getInt("o3");
 
-				histoicalAlerts.add(new AlertHistoryModel(date));
+				histoicalAlerts.add(new AlertHistorySensorAirModel(date, no2Simulation, pm10Simulation, o3Simulation));
 			}
 			ApiResponse ret = new ApiResponse(true, histoicalAlerts, "Success");
 			System.out.println("Tra du lieu:" + ret.toString());
@@ -241,10 +283,10 @@ public class SensorQualityAirProvider {
 	public static void updateAlertById(int id, boolean alert) {
 		PreparedStatement pstmt;
 		try {
-			if (alert) {
-				AlertModel existedAlert = getAlertById(id);
-				createHistoricalAlert(existedAlert);
-			}
+//			if (alert) {
+//				AlertModel existedAlert = getAlertById(id);
+//				createHistoricalAlert(existedAlert);
+//			}
 			pstmt = conn.prepareStatement("UPDATE tblalert SET isAlert = ?,date=?  WHERE id = ?");
 			pstmt.setBoolean(1, alert);
 			Timestamp currentTime = new Timestamp(Date.from(Instant.now()).getTime());
@@ -259,24 +301,49 @@ public class SensorQualityAirProvider {
 
 	}
 
-	public static void createHistoricalAlert(AlertModel alertModel) {
+	public static ApiResponse updateAlerte(JSONObject alertJSON) throws JSONException, SQLException {
 
-		try {
-
-			PreparedStatement pstmt = conn.prepareStatement("INSERT INTO tblalerthistory(date,alert_id) values (?,?)");
-			Timestamp currentTime = new Timestamp(alertModel.getDate().getTime());
-			pstmt.setTimestamp(1, currentTime);
-
-			pstmt.setInt(2, alertModel.getId());
-
-			pstmt.executeUpdate();
-			// add success
-
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-
+		int id = alertJSON.getInt("id");
+		int no2 = alertJSON.getInt("no2");
+		int pm10 = alertJSON.getInt("pm10");
+		int o3 = alertJSON.getInt("o3");
+		boolean alert = alertJSON.getBoolean("alert");
+		System.out.println("isAlert" + alert);
+		if (alert) {
+			AlertModel existedAlert = getAlertById(id);
+			System.out.println("jalit");
+			createHistoricalAlert(existedAlert, no2, pm10, o3);
 		}
+
+		System.out.println("alertJSON" + alertJSON.toString());
+		PreparedStatement pstmt;
+
+		pstmt = conn.prepareStatement("UPDATE tblalert SET isAlert = ?,date=?  WHERE id = ?");
+		pstmt.setBoolean(1, alert);
+		Timestamp currentTime = new Timestamp(Date.from(Instant.now()).getTime());
+		pstmt.setTimestamp(2, currentTime);
+		pstmt.setInt(3, id);
+
+		pstmt.executeUpdate();
+		return new ApiResponse(true, null, "Update success");
+
+	}
+
+	public static void createHistoricalAlert(AlertModel alertModel, int no2, int pm10, int o3) throws SQLException {
+
+		System.out.println("createHistoricalAlert");
+		PreparedStatement pstmt = conn
+				.prepareStatement("INSERT INTO tblalerthistory(date,alert_id,no2,pm10,o3) values (?,?,?,?,?)");
+		Timestamp currentTime = new Timestamp(alertModel.getDate().getTime());
+		pstmt.setTimestamp(1, currentTime);
+
+		pstmt.setInt(2, alertModel.getId());
+		pstmt.setInt(3, no2);
+		pstmt.setInt(4, pm10);
+		pstmt.setInt(5, o3);
+
+		pstmt.executeUpdate();
+		// add success
 
 	}
 
@@ -286,7 +353,7 @@ public class SensorQualityAirProvider {
 
 			PreparedStatement pstmt = conn.prepareStatement(
 					"UPDATE tblsensorair SET address = ?,no2=?,pm10=?,o3=?,isActivated=?  WHERE id = ?");
-			System.out.println(record);
+
 			int id = record.getInt("id");
 
 			String address = record.getString("address");
@@ -337,7 +404,7 @@ public class SensorQualityAirProvider {
 
 	}
 
-	public static ApiResponse  deleteSensorQualityAirById(int id, int alert_id) {
+	public static ApiResponse deleteSensorQualityAirById(int id, int alert_id) {
 		try {
 
 			PreparedStatement pt = conn.prepareStatement("delete from tblsensorair where id like ?");
@@ -357,7 +424,6 @@ public class SensorQualityAirProvider {
 			}
 
 		}
-
 
 	}
 

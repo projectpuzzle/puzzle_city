@@ -1,6 +1,7 @@
 package puzzle_city_commons;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -120,7 +121,10 @@ public class Router {
 	public static String updateSensorAir(JSONObject sensorAir) {
 		return SensorQualityAirProvider.update(sensorAir).toString();
 	}
-
+	public static String updateAlerte(JSONObject alerte) throws JSONException, SQLException {
+		System.out.println("alerte"+alerte.toString());
+		return SensorQualityAirProvider.updateAlerte(alerte).toString();
+	}
 	public static String findAllSensorAir() {
 
 		JSONObject mapper = new JSONObject();
@@ -131,6 +135,9 @@ public class Router {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	public static String findActiveSensors() {
+		return SensorQualityAirProvider.getActiveSensors().toString();
 	}
 
 	public static String findOneSensorAirById(int sensorAirID) {
@@ -190,7 +197,7 @@ public class Router {
 		
 		
 	// input {api:"CITYSave",body:{}}
-	public static String router(JSONObject input) {
+	public static String router(JSONObject input) throws SQLException {
 		String api;
 		JSONObject body ;
 		try {
@@ -248,16 +255,22 @@ public class Router {
 
 			case "SENSORAIR_FIND_ALL":
 				return findAllSensorAir();
+			case "SENSORAIR_FIND_ACTIVE":
+				return findActiveSensors();
 				
 			case "SENSORAIR_DELETE":
 				body = input.getJSONObject("body");
 				 deleteSensorQualityAirById((int) body.getInt("id"),(int) body.getInt("alert_id"));
 				 
-                  return "DELETED";  
+                 
                   
 			case "ALERT_HISTORY_FIND_ALL":
 				body = input.getJSONObject("body");
 				return getAllAlertHistory((int) body.getInt("id") );
+				
+			case "ALERT_UPDATE":
+				System.out.println("ALERT_UPDATE");
+				updateAlerte((JSONObject) input.get("body"));
                   
                   
             //vehicule sensor
