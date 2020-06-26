@@ -258,8 +258,8 @@ public class CityDetail {
 					boolean sMess = res.getBoolean("success");
 					if(sMess) {
 						lbtMess.setText("Delete Success");
-						CityAddNew newcity = new CityAddNew(client);
-						newcity.frame.setVisible(true);
+						CityList listcity = new CityList(client);
+						listcity.frame.setVisible(true);
 						frame.dispose();						
 
 					}else {
