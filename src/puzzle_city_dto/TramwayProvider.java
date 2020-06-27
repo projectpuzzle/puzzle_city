@@ -34,6 +34,7 @@ public class TramwayProvider {
 	        Boolean isValid = true;
 			int iBudget = 0;
 			int iCostOne = 0;
+			int iRadius = 0;
 	        //check 
 	       // isValid = false;
 	        
@@ -52,33 +53,36 @@ public class TramwayProvider {
 				txtResText = "Budget value for one station is not valid, please enter the data in numeric integer format";
 				isValid = false;
 			}
-			
-			//check valid txtCostOne
-			if (!(iBudget > 0) ) {
-				txtResText = "Budget value is not valid, please enter the budget valide";
-				isValid = false;
-			}
-			
-			if (!(iCostOne > 0) ) {
-				txtResText = "Budget value for one station is not valid, please enter the cost for one station valide";
-				isValid = false;
-			}
-			if(iBudget<iCostOne) {
-				txtResText = "The cost of a station can't be higher than the city budget";
-				isValid = false;
-			}
-			if(!(iCostOne > 0 && (iBudget/iCostOne >= 2))) {
-				txtResText = "You need at least 2 station to create a network";
-				isValid = false;
-			}
 			//check valid txtRadius
 			try {	
-				int radiusT = record.getInt("Radius");
+				iRadius = record.getInt("Radius");
 				
 			} catch (Exception e) {
 				txtResText = "Min distance between two point is not valid, please enter the data in numeric integer format";
 				isValid = false;
 			}
+			//check valid txtCostOne
+			if (!(iBudget > 0) ) {
+				txtResText = "Budget value must be greater than 0";
+				isValid = false;
+			}else		
+			if (!(iCostOne > 0) ) {
+				txtResText = "The cost of a station must be greater than 0";
+				isValid = false;
+			}else
+			if(iBudget<iCostOne) {
+				txtResText = "The cost of a station can't be higher than the city budget";
+				isValid = false;
+			}else
+			if(!(iBudget/iCostOne >= 2)) {
+				txtResText = "You need at least 2 station to create a network";
+				isValid = false;
+			}else
+				if (!(iRadius > 0)) {
+				txtResText = "Min distance between two point must be greater than 0";
+				isValid = false;
+			}
+		
 			try {
 	        
 		        resValid.put("isValid", isValid);
@@ -94,18 +98,21 @@ public class TramwayProvider {
 	//create
 	public static ApiResponse createAndUpdate(JSONObject record) {
 		try {		
+			System.out.println(record);
             JSONObject checkTramWayValid = checkTramWayValid(record);
             String txtResText = checkTramWayValid.getString("txtResText");
             Boolean isValid = checkTramWayValid.getBoolean("isValid");
             if(isValid) {
 				String sql = "select * from tblbudgetstation where bIdCity = " + record.getInt("ID");
-	        	ResultSet rs = st.executeQuery(sql);        	
+
+				System.out.println(sql);
+				ResultSet rs = st.executeQuery(sql);        	
 	
 	    		PreparedStatement pstmt  ;
                 int ID =  record.getInt("ID");
                 int Budget = record.getInt("Value");
                 int ValStation = record.getInt("ValueStation");
-                int NumberMaxStation = record.getInt("NumberMaxStation");
+                int NumberMaxStation = (int) Budget/ValStation;
                 int RadiusMin = record.getInt("Radius");
                 //long date_of_birth = Date.valueOf(date).getTime();
 	    		if(rs.next() == false) {
