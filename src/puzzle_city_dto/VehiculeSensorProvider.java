@@ -215,16 +215,20 @@ public class VehiculeSensorProvider {
 		try {
 
 			PreparedStatement pstmt = conn
-					.prepareStatement("UPDATE tblvehiculesensor SET Address = ?  WHERE ID = ?");
+					.prepareStatement("UPDATE tblvehiculesensor SET Address = ?, State = ?  WHERE ID = ?");
 			System.out.println(record);
-
+			
+			int ID = record.getInt("ID");
 			String Address = record.getString("Address");
+			boolean State = record.getBoolean("State");
 			//boolean alert = record.getBoolean("alert");
 			//int alert_id = record.getInt("alert_id");
 			//updateAlertById(alert_id, alert);
 //                 Boolean isOpen = record.getBoolean("isOpen");	          
 			// long date_of_birth = Date.valueOf(date).getTime();
-			pstmt.setString(1, Address);
+			pstmt.setString(2, Address);
+			pstmt.setInt(1, ID);
+			pstmt.setBoolean(3, State);
 			//pstmt.setInt(5, id);
 //	             pstmt.setBoolean(2, isOpen);
 

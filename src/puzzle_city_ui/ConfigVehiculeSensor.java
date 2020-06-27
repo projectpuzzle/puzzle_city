@@ -40,6 +40,10 @@ public class ConfigVehiculeSensor {
 		client = socket;
 		initialize();
 	}
+	
+	public ConfigVehiculeSensor() {
+		
+	}
 
 	/**
 	 * Initialize the contents of the frame.

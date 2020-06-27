@@ -25,7 +25,7 @@ public class Puzzle_main {
 	
 
 	public void getCityData() {
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub
 		client.setResponseData(null);
 		SendPackage sendP = new SendPackage();
 		sendP.setApi(ApiEnum.CITY_FIND_ALL);		

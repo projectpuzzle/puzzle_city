@@ -22,20 +22,28 @@ import org.json.JSONObject;
 import puzzle_city_client.Client;
 import puzzle_city_client_model.ApiEnum;
 import puzzle_city_client_model.VehiculeSensorTable;
+import puzzle_city_model.ApiResponse;
 import puzzle_city_client_model.SendPackage;
 
 import javax.swing.JTable;
+import javax.swing.JTextField;
+
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class VehiculeSensorList {
 
 	public JFrame frame;
 	private JTable tblvehiculesensor;
+	private JLabel lbtMess;
+	private int State, ID;
+	private JTextField txtAddress;
 	public 	Client client ;//= new Client("127.0.0.1", 4000);
 	
 	List<Object[]> list=new ArrayList<>();
@@ -103,7 +111,10 @@ public class VehiculeSensorList {
 		lblListVehiculeSensor.setBounds(10, 11, 128, 27);
 		panel_cityinfo.add(lblListVehiculeSensor);
 		
+		//Button cancel
 		JButton btnCancel = new JButton("Cancel");
+		btnCancel.setSize(121, 23);
+		btnCancel.setLocation(492, 294);
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Dashboard db = new Dashboard();
@@ -112,8 +123,33 @@ public class VehiculeSensorList {
 			}
 		});
 		btnCancel.setBackground(Color.WHITE);
-		btnCancel.setBounds(390, 294, 121, 23);
+		btnCancel.setBounds(492, 294, 121, 23);
 		panel_cityinfo.add(btnCancel);
+		
+		//button to page config
+		JButton btnConfig = new JButton("Configurations");
+		btnConfig.setBackground(Color.WHITE);
+		btnConfig.setSize(121, 23);
+		btnConfig.setLocation(257, 294);
+		btnConfig.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ConfigVehiculeSensor cvs = new ConfigVehiculeSensor(client);
+				cvs.frame.setVisible(true);
+				frame.dispose();
+			}
+		});
+		btnCancel.setBackground(Color.WHITE);
+		btnCancel.setBounds(390, 294, 121, 23);
+		panel_cityinfo.add(btnConfig);
+		
+		JButton btnUpdate = new JButton("Update");
+		btnUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				updateSensorInfo();
+			}
+		});
+		btnUpdate.setBounds(284, 261, 89, 23);
+		panel_cityinfo.add(btnUpdate);
 		
 		//table
 		VehiculeSensorTable tv = new VehiculeSensorTable();
@@ -228,6 +264,46 @@ public class VehiculeSensorList {
 		}	
 
 		tblvehiculesensor.setModel(model);
+		
+	}
+	
+	public static ApiResponse UpdateVehiculeSensor(JSONObject record) {
+		try {		
+			String sql = "select * from tblvehiculesensor where ID = " + record.getInt("ID");
+
+				System.out.println(sql);
+				ResultSet rs = st.executeQuery(sql);        	
+	
+	    		PreparedStatement pstmt  ;
+                int ID =  record.getInt("ID");
+                String Address = record.getString("Address");
+                boolean State = record.getBoolean("State");
+	    			//update
+	    		pstmt = conn.prepareStatement("UPDATE tblvehiculesensor SET Address = ?, State = ?  WHERE ID = ?");
+		        pstmt.setInt(1, ID);
+	            pstmt.setString(2, Address);
+	            pstmt.setBoolean(3, State);
+				
+	            
+	            pstmt.executeUpdate();
+	            // random Station
+	            randomStation(ID);
+	        	// add success
+	        	return new ApiResponse(true, null, "Create success");
+
+   
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			try {
+				return new ApiResponse(false, null, e.getMessage());
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				return null;
+			}
+
+		}
 		
 	}
 }
