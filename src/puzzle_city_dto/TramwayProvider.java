@@ -105,7 +105,7 @@ public class TramwayProvider {
             if(isValid) {
 				String sql = "select * from tblbudgetstation where bIdCity = " + record.getInt("ID");
 
-				System.out.println(sql);
+				st =  conn.createStatement();
 				ResultSet rs = st.executeQuery(sql);        	
 	
 	    		PreparedStatement pstmt  ;
