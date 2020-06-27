@@ -118,17 +118,18 @@ public class RandomPoint{
 					boolean ok = true;
 
 					//if the newest random point is in the grid so check the distance of this point to the grid around
-
-					if((col+row*cols)>=0 && (col+row*cols) <= cols*rows && isZero(grid[col+row*cols])) {  									
+					if(newPoint.x >= 0 && newPoint.y >=0 && newPoint.x < width && newPoint.y < height && (col+row*cols)>=0 && (col+row*cols) < cols*rows && isZero(grid[col+row*cols])) {  									
 						for (int h = -1; h <= 1; h++) {
 							for (int g = -1; g <= 1; g++) {
 								if(((col+h)+(row+g)*cols)>=0 && ((col+h)+(row+g)*cols) <= cols*rows ) {  
-									Point neighbor =  grid[(col+h)+(row+g)*cols];	
-									if(!isZero(grid[(col+h)+(row+g)*cols])){
-										double d = dst(newPoint.getX(), newPoint.getY(), neighbor.getX(), neighbor.getY());	
-										//	System.out.println("kc:"+d+"-"+r);
-										if(d<r) {
-											ok = false;
+									if((col+h)+(row+g)*cols >= 0 && (col+h)+(row+g)*cols<grid.length ) {
+										Point neighbor =  grid[(col+h)+(row+g)*cols];	
+										if(!isZero(grid[(col+h)+(row+g)*cols])){
+											double d = dst(newPoint.getX(), newPoint.getY(), neighbor.getX(), neighbor.getY());	
+											//	System.out.println("kc:"+d+"-"+r);
+											if(d<r) {
+												ok = false;
+											}
 										}
 									}
 								}
