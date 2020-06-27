@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.awt.event.ActionEvent;
+import javax.swing.SwingConstants;
 
 public class AnalyseUI {
 
@@ -33,7 +34,6 @@ public class AnalyseUI {
 	private String numberOfAirSensor;
 	private JLabel jl1;
 	private JLabel jl2;
-	
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() { 
@@ -74,72 +74,70 @@ public class AnalyseUI {
 		frame.getContentPane().add(panel);
 		panel.setLayout(new GridLayout(0, 2, 0, 8));
 		
-		JButton btnNewButton = new JButton("Number of residents");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		panel.add(btnNewButton);
+		JLabel lblTheNumberOf = new JLabel("The number of residents");
+		lblTheNumberOf.setHorizontalAlignment(SwingConstants.CENTER);
+		panel.add(lblTheNumberOf);
 		
 		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		panel.add(lblNewLabel);
 		
-		
-		
-		
-		JButton btnNewButton_1 = new JButton("Number of air quality sensors");
-		btnNewButton_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					takeNumberOfAirSensor();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				frame.setVisible(true);
-				frame.dispose();
-			}
-		});
-		panel.add(btnNewButton_1);
+		JLabel lblNewLabel_1 = new JLabel("The number of sensors installed in the city");
+		lblNewLabel_1.setForeground(Color.BLACK);
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		panel.add(lblNewLabel_1);
 		
 		jl1 = new JLabel();
+		jl1.setHorizontalAlignment(SwingConstants.CENTER);
 		panel.add(jl1);
 		
-		JButton btnNewButton_2 = new JButton("Number of stations");
-		btnNewButton_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		panel.add(btnNewButton_2);
+		JLabel lblTheNumberOf_1 = new JLabel("The number of Stations");
+		lblTheNumberOf_1.setHorizontalAlignment(SwingConstants.CENTER);
+		panel.add(lblTheNumberOf_1);
 		
 		JLabel lblNewLabel_2 = new JLabel("");
+		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
 		panel.add(lblNewLabel_2);
 		
-		JButton btnNewButton_4 = new JButton("Number of bollards");
-		panel.add(btnNewButton_4);
+		JLabel lblNewLabel_7 = new JLabel("The number of bollards");
+		lblNewLabel_7.setHorizontalAlignment(SwingConstants.CENTER);
+		panel.add(lblNewLabel_7);
 		
 		JLabel lblNewLabel_3 = new JLabel("");
+		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
 		panel.add(lblNewLabel_3);
 		
-		JButton btnNewButton_3 = new JButton("Compare");
+		JButton btnNewButton_3 = new JButton("Comparison");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
 		
-		JButton btnNewButton_5 = new JButton("Transport information");
-		panel.add(btnNewButton_5);
+		JLabel lblNewLabel_8 = new JLabel("Distance of public transit");
+		lblNewLabel_8.setHorizontalAlignment(SwingConstants.CENTER);
+		panel.add(lblNewLabel_8);
 		
 		JLabel lblNewLabel_4 = new JLabel("");
+		lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
 		panel.add(lblNewLabel_4);
 		
-		JButton btnNewButton_7 = new JButton("Exceeding rate");
-		panel.add(btnNewButton_7);
+		JLabel lblExceedingRateOf = new JLabel("Rate of pollution");
+		lblExceedingRateOf.setHorizontalAlignment(SwingConstants.CENTER);
+		panel.add(lblExceedingRateOf);
 		
 		JLabel lblNewLabel_5 = new JLabel("");
+		lblNewLabel_5.setHorizontalAlignment(SwingConstants.CENTER);
 		panel.add(lblNewLabel_5);
 		
+		JLabel lblExceedingRateOf_1 = new JLabel("Exceeding rate of pollution");
+		lblExceedingRateOf_1.setHorizontalAlignment(SwingConstants.CENTER);
+		panel.add(lblExceedingRateOf_1);
+		
+		JLabel label = new JLabel("");
+		panel.add(label);
+		
 		JLabel lblNewLabel_6 = new JLabel("");
+		lblNewLabel_6.setHorizontalAlignment(SwingConstants.CENTER);
 		panel.add(lblNewLabel_6);
 		panel.add(btnNewButton_3);
 		
@@ -177,5 +175,4 @@ public class AnalyseUI {
 	public JFrame getJFrame() {
 		return frame;
 	}
-	
 }
