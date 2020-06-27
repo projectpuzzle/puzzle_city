@@ -136,7 +136,7 @@ public class CityAddNew {
 		panel_cityinfo.add(btnCreate);
 
 		JButton btnCancel = new JButton("Cancel");
-		btnCancel.setVisible(false);
+		btnCancel.setVisible(true);
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CityList cityList = new CityList(client);
@@ -203,7 +203,11 @@ public class CityAddNew {
 						if(sMess) {
 							lbtMess.setText("Add Success");
 							//move to dashboard
-							getCityData();
+							
+							Dashboard ctDetail =	new Dashboard(client, (res.getJSONArray("data").getJSONObject(0)).getInt("ID"));
+							Dashboard.frame.setVisible(true);
+							frame.dispose();
+
 						}else {
 							lbtMess.setText("Error :"+res.getString("msg") );						
 						}
@@ -223,24 +227,18 @@ public class CityAddNew {
 		String textErr = "";
 		// TODO Auto-generated method stub
 		System.out.println("txtCityName:"+txtCityName.getText());
-		if(txtCityName.getText().isEmpty()) {
-			textErr = "Name City is required.";
-			valid = false;
-		};	
-
-		//check valid height
+		//check valid Latitude
 		try {	
-			Double.parseDouble( txtHeight.getText());
+			Integer.parseInt( txtMapZoom.getText());
 		} catch (Exception e) {
-			textErr = "Height value is not valid.";
+			textErr = "MapZoom value is not valid.";
 			valid = false;
-		}
-
-		//check valid width
+		}	
+		//check valid Latitude
 		try {	
-			Double.parseDouble( txtWidth.getText());
+			Double.parseDouble( txtLong.getText());
 		} catch (Exception e) {
-			textErr = "Width value is not valid.";
+			textErr = "Longitude value is not valid.";
 			valid = false;
 		}
 
@@ -252,21 +250,28 @@ public class CityAddNew {
 			valid = false;
 		}
 
-		//check valid Latitude
+
+		//check valid width
 		try {	
-			Double.parseDouble( txtLong.getText());
+			Double.parseDouble( txtWidth.getText());
 		} catch (Exception e) {
-			textErr = "Longitude value is not valid.";
+			textErr = "Width value is not valid.";
 			valid = false;
 		}
 
-		//check valid Latitude
+		//check valid height
 		try {	
-			Integer.parseInt( txtMapZoom.getText());
+			Double.parseDouble( txtHeight.getText());
 		} catch (Exception e) {
-			textErr = "MapZoom value is not valid.";
+			textErr = "Height value is not valid.";
 			valid = false;
-		}		
+		}
+
+
+		if(txtCityName.getText().isEmpty()) {
+			textErr = "Name City is required.";
+			valid = false;
+		};	
 
 		lbtMess.setText(textErr);
 		return valid;
