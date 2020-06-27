@@ -302,7 +302,13 @@ public class CityTramway {
 							btnUpdate.setText("Update");
 							getTramway();
 						}else {
-							lbtMess.setText("Error :"+res.getString("msg") );						
+							lbtMess.setText("Error :"+res.getString("msg") );	
+							//hiddenmap
+
+							panel_2.removeAll();
+							panel_2.repaint();
+							panel_2.setVisible(true);
+							
 						}
 						System.out.println("Return:"+res.toString());
 					}
