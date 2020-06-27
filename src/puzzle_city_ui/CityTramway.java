@@ -43,6 +43,7 @@ public class CityTramway {
 	private JLabel lbtMess;
 	public 	Client client ;
 	private JTextField txtRadius;
+	private JButton btnUpdate ;
 
 	/**
 	 * Launch the application.
@@ -67,7 +68,7 @@ public class CityTramway {
 		client = socket;
 		cityID = id;
 		initialize();
-		getTramway();
+		//getTramway();
 	}
 
 	/**
@@ -136,7 +137,7 @@ public class CityTramway {
 		txtCostOne.setBounds(484, 21, 165, 20);
 		panel_cityinfo.add(txtCostOne);
 
-		JButton btnUpdate = new JButton("Update");
+		btnUpdate = new JButton("Create");
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				updateTramway();
@@ -281,7 +282,7 @@ public class CityTramway {
 				bodyItem.put("ID", "" +cityID);
 				bodyItem.put("Value", "" +txtBudget.getText());
 				bodyItem.put("ValueStation",  txtCostOne.getText());
-				bodyItem.put("NumberMaxStation", (int) ((Double.parseDouble( txtBudget.getText())/ Double.parseDouble( txtBudget.getText()))-1));
+			//bodyItem.put("NumberMaxStation", (int) (Double.parseDouble( txtBudget.getText())/ Double.parseDouble( txtCostOne.getText())));
 				bodyItem.put("Radius",  txtRadius.getText());
 
 				SendPackage sendPa = new SendPackage();
@@ -297,7 +298,8 @@ public class CityTramway {
 						// if success 
 						boolean bSuccess = res.getBoolean("success");
 						if(bSuccess) {
-							lbtMess.setText("Update Success"); 
+							lbtMess.setText("Render Map Success"); 
+							btnUpdate.setText("Update");
 							getTramway();
 						}else {
 							lbtMess.setText("Error :"+res.getString("msg") );						
@@ -352,6 +354,7 @@ public class CityTramway {
 		String textErr = "";
 		int iBudget = 0;
 		int iCostOne = 0;
+		int iRadius = 0;
 		// TODO Auto-generated method stub
 
 		//check valid txtBudget
@@ -359,7 +362,8 @@ public class CityTramway {
 			iBudget = Integer.parseInt( txtBudget.getText());
 		} catch (Exception e) {
 			textErr = "Budget value is not valid, please enter the data in numeric integer format";
-			valid = false;
+			lbtMess.setText(textErr);
+			return false;
 		}
 
 		//check valid txtCostOne
@@ -367,34 +371,61 @@ public class CityTramway {
 			iCostOne = Integer.parseInt( txtCostOne.getText());
 		} catch (Exception e) {
 			textErr = "Budget value for one station is not valid, please enter the data in numeric integer format";
-			valid = false;
-		}
+			lbtMess.setText(textErr);
+			return false;
 
+		}
+		//check valid iRadius
+		try {	
+			iRadius = Integer.parseInt( txtRadius.getText());
+		} catch (Exception e) {
+			textErr = "Radius value is not valid, please enter the data in numeric integer format";
+			lbtMess.setText(textErr);
+			return false;
+
+		}
 		//check valid txtCostOne
 		if (!(iBudget > 0) ) {
 			textErr = "Budget value is not valid, please enter the budget valide";
-			valid = false;
+			lbtMess.setText(textErr);
+			return false;
+
 		}
 
 
 		if (!(iCostOne > 0) ) {
 			textErr = "Budget value for one station is not valid, please enter the cost for one station valide";
-			valid = false;
+			lbtMess.setText(textErr);
+			return false;
+
 		}
 		if(iBudget<iCostOne) {
 			textErr = "The cost of a station can't be higher than the city budget";
-			valid = false;
+
+			lbtMess.setText(textErr);
+			return false;
+
 		}
 		if(!(iCostOne > 0 && (iBudget/iCostOne >= 2))) {
 			textErr = "You need at least 2 station to create a network";
-			valid = false;
+			lbtMess.setText(textErr);
+			return false;
+		}
+		if (!(iRadius > 0) ) {
+			textErr = "Radius is not valid";
+			lbtMess.setText(textErr);
+			return false;
+
+			
 		}
 		//check valid txtRadius
 		try {	
 			Integer.parseInt( txtRadius.getText());
 		} catch (Exception e) {
 			textErr = "Min distance between two point is not valid, please enter the data in numeric integer format";
-			valid = false;
+			lbtMess.setText(textErr);
+			return false;
+
 		}
 
 
