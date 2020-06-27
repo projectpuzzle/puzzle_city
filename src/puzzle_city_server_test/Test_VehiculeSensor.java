@@ -8,14 +8,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import puzzle_city_dto.TramwayProvider;
+import puzzle_city_dto.VehiculeSensorProvider;
 
 public class Test_VehiculeSensor {
 	public static void main(String[] args) {
 		// test create
 		System.out.println("Start test 1");
 
-		 try (FileReader reader = new FileReader("src/puzzle_city_server_test/tramway_create_data.json"))
+		 try (FileReader reader = new FileReader("src/puzzle_city_server_test/Address.json"))
         { 
 			 String fileContent= "";
 			 int i;    
@@ -26,8 +26,8 @@ public class Test_VehiculeSensor {
 	          JSONObject list = new JSONObject(fileContent);
 	          
 
-	      		TramwayProvider tramway = new TramwayProvider();
-	          System.out.println( tramway.createAndUpdate(list).toString());
+	      		VehiculeSensorProvider bollards = new VehiculeSensorProvider();
+	          System.out.println( bollards.UpdateVehiculeSensor(list).toString());
 	          
         } catch (FileNotFoundException e) {
             e.printStackTrace();

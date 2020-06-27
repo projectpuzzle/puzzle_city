@@ -217,7 +217,6 @@ public class VehiculeSensorProvider {
 			PreparedStatement pstmt = conn
 					.prepareStatement("UPDATE tblvehiculesensor SET Address = ?, State = ?  WHERE ID = ?");
 			System.out.println(record);
-			
 			int ID = record.getInt("ID");
 			String Address = record.getString("Address");
 			boolean State = record.getBoolean("State");
@@ -226,9 +225,9 @@ public class VehiculeSensorProvider {
 			//updateAlertById(alert_id, alert);
 //                 Boolean isOpen = record.getBoolean("isOpen");	          
 			// long date_of_birth = Date.valueOf(date).getTime();
-			pstmt.setString(2, Address);
-			pstmt.setInt(1, ID);
-			pstmt.setBoolean(3, State);
+			pstmt.setString(1, Address);
+			pstmt.setInt(3, ID);
+			pstmt.setBoolean(2, State);
 			//pstmt.setInt(5, id);
 //	             pstmt.setBoolean(2, isOpen);
 

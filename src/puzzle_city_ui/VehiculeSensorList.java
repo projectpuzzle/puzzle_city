@@ -31,11 +31,14 @@ import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class VehiculeSensorList {
 
@@ -43,10 +46,13 @@ public class VehiculeSensorList {
 	private JTable tblvehiculesensor;
 	private JLabel lbtMess;
 	private int State, ID;
-	private JTextField txtAddress;
 	public 	Client client ;//= new Client("127.0.0.1", 4000);
 	
 	List<Object[]> list=new ArrayList<>();
+	private JTextField txtAddress;
+	private JComboBox cState;
+	protected String currenttextAddress;
+	protected int currentID;
 
 	
 //	public static void main(String[] args) {
@@ -123,14 +129,14 @@ public class VehiculeSensorList {
 			}
 		});
 		btnCancel.setBackground(Color.WHITE);
-		btnCancel.setBounds(492, 294, 121, 23);
+		btnCancel.setBounds(391, 295, 121, 23);
 		panel_cityinfo.add(btnCancel);
 		
 		//button to page config
 		JButton btnConfig = new JButton("Configurations");
 		btnConfig.setBackground(Color.WHITE);
 		btnConfig.setSize(121, 23);
-		btnConfig.setLocation(257, 294);
+		btnConfig.setLocation(243, 297);
 		btnConfig.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ConfigVehiculeSensor cvs = new ConfigVehiculeSensor(client);
@@ -145,10 +151,10 @@ public class VehiculeSensorList {
 		JButton btnUpdate = new JButton("Update");
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				updateSensorInfo();
+				updateVehiculeSensorInfo(); 
 			}
 		});
-		btnUpdate.setBounds(284, 261, 89, 23);
+		btnUpdate.setBounds(406, 258, 89, 23);
 		panel_cityinfo.add(btnUpdate);
 		
 		//table
@@ -162,6 +168,19 @@ public class VehiculeSensorList {
 
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
+			}
+		});
+		tblvehiculesensor.addMouseListener(new MouseAdapter() {
+		
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				int row = tblvehiculesensor.getSelectedRow();
+				currentID = Integer.parseInt(tblvehiculesensor.getModel().getValueAt(row, 0).toString()) ;
+				currenttextAddress = tblvehiculesensor.getModel().getValueAt(row, 1).toString() ;
+				txtAddress.setText(currenttextAddress);
+
+				if(Boolean.parseBoolean( tblvehiculesensor.getModel().getValueAt(row, 2).toString())) {
+					cState.setSelectedIndex(1);}else cState.setSelectedIndex(0);
 			}
 		});
 		// 
@@ -180,6 +199,20 @@ public class VehiculeSensorList {
 		btnCreateButton.setBackground(Color.WHITE);
 		btnCreateButton.setBounds(20, 295, 187, 23);
 		panel_cityinfo.add(btnCreateButton);
+		
+		txtAddress = new JTextField();
+		txtAddress.setBounds(22, 261, 185, 22);
+		panel_cityinfo.add(txtAddress);
+		txtAddress.setColumns(10);
+		
+		lbtMess = new JLabel("");
+		lbtMess.setBounds(162, 323, 121, 16);
+		panel_cityinfo.add(lbtMess);
+		
+		cState = new JComboBox();
+		cState.setModel(new DefaultComboBoxModel(new String[] {"false", "true"}));
+		cState.setBounds(255, 262, 31, 22);
+		panel_cityinfo.add(cState);
 		
 
 //		//set data  for table	
@@ -267,43 +300,42 @@ public class VehiculeSensorList {
 		
 	}
 	
-	public static ApiResponse UpdateVehiculeSensor(JSONObject record) {
-		try {		
-			String sql = "select * from tblvehiculesensor where ID = " + record.getInt("ID");
-
-				System.out.println(sql);
-				ResultSet rs = st.executeQuery(sql);        	
-	
-	    		PreparedStatement pstmt  ;
-                int ID =  record.getInt("ID");
-                String Address = record.getString("Address");
-                boolean State = record.getBoolean("State");
-	    			//update
-	    		pstmt = conn.prepareStatement("UPDATE tblvehiculesensor SET Address = ?, State = ?  WHERE ID = ?");
-		        pstmt.setInt(1, ID);
-	            pstmt.setString(2, Address);
-	            pstmt.setBoolean(3, State);
-				
-	            
-	            pstmt.executeUpdate();
-	            // random Station
-	            randomStation(ID);
-	        	// add success
-	        	return new ApiResponse(true, null, "Create success");
-
-   
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
+	private void updateVehiculeSensorInfo() {
+		if(true) {	
 			try {
-				return new ApiResponse(false, null, e.getMessage());
-			} catch (JSONException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-				return null;
-			}
+				client.setResponseData(null);		
+				JSONObject bodyItem = new JSONObject();
+				bodyItem.put("ID",  currentID);
+				bodyItem.put("Address", "" +txtAddress.getText());
+				bodyItem.put("State", cState.getSelectedItem());
 
+
+				SendPackage sendPa = new SendPackage();
+				sendPa.setApi(ApiEnum.VEHICULESENSOR_UPDATE);		
+				sendPa.setBody(bodyItem);
+				client.setSendP(sendPa);
+
+				JSONObject res = null;
+				while(res == null) {
+					res = client.getResponseData();
+					System.out.println("wait res:"+res);
+					if(res!= null) {
+						// if success 
+						boolean sMess = res.getBoolean("success");
+						if(sMess) {
+							lbtMess.setText("Update Success");
+						}else {
+							lbtMess.setText("Error :"+res.getString("msg") );						
+						}
+						System.out.println("Return:"+res.toString());
+					}
+				} 
+				getVehiculeSensorData();
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		
 	}
 }
