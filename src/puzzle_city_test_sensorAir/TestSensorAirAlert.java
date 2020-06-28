@@ -9,7 +9,7 @@ import puzzle_city_client.Client;
 import puzzle_city_client_model.ApiEnum;
 import puzzle_city_client_model.SendPackage;
 
-public class TesSensorAirAlert {
+public class TestSensorAirAlert {
 	public static void main(String[] args) {
 		JSONParser parser = new JSONParser();
 		Client client = new Client("localhost", 1234);
