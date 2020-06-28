@@ -32,11 +32,7 @@ public class CreateSensorAir {
 
 	public JFrame frame;
 	private JTextField txtAddressSensor;
-//	private JTextField txtLat;
-//	private JTextField txtLong;
-//	private JTextField txtHeight;
-//	private JTextField txtWidth;
-//	private JTextField txtMapZoom;
+
 	private JLabel lbtMess;
 	private JLabel labelx;
 

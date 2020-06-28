@@ -65,29 +65,12 @@ public class ReglementationFrance {
 	    this.cron=cron;
 		initialize();
 
-//		getSensorAirData();
 	}
 
 	public ReglementationFrance(JTable tblalerthistory) {
 
 		this.tblalerthistory = tblalerthistory;
 	}
-//	void initializeTimer() {
-//		TimerTask task = new TimerTask() {
-//			public void run() {
-//				timeLeft.setText(Integer.toString(counter));
-//				counter--;
-//				if (counter == -1) {
-////					timer.cancel();
-//					//simulate();
-//
-//					counter = cron;
-//
-//				}
-//			}
-//		};
-//		timer.scheduleAtFixedRate(task, 1000, 1000);
-//	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -107,8 +90,6 @@ public class ReglementationFrance {
 
 	
 
-//		//set data  for table	
-		// add city
 		JPanel panel_cityinfo_1 = new JPanel();
 		panel_cityinfo_1.setLayout(null);
 		panel_cityinfo_1.setBounds(10, 64, 644, 364);
@@ -140,7 +121,6 @@ public class ReglementationFrance {
 
 	
 
-		// tao scrollpane roi cho table chui vao thi table thi tieu de moi hien thi
 		JScrollPane jsp = new JScrollPane(tblalerthistory);
 		jsp.setBounds(10, 139, 644, 77);
 		panel_cityinfo.add(jsp);

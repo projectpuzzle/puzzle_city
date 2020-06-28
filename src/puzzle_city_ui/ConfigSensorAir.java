@@ -69,6 +69,7 @@ public class ConfigSensorAir {
 	private Timer timer;
 	private int cron;
 	private JLabel labely;
+	private boolean timerStart;
 
 	/**
 	 * Launch the application.
@@ -81,7 +82,7 @@ public class ConfigSensorAir {
 	 */
 
 	public ConfigSensorAir(Client socket, int id, String address, int no2, int pm10, int o3, boolean alert,
-			int alert_id, boolean isActivated, int counter, Timer timer, int cron) {
+			int alert_id, boolean isActivated, int counter, Timer timer, int cron, boolean timerStart) {
 		this.id = id;
 		this.address = address;
 		this.no2 = no2;
@@ -93,10 +94,12 @@ public class ConfigSensorAir {
 		this.counter = counter;
 		this.timer = timer;
 		this.cron = cron;
+		this.timerStart = timerStart;
 		client = socket;
+
 		initialize(id, address, no2, pm10, o3, alert);
 		initializeTimer();
-		
+
 	}
 
 	public ConfigSensorAir(Client socket, int id, String address, int no2, int pm10, int o3, boolean alert,
@@ -130,11 +133,11 @@ public class ConfigSensorAir {
 
 					simulate();
 					labely.setVisible(true);
-					updateSensorInfo();
+					// updateSensorInfo();
 
 					counter = cron;
 
-				}else {
+				} else {
 					labely.setVisible(false);
 
 				}
@@ -144,7 +147,7 @@ public class ConfigSensorAir {
 				}
 			}
 		};
-		if (timer != null)
+		if (timer != null && timerStart)
 			timer.scheduleAtFixedRate(task, 0, 1000);
 	}
 
@@ -248,7 +251,7 @@ public class ConfigSensorAir {
 			public void actionPerformed(ActionEvent e) {
 
 				AlertHistory a = new AlertHistory(client, id, address, no2, pm10, o3, alert, alert_id, isActivated,
-						counter, timer, cron);
+						counter, timer, cron,timerStart);
 				a.frame.setVisible(true);
 				frame.dispose();
 			}
@@ -269,7 +272,6 @@ public class ConfigSensorAir {
 					btn1.setEnabled(false);
 					btn2.setEnabled(false);
 					btn3.setEnabled(false);
-					
 
 					slider.setValue(0);
 					slider2.setValue(0);
@@ -278,14 +280,12 @@ public class ConfigSensorAir {
 					text1.setText("0");
 					text2.setText("0");
 					text3.setText("0");
-					
-					
 
 				} else {
 					btn1.setEnabled(true);
 					btn2.setEnabled(true);
 					btn3.setEnabled(true);
-					
+
 				}
 				// e.getSource() == activatedCheckBox
 			}
@@ -501,7 +501,7 @@ public class ConfigSensorAir {
 		timeLeft.setFont(new Font("Tahoma", Font.BOLD, 15));
 		timeLeft.setBounds(393, 110, 44, 14);
 		panel_cityinfo.add(timeLeft);
-		
+
 		labely = new JLabel("results are out!");
 		labely.setVisible(false);
 		labely.setForeground(Color.RED);
@@ -517,14 +517,11 @@ public class ConfigSensorAir {
 
 	}
 
-
 	void simulate() {
 		this.no2 = (int) (Math.random() * 500);
 		this.pm10 = (int) (Math.random() * 100);
 		this.o3 = (int) (Math.random() * 300);
 		this.alert = this.no2 >= 400 || this.pm10 >= 80 || this.o3 >= 240;
-
-
 
 	}
 
@@ -543,7 +540,6 @@ public class ConfigSensorAir {
 			e.printStackTrace();
 		}
 	}
-
 
 	private void updateSensorInfo() {
 		try {
@@ -600,7 +596,6 @@ public class ConfigSensorAir {
 				}
 			}
 
-
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -626,7 +621,8 @@ public class ConfigSensorAir {
 	}
 
 	void delete() {
-
+		if(JOptionPane.showConfirmDialog(null,"Are you sure you want to delete the sensor?"
+				,"Delete sensor",JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION)
 		try {
 			client.setResponseData(null);
 			JSONObject bodyItem = new JSONObject();

@@ -14,7 +14,6 @@ import puzzle_city_client_model.SendPackage;
 
 public class SimulationSensorAir {
 
-	
 	public Client client;
 
 	public SimulationSensorAir(Client client) {
@@ -34,7 +33,7 @@ public class SimulationSensorAir {
 			res = client.getResponseData();
 			System.out.println("waiting:" + res);
 			if (res != null) {
-			
+				System.out.println("res________________________"+res);
 				
 			
 				try {
