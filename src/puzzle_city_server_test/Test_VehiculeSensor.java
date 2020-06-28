@@ -15,39 +15,28 @@ public class Test_VehiculeSensor {
 		// test create
 		System.out.println("Start test 1");
 
-		 try (FileReader reader = new FileReader("src/puzzle_city_server_test/Address.json"))
-        { 
-			 String fileContent= "";
-			 int i;    
-	          while((i=reader.read())!=-1)   {	 
-		          fileContent += (char)i;
-	          } 
-	          reader.close();    			 
-	          JSONObject list = new JSONObject(fileContent);
-	          
+		try (FileReader reader = new FileReader("src/puzzle_city_server_test/Address.json"))
+		{ 
+			String fileContent= "";
+			int i;    
+			while((i=reader.read())!=-1)   {	 
+				fileContent += (char)i;
+			} 
+			reader.close();    			 
+			JSONObject list = new JSONObject(fileContent);
 
-	      		VehiculeSensorProvider bollards = new VehiculeSensorProvider();
-	          System.out.println( bollards.UpdateVehiculeSensor(list).toString());
-	          
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+
+			VehiculeSensorProvider bollards = new VehiculeSensorProvider();
+			System.out.println( bollards.create(list).toString());
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		// end test 1
 
-		// test 2
-		System.out.println("Start test 2");
-		
-		// end test 2
-
-		// test 3
-		System.out.println("Start test 3");
-		
-		// end test 3
 	}
 }

@@ -23,7 +23,7 @@ import puzzle_city_client_model.SendPackage;
 public class ConfigVehiculeSensor {
 
 	public JFrame frame;
-	private JTextField txtAddress;
+	private JTextField txtNb_vehicule_max;
 	private int ID;
 	private JLabel lbtMess;
 
@@ -35,6 +35,7 @@ public class ConfigVehiculeSensor {
 
 	/**
 	 * Create the application.
+	 * @wbp.parser.constructor
 	 */
 	public ConfigVehiculeSensor(Client socket) {
 		client = socket;
@@ -65,15 +66,15 @@ public class ConfigVehiculeSensor {
 		panel.add(panel_cityinfo);
 		panel_cityinfo.setLayout(null);
 
-		JLabel lblNewLabel_1 = new JLabel("Sensor Address :");
+		JLabel lblNewLabel_1 = new JLabel("Vehicule number treshold");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNewLabel_1.setBounds(10, 11, 179, 14);
 		panel_cityinfo.add(lblNewLabel_1);
 
-		txtAddress = new JTextField();
-		txtAddress.setBounds(212, 11, 315, 20);
-		panel_cityinfo.add(txtAddress);
-		txtAddress.setColumns(10);
+		txtNb_vehicule_max = new JTextField();
+		txtNb_vehicule_max.setBounds(212, 11, 315, 20);
+		panel_cityinfo.add(txtNb_vehicule_max);
+		txtNb_vehicule_max.setColumns(10);
 
 //		JLabel lblNewLabel_1_1 = new JLabel("Latitude");
 //		lblNewLabel_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -128,7 +129,7 @@ public class ConfigVehiculeSensor {
 		JButton btnCreate = new JButton("Update");
 		btnCreate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				updateSensorInfo();
+				updateThresholdInfo();
 			}
 		});
 		btnCreate.setBounds(212, 185, 89, 23);
@@ -144,14 +145,6 @@ public class ConfigVehiculeSensor {
 		});
 		btnCancel.setBounds(314, 185, 89, 23);
 		panel_cityinfo.add(btnCancel);
-		
-		JButton btn = new JButton("Changer le seuil");
-		btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btn.setBounds(245, 239, 132, 25);
-		panel_cityinfo.add(btn);
 
 		JLabel lblNewLabel = new JLabel("Configure your Vehicule Sensor");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -160,87 +153,77 @@ public class ConfigVehiculeSensor {
 		panel.add(lblNewLabel);
 	}
 
-	private void getSensorInfo() {
-		try {
-			client.setResponseData(null);
-			JSONObject bodyItem = new JSONObject();
-			bodyItem.put("ID", "" + ID);
-
-			SendPackage sendPa = new SendPackage();
-			sendPa.setApi(ApiEnum.VEHICULESENSOR_FIND_ONE);
-			sendPa.setBody(bodyItem);
-			client.setSendP(sendPa);
-
-			JSONObject res = null;
-			while (res == null) {
-				res = client.getResponseData();
-				System.out.println("wait res:" + res);
-				if (res != null) {
-					// if success true - get data bind to table
-					setDataToField((res.getJSONArray("data")).getJSONObject(0));
+	private void getTresholdData() {
+		// TODO Auto-generated method stub		
+		client.setResponseData(null);
+		SendPackage sendP = new SendPackage();
+		sendP.setApi(ApiEnum.THRESHOLD_FIND_ALL);		
+		client.setSendP(sendP);
+		JSONObject res = null;
+		while(res == null) {
+			res = client.getResponseData();
+			System.out.println("waiting:"+res);
+			if(res!= null) {
+				// if success true - get data bind to table 
+				System.out.println(res.toString());
+				boolean sMess;
+				try {
+					sMess = res.getBoolean("success");				
+					if(sMess) {
+						//bindDataToTable(res.getJSONArray("data"));
+					}else {						
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
-			// CLOSE
-
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 
 	private void setDataToField(JSONObject res) {
 		// TODO Auto-generated method stub
 		try {
-			txtAddress.setText(res.getString("Address"));
-//			txtHeight.setText(String.valueOf( res.getDouble("Height")));
-//			txtWidth.setText(String.valueOf( res.getDouble("Width")));
-//			txtLat.setText(String.valueOf( res.getDouble("CenterLat")));
-//			txtLong.setText(String.valueOf( res.getDouble("CenterLong")));
-//			txtMapZoom.setText(String.valueOf( res.getInt("MapZoom")));
+			txtNb_vehicule_max.setText(res.getString("Nb_vehicule_max"));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}	
 
-	private void updateSensorInfo() {
-		try {
-			client.setResponseData(null);
-			JSONObject bodyItem = new JSONObject();
-			bodyItem.put("ID", "" + ID);
-			bodyItem.put("Address", "" + txtAddress.getText());
-//			bodyItem.put("height", Double.parseDouble( txtHeight.getText()));
-//			bodyItem.put("width", txtWidth.getText());
-//			bodyItem.put("centerLat", txtLat.getText());
-//			bodyItem.put("centerLong", "" +txtLong.getText());
-//			bodyItem.put("mapZoom", "" + txtMapZoom.getText());
+	private void updateTresholdInfo() {
+		if(true) {	
+			try {
+				client.setResponseData(null);		
+				JSONObject bodyItem = new JSONObject();
+				bodyItem.put("Nb_vehicule_max",  Nb_vehicule_max);
 
-			SendPackage sendPa = new SendPackage();
-			sendPa.setApi(ApiEnum.VEHICULESENSOR_UPDATE);
-			sendPa.setBody(bodyItem);
-			client.setSendP(sendPa);
+				SendPackage sendPa = new SendPackage();
+				sendPa.setApi(ApiEnum.THRESHOLD_UPDATE);		
+				sendPa.setBody(bodyItem);
+				client.setSendP(sendPa);
 
-			JSONObject res = null;
-			while (res == null) {
-				res = client.getResponseData();
-				System.out.println("wait res:" + res);
-				if (res != null) {
-					// if success
-
-					boolean sMess = res.getBoolean("success");
-					if (sMess) {
-						lbtMess.setText(res.getString("msg"));
-					} else {
-						lbtMess.setText("Error :" + res.getString("msg"));
+				JSONObject res = null;
+				while(res == null) {
+					res = client.getResponseData();
+					System.out.println("wait res:"+res);
+					if(res!= null) {
+						// if success 
+						boolean sMess = res.getBoolean("success");
+						if(sMess) {
+							lbtMess.setText("Update Success");
+						}else {
+							lbtMess.setText("Error :"+res.getString("msg") );						
+						}
+						System.out.println("Return:"+res.toString());
 					}
-					System.out.println("tra ve:" + res.toString());
-				}
-			}
-			getSensorInfo();
+				} 
+				getTresholdData();
 
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }

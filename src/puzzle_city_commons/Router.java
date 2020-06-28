@@ -14,6 +14,7 @@ import puzzle_city_dto.SensorQualityAirProvider;
 import puzzle_city_dto.VehiculeSensorProvider;
 import puzzle_city_model.ApiResponse;
 import puzzle_city_dto.TramwayProvider;
+import puzzle_city_dto.ThresholdProvider;
 
 public class Router {
 	//Empreinte carbone
@@ -189,6 +190,40 @@ public class Router {
 		public static void deleteVehiculeSensorById(int ID,int alert_ID) {
 			VehiculeSensorProvider.deleteVehiculeSensorById(ID,alert_ID);
 		}
+		
+		// Threshold
+				public static String createThreshold(JSONObject Threshold) {
+					return ThresholdProvider.create(Threshold).toString();
+				}
+
+				public static String updateThreshold(JSONObject Threshold) {
+					return ThresholdProvider.update(Threshold).toString();
+				}
+
+				public static String findAllThreshold() {
+
+					JSONObject mapper = new JSONObject();
+					try {
+						ThresholdProvider Threshold = new ThresholdProvider();
+						return Threshold.getAll().toString();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return null;
+				}
+
+				public static String findOneThresholdById(int ThresholdID) {
+
+					try {
+						return ThresholdProvider.getByID(ThresholdID).toString();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return null;
+				}
+				/*public static void deleteThresholdById(int ID,int alert_ID) {
+					ThresholdProvider.deleteThresholdrById(ID,alert_ID);
+				}*/
 	
 		// analyse
 		public static int CountAirSensor() {
@@ -295,6 +330,25 @@ public class Router {
 			case "ANALYSE_AIR_SENSOR_NUMBER":
 				return String.valueOf(CountAirSensor());
 				
+				//threshold
+			case "THRESHOLD_CREATE":
+				return createThreshold((JSONObject) input.get("body"));
+
+			case "THRESHOLD_UPDATE":
+				return updateThreshold((JSONObject) input.get("body"));
+			case "THRESHOLD_FIND_ONE":
+				body = input.getJSONObject("body");
+
+				return findOneThresholdById((int) body.getInt("ID"));
+
+			case "THRESHOLD_FIND_ALL":
+				return findAllThreshold();
+				
+			case "THRESHOLD_DELETE":
+				body = input.getJSONObject("body");
+				 //deleteThresholdById((int) body.getInt("id"),(int) body.getInt("alert_id"));
+                  return "DELETED";     
+            
 			default:
 				return new ApiResponse(false, null, "Not found API").toString();
 			}

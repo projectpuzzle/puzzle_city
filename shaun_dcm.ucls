@@ -64,17 +64,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="8" language="java" name="puzzle_city_client_model.VehiculeSensorTable" project="puzzlecity_project" 
-    file="/puzzlecity_project/src/puzzle_city_client_model/VehiculeSensorTable.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="140" y="223"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="9" language="java" name="puzzle_city_client.Puzzle_main" project="puzzlecity_project" 
+  <class id="8" language="java" name="puzzle_city_client.Puzzle_main" project="puzzlecity_project" 
     file="/puzzlecity_project/src/puzzle_city_client/Puzzle_main.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="1032" y="181"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -83,7 +73,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="10" language="java" name="puzzle_city_commons.ClientHandler" project="puzzlecity_project" 
+  <class id="9" language="java" name="puzzle_city_commons.ClientHandler" project="puzzlecity_project" 
     file="/puzzlecity_project/src/puzzle_city_commons/ClientHandler.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="375" y="-67"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -92,42 +82,42 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <association id="11">    
+  <association id="10">    
     <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="12" name="dbconn"/>      
-      <multiplicity id="13" minimum="0" maximum="1"/>    
+      <attribute id="11" name="dbconn"/>      
+      <multiplicity id="12" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="6" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="14">    
-    <end type="SOURCE" refId="9" navigable="false">      
-      <attribute id="15" name="client"/>      
-      <multiplicity id="16" minimum="0" maximum="1"/>    
+  <association id="13">    
+    <end type="SOURCE" refId="8" navigable="false">      
+      <attribute id="14" name="client"/>      
+      <multiplicity id="15" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="7" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="17">    
+  <association id="16">    
     <end type="SOURCE" refId="2" navigable="false">      
-      <attribute id="18" name="client"/>      
-      <multiplicity id="19" minimum="0" maximum="1"/>    
+      <attribute id="17" name="client"/>      
+      <multiplicity id="18" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="7" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="20">    
+  <association id="19">    
     <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="21" name="client"/>      
-      <multiplicity id="22" minimum="0" maximum="1"/>    
+      <attribute id="20" name="client"/>      
+      <multiplicity id="21" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="7" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="23">    
+  <association id="22">    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="24" name="client"/>      
-      <multiplicity id="25" minimum="0" maximum="1"/>    
+      <attribute id="23" name="client"/>      
+      <multiplicity id="24" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="7" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
