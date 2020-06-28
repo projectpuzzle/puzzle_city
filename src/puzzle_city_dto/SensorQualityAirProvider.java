@@ -21,10 +21,9 @@ import puzzle_city_model.SensorQualityAirModel;
 
 public class SensorQualityAirProvider {
 
-	JDBCConnection dbconn;
+	static JDBCConnection dbconn;
 	static Connection conn;
 	static Statement st;
-	
 
 	public SensorQualityAirProvider() {
 		// TODO Auto-generated constructor stub
@@ -246,19 +245,27 @@ public class SensorQualityAirProvider {
 	// create
 	public static ApiResponse create(JSONObject record) {
 		try {
+			dbconn = new JDBCConnection();
+			conn = dbconn.setConnection();
 			PreparedStatement pstmt = conn.prepareStatement(
 					"INSERT INTO tblsensorair(address,no2,pm10,o3,alert_id,isActivated) values (?,?,?,?,?,?)");
-
+			
+		
 			String address = record.getString("address");
+			
+			Integer no2 = record.has("no2")?record.getInt("no2"):0;
+			Integer pm10 = record.has("pm10")?record.getInt("pm10"):0;
+			Integer o3 =record.has("o3") ?record.getInt("o3"):0;
+			Boolean isActivated = record.has("isActivated")?record.getBoolean("isActivated"):false;
 			// Boolean isOpen = record.getBoolean("isOpen");
 			// long date_of_birth = Date.valueOf(date).getTime();
 			int idAlert = createAlert();
 			pstmt.setString(1, address);
-			pstmt.setInt(2, 0);
-			pstmt.setInt(3, 0);
-			pstmt.setInt(4, 0);
+			pstmt.setInt(2, no2 );
+			pstmt.setInt(3, pm10);
+			pstmt.setInt(4, o3);
 			pstmt.setInt(5, idAlert);
-			pstmt.setInt(6, 0);
+			pstmt.setInt(6,  isActivated ? 1 : 0);
 			// pstmt.setBoolean(2, true);
 
 			pstmt.executeUpdate();
@@ -350,7 +357,8 @@ public class SensorQualityAirProvider {
 	// update
 	public static ApiResponse update(JSONObject record) {
 		try {
-
+			dbconn = new JDBCConnection();
+			conn = dbconn.setConnection();
 			PreparedStatement pstmt = conn.prepareStatement(
 					"UPDATE tblsensorair SET address = ?,no2=?,pm10=?,o3=?,isActivated=?  WHERE id = ?");
 

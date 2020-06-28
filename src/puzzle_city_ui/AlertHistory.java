@@ -50,6 +50,7 @@ public class AlertHistory {
 	private boolean isActivated;
 	private int counter;
 	private int cron;
+	private boolean timerStart;
 	private Timer timer;
 
 	List<Object[]> list = new ArrayList<>();
@@ -64,7 +65,7 @@ public class AlertHistory {
 	 * @wbp.parser.constructor
 	 */
 	public AlertHistory(Client socket, int id, String address, int no2, int pm10, int o3, boolean alert, int alert_id,
-			boolean isActivated,int counter ,Timer timer,int cron) {
+			boolean isActivated,int counter ,Timer timer,int cron,boolean timerStart) {
 		this.id = id;
 		this.address = address;
 		this.no2 = no2;
@@ -77,6 +78,7 @@ public class AlertHistory {
 		this.counter=counter;
 		this.timer=timer;
 		this.cron=cron;
+		this.timerStart=timerStart;
 		client = socket;
 		initialize();
 		getSensorAirData();
@@ -125,7 +127,13 @@ public class AlertHistory {
 		lblListCity.setBounds(264, 28, 189, 27);
 		panel_cityinfo.add(lblListCity);
 
-		tblalerthistory = new JTable(new DefaultTableModel(new Object[][] {}, new String[] { "Alert time" }));
+		tblalerthistory = new JTable(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"no2", "pm10", "o3", "Alert time"
+			}
+		));
 
 		tblalerthistory.addMouseListener(new MouseAdapter() {
 			@Override
@@ -148,14 +156,14 @@ public class AlertHistory {
 		});
 
 		JScrollPane jsp = new JScrollPane(tblalerthistory);
-		jsp.setBounds(215, 66, 200, 217);
+		jsp.setBounds(23, 66, 611, 217);
 		panel_cityinfo.add(jsp);
 
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ConfigSensorAir cS = new ConfigSensorAir(client, id, address, no2, pm10, o3, alert, alert_id,
-						isActivated,counter,timer,cron);
+						isActivated,counter,timer,cron,timerStart);
 				cS.frame.setVisible(true);
 				frame.dispose();
 			}
@@ -182,6 +190,9 @@ public class AlertHistory {
 			JSONObject bodyItem = new JSONObject();
 
 			bodyItem.put("id", "" + this.alert_id);
+	
+
+			
 			sendP.setBody(bodyItem);
 			client.setSendP(sendP);
 			JSONObject res = null;
@@ -219,7 +230,7 @@ public class AlertHistory {
 	private void bindDataToTable(JSONArray jArray) {
 		// globalModel = new DefaultTableModel();
 		DefaultTableModel model = new DefaultTableModel();
-		String[] columnNames = { "Alert time" };
+		String[] columnNames = { "Alert time","no2" , "pm10" , "o3"   };
 		model.setColumnIdentifiers(columnNames);
 
 		
@@ -228,13 +239,14 @@ public class AlertHistory {
 			try {
 				jb = jArray.getJSONObject(i);
 
-				Object[] rowData = { jb.getString("dateAlert") };
+				Object[] rowData = { jb.getString("dateAlert"),jb.getInt("no2Simulation"),
+						jb.getInt("pm10Simulation"), jb.getInt("o3Simulation") };
 
 				// globalModel.addRow(globalrowData);
 				model.addRow(rowData);
 				
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
+				// TODO Auto-generated catch blockkan
 				e.printStackTrace();
 			}
 		}

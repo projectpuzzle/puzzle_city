@@ -60,6 +60,8 @@ public class SensorAirList {
 	private JSlider sliderTimer;
 	private TimerTask task;
 	private JLabel labelx;
+	SimulationSensorAir simulation;
+	boolean timerStart;
 
 	/**
 	 * Launch the application.
@@ -75,16 +77,19 @@ public class SensorAirList {
 		this.counter = counter;
 
 		this.cron = cron;
-	
+
 		client = socket;
+		this.simulation = new SimulationSensorAir(socket);
 		initialize();
 
 		getSensorAirData();
+
 	}
 
 	public SensorAirList(Client socket) {
 
 		client = socket;
+		this.simulation = new SimulationSensorAir(socket);
 		initialize();
 
 		getSensorAirData();
@@ -157,7 +162,7 @@ public class SensorAirList {
 				boolean isActivated = (boolean) list.get(row)[8];
 				// System.out.println("ppp" + globalModel.getColumnCount());
 				ConfigSensorAir cS = new ConfigSensorAir(client, id, address, no2, pm10, o3, alert, alertId,
-						isActivated, counter, timer, Integer.parseInt(textField.getText()));
+						isActivated, counter, timer, Integer.parseInt(textField.getText()),timerStart);
 				cS.frame.setVisible(true);
 				frame.dispose();
 
@@ -166,7 +171,7 @@ public class SensorAirList {
 
 		// tao scrollpane roi cho table chui vao thi table thi tieu de moi hien thi
 		JScrollPane jsp = new JScrollPane(tblsensorair);
-		jsp.setBounds(91, 195, 482, 108);
+		jsp.setBounds(91, 195, 482, 88);
 		panel_cityinfo.add(jsp);
 
 		JButton btnCreateButton = new JButton("Add new sensor ");
@@ -197,7 +202,7 @@ public class SensorAirList {
 		lblClickOnThe.setForeground(Color.BLACK);
 		lblClickOnThe.setHorizontalAlignment(SwingConstants.LEFT);
 		lblClickOnThe.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblClickOnThe.setBounds(215, 314, 265, 26);
+		lblClickOnThe.setBounds(202, 299, 265, 26);
 		panel_cityinfo.add(lblClickOnThe);
 
 		JButton btnThresholdDetails = new JButton("Threshold details\r\n");
@@ -244,9 +249,7 @@ public class SensorAirList {
 		});
 
 		textField.setText(String.valueOf(cron));
-		if (cron > 0) {
-			btnStartMouseClicked(null);
-		}
+
 		textField.setHorizontalAlignment(SwingConstants.CENTER);
 		textField.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		textField.setColumns(10);
@@ -277,21 +280,21 @@ public class SensorAirList {
 		JLabel lblNewLabel_1_1_1 = new JLabel("Remaining time for next release");
 		lblNewLabel_1_1_1.setForeground(Color.DARK_GRAY);
 		lblNewLabel_1_1_1.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblNewLabel_1_1_1.setBounds(91, 132, 188, 37);
+		lblNewLabel_1_1_1.setBounds(107, 132, 188, 37);
 		panel_cityinfo.add(lblNewLabel_1_1_1);
 
 		timeLeft = new JLabel("");
 		timeLeft.setHorizontalAlignment(SwingConstants.CENTER);
 		timeLeft.setForeground(Color.RED);
 		timeLeft.setFont(new Font("Tahoma", Font.BOLD, 15));
-		timeLeft.setBounds(306, 132, 53, 27);
+		timeLeft.setBounds(305, 119, 64, 40);
 		panel_cityinfo.add(timeLeft);
 
 		JButton btnStopTimer = new JButton("reset\r\n");
 		btnStopTimer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int d = Integer.parseInt(textField.getText());
-
+				timerStart=false;
 				timer.cancel();
 				task.cancel();
 				counter = 0;
@@ -300,31 +303,13 @@ public class SensorAirList {
 				timeLeft.setText("");
 			}
 		});
-		btnStopTimer.setBounds(539, 139, 64, 23);
+		btnStopTimer.setBounds(395, 139, 64, 23);
 		panel_cityinfo.add(btnStopTimer);
-
-		JButton btnShowTimeLeft = new JButton("show time left");
-		btnShowTimeLeft.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (!(textField.getText().isEmpty())) {
-					int d = Integer.parseInt(textField.getText());
-					if (isStart)
-						timer.cancel();
-					btnStartMouseClicked(e);
-				} else {
-					JOptionPane.showMessageDialog(frame, "Empty field !");
-					textField.setText("0");
-					sliderTimer.setValue(0);
-				}
-			}
-		});
-		btnShowTimeLeft.setBounds(390, 139, 139, 23);
-		panel_cityinfo.add(btnShowTimeLeft);
 
 		labelx = new JLabel("resultats are out!");
 		labelx.setForeground(Color.RED);
 		labelx.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		labelx.setBounds(296, 170, 184, 14);
+		labelx.setBounds(301, 170, 184, 14);
 		labelx.setVisible(false);
 		panel_cityinfo.add(labelx);
 
@@ -333,6 +318,9 @@ public class SensorAirList {
 		panel.add(lblNewLabel);
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
+		if (cron > 0) {
+			btnStartMouseClicked(null);
+		}
 
 	}
 
@@ -372,10 +360,10 @@ public class SensorAirList {
 	}
 
 	void simulate() {
-		this.no2 = (int) (Math.random() * 500);
-		this.pm10 = (int) (Math.random() * 100);
-		this.o3 = (int) (Math.random() * 300);
-		this.alert = this.no2 >= 400 || this.pm10 >= 80 || this.o3 >= 240;
+		final int no2Simulate = (int) (Math.random() * 500);
+		final int pm10Simulate = (int) (Math.random() * 100);
+		final int o3simulate = (int) (Math.random() * 300);
+		this.alert = no2Simulate >= this.no2 || pm10Simulate >= this.pm10 || o3simulate >= this.o3;
 
 	}
 
@@ -429,6 +417,7 @@ public class SensorAirList {
 	}
 
 	private void btnStartMouseClicked(ActionEvent evt) {
+		timerStart=true;
 		timer = new Timer();
 		int d = Integer.parseInt(textField.getText());
 
@@ -461,12 +450,12 @@ public class SensorAirList {
 					simulate();
 					labelx.setVisible(true);
 
-				}else {
+				} else {
 					labelx.setVisible(false);
 				}
 				if (counter == -1) {
 //					timer.cancel();
-
+                   simulation.launchSimulation();
 					counter = d;
 
 				}

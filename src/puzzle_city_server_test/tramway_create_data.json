@@ -31,7 +31,7 @@
   },
   {
     "input": {
-      "ValueStation": "-500",
+      "ValueStation": "50000",
       "Radius": "50",
       "Value": "5000",
       "ID": "11",
@@ -41,7 +41,7 @@
   },
   {
     "input": {
-      "ValueStation": "-500",
+      "ValueStation": "0",
       "Radius": "50",
       "Value": "5000",
       "ID": "11",

@@ -297,7 +297,7 @@ public class Router {
 				body = input.getJSONObject("body");
 				 deleteSensorQualityAirById((int) body.getInt("id"),(int) body.getInt("alert_id"));
 				 
-                 
+           
                   
 			case "ALERT_HISTORY_FIND_ALL":
 				body = input.getJSONObject("body");
