@@ -17,10 +17,10 @@ import puzzle_city_dto.TramwayProvider;
 import puzzle_city_dto.ThresholdProvider;
 
 public class Router {
-	//Empreinte carbone
-	
-	        //ActualData
-	
+	// Empreinte carbone
+
+	// ActualData
+
 	public static String findAllActualData() {
 
 		JSONObject mapper = new JSONObject();
@@ -32,10 +32,9 @@ public class Router {
 		}
 		return null;
 	}
-	
-	
-	        //CarbonData
-	
+
+	// CarbonData
+
 	public static String findAllCarbonData() {
 
 		JSONObject mapper = new JSONObject();
@@ -47,21 +46,22 @@ public class Router {
 		}
 		return null;
 	}
-	
+
 	static CityProvider cityP = new CityProvider();
 	static TramwayProvider tramway = new TramwayProvider();
-	
-	public static  String createCity(JSONObject city) {
+
+	public static String createCity(JSONObject city) {
 		return cityP.create(city).toString();
 	}
 
 	public static String updateCity(JSONObject city) {
-		return cityP.update(city).toString(); 
+		return cityP.update(city).toString();
 	}
-	
+
 	public static String deleteCity() {
-			return cityP.delete().toString();
+		return cityP.delete().toString();
 	}
+
 	public static String findAllCity() {
 
 		try {
@@ -71,7 +71,7 @@ public class Router {
 		}
 		return null;
 	}
-	
+
 	public static String findOneCityByID(int cityID) {
 
 		try {
@@ -81,8 +81,8 @@ public class Router {
 		}
 		return null;
 	}
-	
-	//Tramway
+
+	// Tramway
 
 	public static String findOneTramwayByCityID(int cityID) {
 
@@ -93,18 +93,20 @@ public class Router {
 		}
 		return null;
 	}
+
 	public static String createUpdateTramway(JSONObject inp) {
-		return  tramway.createAndUpdate(inp).toString(); 
+		return tramway.createAndUpdate(inp).toString();
 	}
+
 	public static String randomStation(JSONObject inp) {
 		int cityID;
 		try {
 			cityID = (int) inp.getInt("ID");
-			return tramway.randomStation(cityID).toString(); 
+			return tramway.randomStation(cityID).toString();
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			try {	
+			try {
 				return new ApiResponse(false, null, e.getMessage()).toString();
 			} catch (JSONException e1) {
 				// TODO Auto-generated catch block
@@ -114,7 +116,7 @@ public class Router {
 		}
 	}
 
-	// capteur de qualit� d'air
+	// air quality sensor
 	public static String createSensorAir(JSONObject sensorAir) {
 		return SensorQualityAirProvider.create(sensorAir).toString();
 	}
@@ -122,10 +124,12 @@ public class Router {
 	public static String updateSensorAir(JSONObject sensorAir) {
 		return SensorQualityAirProvider.update(sensorAir).toString();
 	}
+
 	public static String updateAlerte(JSONObject alerte) throws JSONException, SQLException {
-		System.out.println("alerte"+alerte.toString());
+		System.out.println("alerte" + alerte.toString());
 		return SensorQualityAirProvider.updateAlerte(alerte).toString();
 	}
+
 	public static String findAllSensorAir() {
 
 		JSONObject mapper = new JSONObject();
@@ -137,6 +141,7 @@ public class Router {
 		}
 		return null;
 	}
+
 	public static String findActiveSensors() {
 		return SensorQualityAirProvider.getActiveSensors().toString();
 	}
@@ -150,91 +155,104 @@ public class Router {
 		}
 		return null;
 	}
-	public static void deleteSensorQualityAirById(int id,int alert_id) {
-		SensorQualityAirProvider.deleteSensorQualityAirById(id,alert_id);
+
+	public static void deleteSensorQualityAirById(int id, int alert_id) {
+		SensorQualityAirProvider.deleteSensorQualityAirById(id, alert_id);
 	}
+
 	public static String getAllAlertHistory(int sensorId) {
 		return SensorQualityAirProvider.getAllAlertHistory(sensorId).toString();
 	}
 
 	// Vehicule sensor
-		public static String createVehiculeSensor(JSONObject VehiculeSensor) {
-			return VehiculeSensorProvider.create(VehiculeSensor).toString();
+	public static String createVehiculeSensor(JSONObject VehiculeSensor) {
+		return VehiculeSensorProvider.create(VehiculeSensor).toString();
+	}
+
+	public static String updateVehiculeSensor(JSONObject VehiculeSensor) {
+		return VehiculeSensorProvider.update(VehiculeSensor).toString();
+	}
+
+	public static String findAllVehiculeSensor() {
+
+		JSONObject mapper = new JSONObject();
+		try {
+			VehiculeSensorProvider VehiculeSensor = new VehiculeSensorProvider();
+			return VehiculeSensor.getAll().toString();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return null;
+	}
 
-		public static String updateVehiculeSensor(JSONObject VehiculeSensor) {
-			return VehiculeSensorProvider.update(VehiculeSensor).toString();
+	public static String findOneVehiculeSensorById(int VehiculeSensorID) {
+
+		try {
+			return VehiculeSensorProvider.getByID(VehiculeSensorID).toString();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return null;
+	}
 
-		public static String findAllVehiculeSensor() {
+	public static void deleteVehiculeSensorById(int ID, int alert_ID) {
+		VehiculeSensorProvider.deleteVehiculeSensorById(ID, alert_ID);
+	}
 
-			JSONObject mapper = new JSONObject();
-			try {
-				VehiculeSensorProvider VehiculeSensor = new VehiculeSensorProvider();
-				return VehiculeSensor.getAll().toString();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return null;
+	// Threshold
+	public static String createThreshold(JSONObject Threshold) {
+		return ThresholdProvider.create(Threshold).toString();
+	}
+
+	public static String updateThreshold(JSONObject Threshold) {
+		return ThresholdProvider.update(Threshold).toString();
+	}
+
+	public static String findAllThreshold() {
+		JSONObject mapper = new JSONObject();
+		try {
+			ThresholdProvider Threshold = new ThresholdProvider();
+			return Threshold.getAll().toString();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return null;
+	}
 
-		public static String findOneVehiculeSensorById(int VehiculeSensorID) {
-
-			try {
-				return VehiculeSensorProvider.getByID(VehiculeSensorID).toString();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return null;
+	public static String findOneThresholdById(int ThresholdID) {
+		try {
+			return ThresholdProvider.getByID(ThresholdID).toString();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		public static void deleteVehiculeSensorById(int ID,int alert_ID) {
-			VehiculeSensorProvider.deleteVehiculeSensorById(ID,alert_ID);
+		return null;
+	}
+	/*
+	 * public static void deleteThresholdById(int ID,int alert_ID) {
+	 * ThresholdProvider.deleteThresholdrById(ID,alert_ID); }
+	 */
+
+	// analyse
+
+	static AnalyseProvider Analyse = new AnalyseProvider();
+
+	public static int CountAirSensor() {
+		return Analyse.getNumberOfSensor();
+	}
+
+	public static String AnalyseCity(int cID) {
+		try {
+			return Analyse.getInfoAnalyse(cID).toString();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
-		// Threshold
-				public static String createThreshold(JSONObject Threshold) {
-					return ThresholdProvider.create(Threshold).toString();
-				}
+		return null;
+	}
 
-				public static String updateThreshold(JSONObject Threshold) {
-					return ThresholdProvider.update(Threshold).toString();
-				}
-
-				public static String findAllThreshold() {
-
-					JSONObject mapper = new JSONObject();
-					try {
-						ThresholdProvider Threshold = new ThresholdProvider();
-						return Threshold.getAll().toString();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return null;
-				}
-
-				public static String findOneThresholdById(int ThresholdID) {
-
-					try {
-						return ThresholdProvider.getByID(ThresholdID).toString();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					return null;
-				}
-				/*public static void deleteThresholdById(int ID,int alert_ID) {
-					ThresholdProvider.deleteThresholdrById(ID,alert_ID);
-				}*/
-	
-		// analyse
-		public static int CountAirSensor() {
-			return AnalyseProvider.getNumberOfSensor();
-		}
-		
-		
 	// input {api:"CITYSave",body:{}}
 	public static String router(JSONObject input) throws SQLException {
 		String api;
-		JSONObject body ;
+		JSONObject body;
 		try {
 			api = input.get("api").toString();
 			// Converting the Object to JSONString
@@ -255,29 +273,28 @@ public class Router {
 
 			case "CITY_FIND_ALL":
 				return findAllCity();
-				
-			case "CITY_DELETE" :
+
+			case "CITY_DELETE":
 				return deleteCity();
 
-			
-			//tramway
+			// tramway
 			case "TRAMWAY_GET_ONE":
 				body = input.getJSONObject("body");
 				return findOneTramwayByCityID((int) body.getInt("ID"));
 
 			case "TRAMWAY_UPDATE":
 				return createUpdateTramway((JSONObject) input.get("body"));
-			//random
+			// random
 			case "TRAMWAY_MAP_RANDOM":
 				return randomStation((JSONObject) input.get("body"));
 
 			case "ActualData_FIND_ALL":
-				return findAllActualData();	
+				return findAllActualData();
 
 			case "CarbonData_FIND_ALL":
-				return findAllCarbonData();		
+				return findAllCarbonData();
 
-				//air sensor
+			// air sensor
 			case "SENSORAIR_CREATE":
 				return createSensorAir((JSONObject) input.get("body"));
 
@@ -292,23 +309,20 @@ public class Router {
 				return findAllSensorAir();
 			case "SENSORAIR_FIND_ACTIVE":
 				return findActiveSensors();
-				
+
 			case "SENSORAIR_DELETE":
 				body = input.getJSONObject("body");
-				 deleteSensorQualityAirById((int) body.getInt("id"),(int) body.getInt("alert_id"));
-				 
-           
-                  
+				deleteSensorQualityAirById((int) body.getInt("id"), (int) body.getInt("alert_id"));
+
 			case "ALERT_HISTORY_FIND_ALL":
 				body = input.getJSONObject("body");
-				return getAllAlertHistory((int) body.getInt("id") );
-				
+				return getAllAlertHistory((int) body.getInt("id"));
+
 			case "ALERT_UPDATE":
 				System.out.println("ALERT_UPDATE");
 				updateAlerte((JSONObject) input.get("body"));
-                  
-                  
-            //vehicule sensor
+
+				// vehicule sensor
 			case "VEHICULESENSOR_CREATE":
 				return createVehiculeSensor((JSONObject) input.get("body"));
 
@@ -321,34 +335,34 @@ public class Router {
 
 			case "VEHICULESENSOR_FIND_ALL":
 				return findAllVehiculeSensor();
-				
+
 			case "VEHICULESENSOR_DELETE":
 				body = input.getJSONObject("body");
-				 deleteVehiculeSensorById((int) body.getInt("id"),(int) body.getInt("alert_id"));
-                  return "DELETED";     
-            
+				deleteVehiculeSensorById((int) body.getInt("id"), (int) body.getInt("alert_id"));
+				return "DELETED";
+
 			case "ANALYSE_AIR_SENSOR_NUMBER":
 				return String.valueOf(CountAirSensor());
-				
-				//threshold
+
+			case "ANALYSE_ONE_CITY":
+				body = input.getJSONObject("body");
+				return AnalyseCity((int) body.getInt("ID"));
+
+			// threshold
 			case "THRESHOLD_CREATE":
 				return createThreshold((JSONObject) input.get("body"));
-
 			case "THRESHOLD_UPDATE":
 				return updateThreshold((JSONObject) input.get("body"));
 			case "THRESHOLD_FIND_ONE":
 				body = input.getJSONObject("body");
-
 				return findOneThresholdById((int) body.getInt("ID"));
-
 			case "THRESHOLD_FIND_ALL":
 				return findAllThreshold();
 				
 			case "THRESHOLD_DELETE":
 				body = input.getJSONObject("body");
-				 //deleteThresholdById((int) body.getInt("id"),(int) body.getInt("alert_id"));
-                  return "DELETED";     
-            
+				// deleteThresholdById((int) body.getInt("id"),(int) body.getInt("alert_id"));
+				return "DELETED";
 			default:
 				return new ApiResponse(false, null, "Not found API").toString();
 			}
@@ -365,6 +379,7 @@ public class Router {
 			}
 		}
 	}
+
 	public static String route() {
 		String s = String.valueOf(CountAirSensor());
 		return s;
