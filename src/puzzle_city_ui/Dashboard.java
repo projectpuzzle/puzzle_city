@@ -147,6 +147,10 @@ public class Dashboard {
 		JButton btnNewButton = new JButton("Analyse");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+
+				AnalyseUI analyse = new AnalyseUI(client, cID);
+				analyse.frame.setVisible(true);
+				frame.dispose();
 			}
 		});
 		btnAirQualitySensor_1.setBounds(10, 172, 173, 23);
