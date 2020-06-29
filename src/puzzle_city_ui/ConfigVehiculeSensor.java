@@ -5,27 +5,41 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import puzzle_city_client.Client;
 import puzzle_city_client_model.ApiEnum;
 import puzzle_city_client_model.SendPackage;
+import puzzle_city_client_model.ThresholdTable;
 
 public class ConfigVehiculeSensor {
 
 	public JFrame frame;
-	private JTextField txtNb_vehicule_max;
 	private int ID;
 	private JLabel lbtMess;
+	private JTable tblthreshold;
+	
+	private JComboBox cState;
+	protected String currenttextAddress;
+	protected int currentID;
+	private JTextField txtAddress;
 
 	public Client client;// = new Client("127.0.0.1", 4000);
 
@@ -66,15 +80,15 @@ public class ConfigVehiculeSensor {
 		panel.add(panel_cityinfo);
 		panel_cityinfo.setLayout(null);
 
-		JLabel lblNewLabel_1 = new JLabel("Vehicule number treshold");
+		JLabel lblNewLabel_1 = new JLabel("Vehicule number threshold");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNewLabel_1.setBounds(10, 11, 179, 14);
 		panel_cityinfo.add(lblNewLabel_1);
 
-		txtNb_vehicule_max = new JTextField();
-		txtNb_vehicule_max.setBounds(212, 11, 315, 20);
-		panel_cityinfo.add(txtNb_vehicule_max);
-		txtNb_vehicule_max.setColumns(10);
+		txtAddress = new JTextField();
+		txtAddress.setBounds(212, 11, 315, 20);
+		panel_cityinfo.add(txtAddress);
+		txtAddress.setColumns(10);
 
 //		JLabel lblNewLabel_1_1 = new JLabel("Latitude");
 //		lblNewLabel_1_1.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -151,6 +165,36 @@ public class ConfigVehiculeSensor {
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblNewLabel.setBounds(199, 13, 285, 27);
 		panel.add(lblNewLabel);
+		
+		//table
+				ThresholdTable tv = new ThresholdTable();
+				tblthreshold = new JTable(new DefaultTableModel(
+						new Object[][] { { null, null, null }, { null, null, null }, { null, null, null }, { null, null, null },
+								{ null, null, null }, { null, null, null }, { null, null, null }, },
+						new String[] { "ID", "Unit", "Value" }) {
+					boolean[] columnEditables = new boolean[] { false, false, false };
+
+					public boolean isCellEditable(int row, int column) {
+						return columnEditables[column];
+					}
+				});
+				tblthreshold.addMouseListener(new MouseAdapter() {
+				
+					@Override
+					public void mouseClicked(MouseEvent arg0) {
+						int row = tblthreshold.getSelectedRow();
+						currentID = Integer.parseInt(tblthreshold.getModel().getValueAt(row, 0).toString()) ;
+						currenttextAddress = tblthreshold.getModel().getValueAt(row, 1).toString() ;
+						txtAddress.setText(currenttextAddress);
+
+						if(Boolean.parseBoolean( tblthreshold.getModel().getValueAt(row, 2).toString())) {
+							cState.setSelectedIndex(1);}else cState.setSelectedIndex(0);
+					}
+				});
+				// 
+		        JScrollPane jsp = new JScrollPane(tblthreshold);
+		        jsp.setBounds(20, 49, 593, 199);
+				panel_cityinfo.add(jsp);
 	}
 
 	private void getTresholdData() {
@@ -170,7 +214,7 @@ public class ConfigVehiculeSensor {
 				try {
 					sMess = res.getBoolean("success");				
 					if(sMess) {
-						//bindDataToTable(res.getJSONArray("data"));
+						bindDataToTable(res.getJSONArray("data"));
 					}else {						
 					}
 				} catch (JSONException e) {
@@ -179,24 +223,46 @@ public class ConfigVehiculeSensor {
 				}
 			}
 		}
-	}
-
-	private void setDataToField(JSONObject res) {
-		// TODO Auto-generated method stub
-		try {
-			txtNb_vehicule_max.setText(res.getString("Nb_vehicule_max"));
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}	
+	
+	private void bindDataToTable(JSONArray jArray) {
+		// TODO Auto-generated method stub	
+		DefaultTableModel model = new DefaultTableModel();		
+		String[] columnNames = {
+				  "ID",  "Unit", "Value"
+			    };
+		model.setColumnIdentifiers(columnNames);
 
-	private void updateTresholdInfo() {
+		ArrayList arrRows = new ArrayList();  
+		for (int i = 0; i < jArray.length(); i++) {
+            JSONObject jb;
+			try {
+				jb = jArray.getJSONObject(i);
+			
+				Object[] rowData = {
+					jb.getInt("ID"),
+					jb.getString("Unit"),
+					jb.getBoolean("Value")
+				};
+	    		
+				model.addRow(rowData);
+				arrRows.clear();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}	
+
+		tblthreshold.setModel(model);
+		
+	}
+	
+	private void updateThresholdInfo() {
 		if(true) {	
 			try {
 				client.setResponseData(null);		
 				JSONObject bodyItem = new JSONObject();
-				bodyItem.put("Nb_vehicule_max",  Nb_vehicule_max);
+				bodyItem.put("Nb_vehicule_max", "" +txtAddress.getText());
 
 				SendPackage sendPa = new SendPackage();
 				sendPa.setApi(ApiEnum.THRESHOLD_UPDATE);		

@@ -42,8 +42,8 @@ public class ThresholdProvider {
 			while (rs.next()) {
 				JSONObject resItem = new JSONObject();
 				resItem.put("ID",rs.getInt("ID"));
-				resItem.put("Address",rs.getString("Address"));
-				resItem.put("State", rs.getBoolean("State"));
+				resItem.put("Unit",rs.getString("Unit"));
+				resItem.put("Value", rs.getInt("Value"));
 				thresholdAll.put(resItem);
 			}
 			ApiResponse ret = new ApiResponse(true, thresholdAll, "Success");
@@ -80,8 +80,8 @@ public class ThresholdProvider {
 					JSONObject resItem = new JSONObject();
 
 					resItem.put("ID", rs.getLong("ID"));
-					resItem.put("Address", rs.getString("Address"));
-					resItem.put("State", rs.getBoolean("State"));
+					resItem.put("Unit", rs.getString("Unit"));
+					resItem.put("Value", rs.getBoolean("Value"));
 //	                     resItem.put("isOpen",  rs.getBoolean("isOpen") );
 
 					thresholdAll.put(resItem);
@@ -139,15 +139,15 @@ public class ThresholdProvider {
 					.prepareStatement("UPDATE tblthreshold SET Value = ?  WHERE Unit = Nb_vehicule_max");
 			System.out.println(record);
 			//int ID = record.getInt("ID");
-			String Value = record.getString("Value");
+			int Value = record.getInt("Value");
 			//boolean alert = record.getBoolean("alert");
 			//int alert_id = record.getInt("alert_id");
 			//updateAlertById(alert_id, alert);
 //                 Boolean isOpen = record.getBoolean("isOpen");	          
 			// long date_of_birth = Date.valueOf(date).getTime();
-			pstmt.setString(1, Value);
+			pstmt.setInt(1, Value);
 			//pstmt.setInt(5, id);
-//	             pstmt.setBoolean(2, isOpen);
+//	        pstmt.setBoolean(2, isOpen);
 
 			pstmt.executeUpdate();
 
