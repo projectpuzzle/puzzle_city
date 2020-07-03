@@ -13,8 +13,7 @@ import puzzle_city_ui.Dashboard;
 public class Puzzle_main {
 	static Client client;
 	public static void main(String args[]) {
-
-		client = new Client("127.0.0.1", 4000);
+		client = new Client("172.31.249.155", 4000);
 		client.start();
 		//System.out.println("call view");
 		CityList windowCityList  = new CityList(client);

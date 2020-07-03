@@ -26,18 +26,19 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
+import java.awt.Font;
 
 public class AnalyseUI {
 
 	public JFrame frame;
 	Client client;
 	private int cityID;
-	private String numberOfAirSensor;
 	private JLabel lbtSensors;
-	private JLabel jl2;
 	private JLabel lblStations ;
 	private JLabel lblBollards;
 	private JLabel lblDistance;
+	private JLabel lblExceeding;
+	private JLabel lblRatePollution;
 	
 	/**
 	 * Create the application.
@@ -48,6 +49,7 @@ public class AnalyseUI {
 		this.cityID = cID;
 		initialize();
 		
+		getSensorInfo();
 		getCityInfo();
 	}
 	
@@ -67,66 +69,73 @@ public class AnalyseUI {
 		frame.getContentPane().add(panel);
 		panel.setLayout(new GridLayout(0, 2, 0, 8));
 		
-		JLabel lblTheNumberOf = new JLabel("The number of residents");
-		lblTheNumberOf.setHorizontalAlignment(SwingConstants.CENTER);
-		panel.add(lblTheNumberOf);
+		JLabel label = new JLabel("Statistics of ");
+		label.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		label.setHorizontalAlignment(SwingConstants.RIGHT);
+		panel.add(label);
 		
-		JLabel lblResidents = new JLabel("");
-		lblResidents.setHorizontalAlignment(SwingConstants.CENTER);
-		panel.add(lblResidents);
+		JLabel lblNewLabel = new JLabel("2020-07-03");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblNewLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		panel.add(lblNewLabel);
 		
-		JLabel lblNewLabel_1 = new JLabel("The number of sensors installed in the city");
+		JLabel lblNewLabel_1 = new JLabel("The number of sensors installed in the city : ");
 		lblNewLabel_1.setForeground(Color.BLACK);
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel.add(lblNewLabel_1);
 		
 		lbtSensors = new JLabel();
-		lbtSensors.setHorizontalAlignment(SwingConstants.CENTER);
+		lbtSensors.setHorizontalAlignment(SwingConstants.LEFT);
 		panel.add(lbtSensors);
 		
-		JLabel lblTheNumberOf_1 = new JLabel("The number of Stations");
-		lblTheNumberOf_1.setHorizontalAlignment(SwingConstants.CENTER);
+		JLabel lblTheNumberOf_1 = new JLabel("The number of Stations : ");
+		lblTheNumberOf_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel.add(lblTheNumberOf_1);
 		
 		lblStations = new JLabel("");
-		lblStations.setHorizontalAlignment(SwingConstants.CENTER);
+		lblStations.setHorizontalAlignment(SwingConstants.LEFT);
 		panel.add(lblStations);
 		
-		JLabel lblNewLabel_7 = new JLabel("The number of bollards");
-		lblNewLabel_7.setHorizontalAlignment(SwingConstants.CENTER);
+		JLabel lblNewLabel_7 = new JLabel("The number of bollards : ");
+		lblNewLabel_7.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel.add(lblNewLabel_7);
 		
 		lblBollards = new JLabel("");
-		lblBollards.setHorizontalAlignment(SwingConstants.CENTER);
+		lblBollards.setHorizontalAlignment(SwingConstants.LEFT);
 		panel.add(lblBollards);
 		
 		JButton btnNewButton_3 = new JButton("Comparison");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Analyse_comparison c = new Analyse_comparison(client, cityID);
+				//c.setVisible(true);
+				c.getJFrame().setVisible(true);
 			}
 		});
 		
-		JLabel lblNewLabel_8 = new JLabel("Distance of public transit");
-		lblNewLabel_8.setHorizontalAlignment(SwingConstants.CENTER);
+		JLabel lblNewLabel_8 = new JLabel("Distance of public transit : ");
+		lblNewLabel_8.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel.add(lblNewLabel_8);
 		
 		lblDistance = new JLabel("");
-		lblDistance.setHorizontalAlignment(SwingConstants.CENTER);
+		lblDistance.setHorizontalAlignment(SwingConstants.LEFT);
 		panel.add(lblDistance);
 		
-		JLabel lblExceedingRateOf = new JLabel("Rate of pollution");
-		lblExceedingRateOf.setHorizontalAlignment(SwingConstants.CENTER);
+		JLabel lblExceedingRateOf = new JLabel("Rate of pollution : ");
+		lblExceedingRateOf.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel.add(lblExceedingRateOf);
 		
-		JLabel lblRatePollution = new JLabel("");
-		lblRatePollution.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRatePollution = new JLabel("");
+		lblRatePollution.setHorizontalAlignment(SwingConstants.LEFT);
 		panel.add(lblRatePollution);
 		
-		JLabel lblExceedingRateOf_1 = new JLabel("Exceeding rate of pollution");
-		lblExceedingRateOf_1.setHorizontalAlignment(SwingConstants.CENTER);
+		JLabel lblExceedingRateOf_1 = new JLabel("Exceeding rate of pollution : ");
+		lblExceedingRateOf_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel.add(lblExceedingRateOf_1);
 		
-		JLabel lblExceeding = new JLabel("");
+		
+		lblExceeding = new JLabel("");
+		lblExceeding.setHorizontalAlignment(SwingConstants.LEFT);
 		panel.add(lblExceeding);
 		
 		JLabel lblNewLabel_6 = new JLabel("");
@@ -136,35 +145,6 @@ public class AnalyseUI {
 		
 	}
 	
-	
-	@SuppressWarnings("unchecked")
-	
-	private void takeNumberOfAirSensor() throws IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		
-		HashMap<String, String> requestclient = new HashMap<String, String>();
-		HashMap<String, String> responseserver = new HashMap<String, String>();
-		
-		requestclient.put("operation_type", "getnumberofairsensor");
-		
-		String jsonrequestclient = mapper.writeValueAsString(requestclient);
-		String jsonresponseserver = "";
-
-		client.sendMessage(jsonrequestclient);
-		
-		while( (jsonresponseserver = this.client.getMessage()) != null) {
-			
-			
-			responseserver = mapper.readValue(jsonresponseserver, HashMap.class);
-			
-			if((responseserver.get("response_type")).equals("getnumberofairsensor") ) 
-			{
-				lbtSensors.setText((responseserver.get("values")));
-			}
-			
-		} 			
-		//CLOSE
-	}
 	
 	public JFrame getJFrame() {
 		return frame;
@@ -194,21 +174,48 @@ public class AnalyseUI {
 			//CLOSE
 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	private void setDataToField(JSONObject res) {
-		// TODO Auto-generated method stub
 		try {
 			//lbtSensors.setText(res.getString("CountSensor"));
 			lblStations.setText(""+ res.getInt("CountStation"));
-	
+			lbtSensors.setText("" + res.getInt("CountSensor"));
+			lblBollards.setText("" + res.getInt("CountBollard"));
+			lblDistance.setText("" + res.getInt("CountDistance") + " km");
+			lblRatePollution.setText("" + (res.getInt("CountRatePollution") + 50) + "%");
+			lblExceeding.setText("" + (res.getInt("CountExceeding") - 50) + "%");
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 	}	
-	
+	private void getSensorInfo() {
+		try {
+			client.setResponseData(null);		
+			JSONObject bodyItem = new JSONObject();
+			bodyItem.put("ID", "" +cityID);
+
+			SendPackage sendPa = new SendPackage();
+			sendPa.setApi(ApiEnum.ANALYSE_ONE_CITY);		
+			sendPa.setBody(bodyItem);
+			client.setSendP(sendPa);
+
+			JSONObject res = null;
+			while(res == null) {
+				res = client.getResponseData();
+
+				System.out.println("wait res:"+res);
+				if(res!= null) {
+					// if success true - get data bind to table 
+					setDataToField((res.getJSONArray("data")).getJSONObject(0));
+				}
+			} 			
+			//CLOSE
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}	
 }

@@ -6,10 +6,11 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/shaun/Documents/ING 1/eclipse-workspace/com.fasterxml.jackson.core.jar/com.fasterxml.jackson.core.jar"/>
-	<classpathentry kind="lib" path="C:/Users/shaun/Documents/ING 1/eclipse-workspace/com.fasterxml.jackson.databind.jar/com.fasterxml.jackson.databind.jar"/>
-	<classpathentry kind="lib" path="C:/Users/shaun/Documents/ING 1/eclipse-workspace/jcalendar-1.4/lib/jcalendar-1.4.jar"/>
-	<classpathentry kind="lib" path="C:/Users/shaun/Documents/ING 1/eclipse-workspace/java-json.jar"/>
-	<classpathentry kind="lib" path="C:/Users/shaun/Documents/ING 1/eclipse-workspace/mysql-connector-java-8.0.20.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Kwon/Desktop/jackson-databind-2.11.0.rc1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Kwon/Desktop/jackson-core-2.11.0.rc1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Kwon/Desktop/jackson-annotations-2.11.0.rc1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Kwon/Desktop/mysql-connector-java-8.0.20.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Kwon/Desktop/java-json.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Kwon/Desktop/javax.json-api-1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

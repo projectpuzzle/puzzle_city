@@ -236,11 +236,34 @@ public class Router {
 
 	static AnalyseProvider Analyse = new AnalyseProvider();
 
-	public static int CountAirSensor() {
-		return Analyse.getNumberOfSensor();
+	public static String AnalyseAirSensor(int cID) {
+		try {
+			return Analyse.getInfoAnalyse(cID).toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public static String AnalyseCity(int cID) {
+		try {
+			return Analyse.getInfoAnalyse(cID).toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static String AnalyseBollard(int cID) {
+		try {
+			return Analyse.getInfoAnalyse(cID).toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static String AnalyseDistance(int cID) {
 		try {
 			return Analyse.getInfoAnalyse(cID).toString();
 		} catch (Exception e) {
@@ -342,9 +365,26 @@ public class Router {
 				return "DELETED";
 
 			case "ANALYSE_AIR_SENSOR_NUMBER":
-				return String.valueOf(CountAirSensor());
+				body = input.getJSONObject("body");
+				return AnalyseCity((int) body.getInt("ID"));
 
 			case "ANALYSE_ONE_CITY":
+				body = input.getJSONObject("body");
+				return AnalyseCity((int) body.getInt("ID"));
+				
+			case "ANALYSE_BOLLARD_NUMBER":
+				body = input.getJSONObject("body");
+				return AnalyseCity((int) body.getInt("ID"));
+				
+			case "ANALYSE_DISTANCE":
+				body = input.getJSONObject("body");
+				return AnalyseCity((int) body.getInt("ID"));
+				
+			case "ANALYSE_RATE_POLLUTION":
+				body = input.getJSONObject("body");
+				return AnalyseCity((int) body.getInt("ID"));
+				
+			case "ANALYSE_EXCEEDING":
 				body = input.getJSONObject("body");
 				return AnalyseCity((int) body.getInt("ID"));
 
@@ -378,10 +418,5 @@ public class Router {
 				return null;
 			}
 		}
-	}
-
-	public static String route() {
-		String s = String.valueOf(CountAirSensor());
-		return s;
 	}
 }

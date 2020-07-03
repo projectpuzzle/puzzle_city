@@ -1,49 +1,31 @@
 package puzzle_city_server_test;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.FileReader;
 
-import org.json.JSONArray;
-import org.json.JSONException;
+import org.json.JSONObject;
 
-import puzzle_city_dto.CityProvider;
-import puzzle_city_model.ApiResponse;
+import puzzle_city_dto.VehiculeSensorProvider;
 
-public class TestGetAllCity {
+public class TestCountCity {
 	public static void main(String[] args) {
-		// test getAllCity()
-		System.out.println("Start Test Get List City");
-		try {
-			CityProvider city = new CityProvider();
-			ApiResponse resItem =  city.getAll();
+		// test create
+		System.out.println("testCountCity");
 
-			//compare resItem.body.success with testItem.output 
-			if( resItem.getBody().getBoolean("success") == true) {
-				JSONArray resList = resItem.getBody().getJSONArray("data");
-				//test ok
-				if(resList.length() > 0) {
+		try (FileReader reader = new FileReader("src/puzzle_city_analyse_test/city_getbyID.json"))
+		{ 
+			String fileContent= "";
+			int i;    
+			while((i=reader.read())!=-1)   {	 
+				fileContent += (char)i;
+			} 
+			reader.close();    			 
+			JSONObject list = new JSONObject(fileContent);
+			System.out.println( VehiculeSensorProvider.create(list).toString());
 
-					//	System.out.println("Desired output :" + testItem.getBoolean("output"));
-					//	System.out.println("Received output :" + resItem.getBody().getBoolean("success"));
-					System.out.println("There are " + resList.length() + " city in the list");
-					System.out.println("Test success"); 
-				}else {
-					//test fail
-					System.err.println("Test false");
-
-				}
-			};
-
-
-
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
-
-
-
-
 }
